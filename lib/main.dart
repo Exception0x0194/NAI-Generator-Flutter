@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'screens/prompt_generator_screen.dart';
 import 'screens/settings_screen.dart';
+import 'screens/config_viewer_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -36,7 +37,8 @@ class _MyHomePageState extends State<MyHomePage> {
   static final List<Widget> _widgetOptions = <Widget>[
     MyDemoPage(title: 'Home Page'),
     PromptGenerationScreen(),
-    SettingsScreen(),  // 添加设置页面
+    SettingsScreen(),
+    ConfigViewerScreen(),  // 添加配置查看页面
   ];
 
   void _onItemTapped(int index) {
@@ -67,6 +69,10 @@ class _MyHomePageState extends State<MyHomePage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
             label: 'Settings',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.visibility),
+            label: 'View Config',
           ),
         ],
         currentIndex: _selectedIndex,

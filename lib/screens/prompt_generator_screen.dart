@@ -4,6 +4,8 @@ import 'package:file_picker/file_picker.dart';
 import '../models/info_manager.dart';  // 引用全局状态管理器
 
 class PromptGenerationScreen extends StatefulWidget {
+  const PromptGenerationScreen({super.key});
+
   @override
   _PromptGenerationScreenState createState() => _PromptGenerationScreenState();
 }
@@ -46,7 +48,7 @@ class _PromptGenerationScreenState extends State<PromptGenerationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Generate Prompts'),
+        title: const Text('Generate Prompts'),
       ),
       body: Center(
         child: Column(
@@ -54,14 +56,14 @@ class _PromptGenerationScreenState extends State<PromptGenerationScreen> {
           children: <Widget>[
             ElevatedButton(
               onPressed: _loadJsonConfig,
-              child: Text('Load Config'),
+              child: const Text('Load Config'),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _generatePrompt,
-              child: Text('Generate Prompt'),
+              child: const Text('Generate Prompt'),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Expanded(
               child: SingleChildScrollView(
                 child: Text(_displayedText),

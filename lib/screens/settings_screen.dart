@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../models/info_manager.dart';  // 引用全局状态管理器
 
 class SettingsScreen extends StatefulWidget {
+  const SettingsScreen({super.key});
+
   @override
   _SettingsScreenState createState() => _SettingsScreenState();
 }
