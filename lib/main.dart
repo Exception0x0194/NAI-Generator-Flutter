@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.purple),
         useMaterial3: true,
       ),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
@@ -35,10 +35,10 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
   static final List<Widget> _widgetOptions = <Widget>[
-    MyDemoPage(title: 'Home Page'),
-    PromptGenerationScreen(),
-    SettingsScreen(),
-    ConfigViewerScreen(),  // 添加配置查看页面
+    const MyDemoPage(title: 'Home Page'),
+    const PromptGenerationScreen(),
+    const SettingsScreen(),
+    const ConfigViewerScreen(), // 添加配置查看页面
   ];
 
   void _onItemTapped(int index) {
@@ -76,7 +76,6 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.deepPurple,
         onTap: _onItemTapped,
       ),
     );
@@ -86,7 +85,7 @@ class _MyHomePageState extends State<MyHomePage> {
 class MyDemoPage extends StatelessWidget {
   final String title;
 
-  MyDemoPage({required this.title});
+  const MyDemoPage({super.key, required this.title});
 
   @override
   Widget build(BuildContext context) {

@@ -118,7 +118,7 @@ class PromptConfig {
         var res = p.pickPromptsFromConfig();
         prompt += res['prompt'];
         comment += res['comment'];
-      } 
+      }
       // else if (type == 'folder') {
       //   var file = File(p);
       //   var line = file.readAsLinesSync().first + ", ";

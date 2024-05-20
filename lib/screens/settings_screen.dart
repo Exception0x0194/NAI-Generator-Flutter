@@ -31,7 +31,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     InfoManager().setApiKey(_apiKeyController.text);
     InfoManager().setProxySettings(_proxyController.text);
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Settings updated successfully!')),
+      const SnackBar(content: Text('Settings updated successfully!')),
     );
   }
 
@@ -39,7 +39,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('User Settings'),
+        title: const Text('User Settings'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -47,21 +47,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
           children: [
             TextField(
               controller: _apiKeyController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'API Key',
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             TextField(
               controller: _proxyController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Proxy Settings',
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _updateSettings,
-              child: Text('Save Settings'),
+              child: const Text('Save Settings'),
             ),
           ],
         ),
