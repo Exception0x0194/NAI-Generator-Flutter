@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
-import '../models/info_manager.dart';  // 引用全局状态管理器
+import '../models/info_manager.dart'; // 引用全局状态管理器
 
 class PromptGenerationScreen extends StatefulWidget {
   const PromptGenerationScreen({super.key});
@@ -32,8 +32,8 @@ class _PromptGenerationScreenState extends State<PromptGenerationScreen> {
   }
 
   void _generatePrompt() {
-    if (InfoManager().promptsGenerator != null) {
-      var promptResult = InfoManager().promptsGenerator!.getPrompt();
+    if (InfoManager().config != null) {
+      var promptResult = InfoManager().config!.pickPromptsFromConfig();
       setState(() {
         _displayedText = "${promptResult['prompt']} ${promptResult['comment']}";
       });

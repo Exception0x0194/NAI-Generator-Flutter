@@ -54,6 +54,14 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
 
+  fonts:
+  - family: Noto
+    fonts:
+      - asset: assets/fonts/notosanssc.ttf
+  - family: Roboto
+    fonts:
+      - asset: assets/fonts/roboto.ttf
+
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
@@ -89,3 +97,4 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+

@@ -7,15 +7,20 @@ class InfoManager {
   factory InfoManager() {
     return _instance;
   }
+  InfoManager._internal() {
+    loadInitialConfig();
+  }
 
-  InfoManager._internal();
-
-  PromptsGenerator? promptsGenerator;
   String? apiKey;
   String? proxySettings;
+  late PromptConfig config;
+
+  Future<void> loadInitialConfig() async {
+    config = PromptConfig.fromJson({}, 0);
+  }
 
   void loadPrompts(Map<String, dynamic> jsonData) {
-    promptsGenerator = PromptsGenerator(jsonData);
+    config = PromptConfig.fromJson(jsonData, 0);
   }
 
   void setApiKey(String key) {
