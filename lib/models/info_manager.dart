@@ -1,4 +1,8 @@
 // 文件路径：lib/models/info_manager.dart
+import 'dart:convert';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+
 import 'prompt_config.dart';
 import 'param_config.dart';
 
@@ -8,22 +12,29 @@ class InfoManager {
   factory InfoManager() {
     return _instance;
   }
-  InfoManager._internal() {
-    loadInitialConfig();
-  }
+  InfoManager._internal() ;
 
-  String? apiKey = 'pst-abc';
+  String? apiKey;
   String? proxy;
 
-  late PromptConfig promptConfig;
-  late ParamConfig paramConfig;
+  PromptConfig promptConfig = PromptConfig();
+  ParamConfig paramConfig = ParamConfig();
 
-  Future<void> loadInitialConfig() async {
-    promptConfig = PromptConfig.fromJson({}, 0);
-    paramConfig = ParamConfig();
+  Map<String, dynamic> toJson(){
+    return {"api_key": apiKey, "proxy":proxy, "prompt_config":promptConfig.toJson(), "param_config":paramConfig.toJson()};
   }
 
-  void loadPrompts(Map<String, dynamic> jsonData) {
-    promptConfig = PromptConfig.fromJson(jsonData, 0);
+  bool fromJson(Map<String, dynamic> jsonConfig) {
+    try {
+      PromptConfig tryPromptConfig = PromptConfig.fromJson(jsonConfig['prompt_config'], 0);
+      ParamConfig tryParamConfig = ParamConfig.fromJson(jsonConfig['param_config']);
+      promptConfig = tryPromptConfig;
+      paramConfig = tryParamConfig;
+    } catch (e) {
+      return false;
+    }
+    apiKey = jsonConfig['api_key'];
+    proxy = jsonConfig['proxy'];
+    return true;
   }
 }

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../models/info_manager.dart';
 import '../models/prompt_config.dart';
 import '../widgets/prompt_config_widget.dart';
@@ -42,25 +43,26 @@ class PromptConfigScreenState extends State<PromptConfigScreen> {
             const SizedBox(height: 20),
             FloatingActionButton(
               onPressed: () async {
-                PromptConfig? newConfig = await getConfigFromClipboard();
-                if (newConfig != null) {
+                Map<String, dynamic>? newConfig = await _getJsonFromClipboard();
+                try {
                   setState(() {
-                    InfoManager().promptConfig = newConfig;
+                    InfoManager().promptConfig =
+                        PromptConfig.fromJson(newConfig!, 0);
                   });
                   ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Imported from clipboard')));
-                } else {
+                } catch (e) {
                   ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Import failed')));
                 }
               },
               tooltip: 'Import from clipboard',
-              child: const Icon(Icons.file_upload),
+              child: const Icon(Icons.upload),
             ),
             const SizedBox(height: 20),
             FloatingActionButton(
               onPressed: () {
-                copyConfigToClipboard(InfoManager().promptConfig);
+                _copyConfigToClipboard();
                 ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Exported to clipboard')));
               },
@@ -80,7 +82,7 @@ class PromptConfigScreenState extends State<PromptConfigScreen> {
         String fileContent = utf8.decode(result.files.single.bytes!);
         Map<String, dynamic> jsonData = jsonDecode(fileContent);
         setState(() {
-          InfoManager().loadPrompts(jsonData);
+          InfoManager().promptConfig = PromptConfig.fromJson(jsonData, 0);
         });
         ScaffoldMessenger.of(context)
             .showSnackBar(const SnackBar(content: Text('Imported from file')));
@@ -89,5 +91,25 @@ class PromptConfigScreenState extends State<PromptConfigScreen> {
       ScaffoldMessenger.of(context)
           .showSnackBar(const SnackBar(content: Text('Imported failed')));
     }
+  }
+
+  void _copyConfigToClipboard() {
+    final jsonString = json.encode(InfoManager().promptConfig.toJson());
+    Clipboard.setData(ClipboardData(text: jsonString));
+  }
+
+  Future<Map<String, dynamic>?> _getJsonFromClipboard() async {
+    ClipboardData? clipboardData =
+        await Clipboard.getData(Clipboard.kTextPlain);
+    if (clipboardData != null && clipboardData.text != null) {
+      try {
+        final Map<String, dynamic> jsonConfig =
+            json.decode(clipboardData.text!);
+        return jsonConfig;
+      } catch (e) {
+        return null;
+      }
+    }
+    return null;
   }
 }

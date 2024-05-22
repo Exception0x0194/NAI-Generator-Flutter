@@ -36,6 +36,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.6
   file_picker: ^8.0.3
+  path_provider: ^2.0.1
 
 dev_dependencies:
   flutter_test:
@@ -61,6 +62,9 @@ flutter:
   - family: Roboto
     fonts:
       - asset: assets/fonts/roboto.ttf
+
+  assets:
+    - assets/json/example.json
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

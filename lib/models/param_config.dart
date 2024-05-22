@@ -88,4 +88,28 @@ class ParamConfig {
       'negative_prompt': negativePrompt,
     };
   }
+
+  factory ParamConfig.fromJson(Map<String, dynamic> json) {
+    return ParamConfig(
+      width: json['width'],
+      height: json['height'],
+      scale: json['scale'],
+      sampler: json['sampler'],
+      steps: json['steps'],
+      seed: json['seed'],
+      nSamples: json['n_samples'],
+      ucPreset: json['ucPreset'],
+      qualityToggle: json['qualityToggle'],
+      sm: json['sm'],
+      smDyn: json['sm_dyn'], // 注意名字已转换为snake_case
+      dynamicThresholding: json['dynamic_thresholding'],
+      controlNetStrength: json['controlnet_strength'],
+      legacy: json['legacy'],
+      addOriginalImage: json['add_original_image'],
+      uncondScale: json['uncond_scale'],
+      cfgRescale: json['cfg_rescale'],
+      noiseSchedule: json['noise_schedule'],
+      negativePrompt: json['negative_prompt'],  // Assuming this field is a String
+    );
+  }
 }

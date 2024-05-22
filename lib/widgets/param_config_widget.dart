@@ -51,9 +51,9 @@ class ParamConfigWidgetState extends State<ParamConfigWidget> {
         _buildSwitchTile("SM Dyn", widget.config.smDyn, (newValue) {
           setState(() => widget.config.smDyn = newValue);
         }),
-        ExpansionTile(
+        ListTile(
           title: const Text('UC'),
-          children: [
+          subtitle: 
             Padding(
                 padding: const EdgeInsets.only(left: 20.0),
                 child: ListTile(
@@ -62,7 +62,7 @@ class ParamConfigWidgetState extends State<ParamConfigWidget> {
                     _editUC();
                   },
                 ))
-          ],
+          ,
         )
       ],
     );
