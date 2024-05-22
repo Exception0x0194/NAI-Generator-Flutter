@@ -283,7 +283,7 @@ class _PromptConfigWidgetState extends State<PromptConfigWidget> {
                     child: ListTile(
                       leading: const Icon(Icons.remove),
                       title: const Text('Remove Last Config'),
-                      onTap: () => _removeLastConfig(),
+                      onTap: () => _removeConfig(),
                     ),
                   ),
                 ],
@@ -329,9 +329,14 @@ class _PromptConfigWidgetState extends State<PromptConfigWidget> {
     );
   }
 
-  void _addNewConfig() {
+  void _addNewConfig() async {
+    int? position = await _promptForPosition();
+    if (position == null) {
+      return;
+    }
+
     setState(() {
-      widget.config.prompts.add(PromptConfig(
+      var newConfig = PromptConfig(
         selectionMethod: 'all',
         shuffled: true,
         prob: 0.0,
@@ -343,37 +348,90 @@ class _PromptConfigWidgetState extends State<PromptConfigWidget> {
         depth: widget.config.depth + 1,
         strs: [],
         prompts: [],
-      ));
+      );
+
+      if (position >= 0 && position <= widget.config.prompts.length) {
+        widget.config.prompts.insert(position, newConfig);
+      } else {
+        widget.config.prompts.add(newConfig); // 如果位置无效，添加到末尾
+      }
     });
   }
 
-  void _removeLastConfig() {
-    if (widget.config.prompts.isNotEmpty) {
-      setState(() {
-        widget.config.prompts.removeLast();
-      });
+  void _removeConfig() async {
+    int? position = await _promptForPosition();
+    if (position == null) {
+      return;
     }
+
+    setState(() {
+      if (position >= 0 && position < widget.config.prompts.length) {
+        widget.config.prompts.removeAt(position);
+      } else {
+        widget.config.prompts.removeLast();
+      }
+    });
   }
 
   Future<void> _importConfigFromClipboard() async {
+    int? position = await _promptForPosition();
+    if (position == null) {
+      return;
+    }
+
     ClipboardData? data = await Clipboard.getData(Clipboard.kTextPlain);
     if (data != null && data.text != null) {
       try {
         final Map<String, dynamic> jsonConfig = json.decode(data.text!);
-        final newConfig =
-            PromptConfig.fromJson(jsonConfig, widget.config.depth + 1);
+        final newConfig = PromptConfig.fromJson(jsonConfig, 0);
+
         setState(() {
-          widget.config.prompts.add(newConfig);
+          if (position >= 0 && position <= widget.config.prompts.length) {
+            widget.config.prompts.insert(position, newConfig);
+          } else {
+            widget.config.prompts.add(newConfig); // 如果位置无效，添加到末尾
+          }
         });
         ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Config imported successfully')));
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Failed to import config')));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text('Failed to import config')));
       }
     } else {
       ScaffoldMessenger.of(context)
           .showSnackBar(const SnackBar(content: Text('No data in clipboard')));
     }
+  }
+
+  Future<int?> _promptForPosition() async {
+    return showDialog<int>(
+      context: context,
+      builder: (BuildContext context) {
+        TextEditingController controller = TextEditingController();
+        return AlertDialog(
+          title: const Text("Enter position - start from 0"),
+          content: TextField(
+            controller: controller,
+            keyboardType: TextInputType.number,
+            decoration: const InputDecoration(
+                hintText: "Position (leave blank for end)"),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                final position = int.tryParse(controller.text);
+                Navigator.of(context).pop(position ?? -1);
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }

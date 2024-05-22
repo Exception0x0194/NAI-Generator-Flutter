@@ -1,5 +1,6 @@
 // 文件路径：lib/models/info_manager.dart
 import 'prompt_config.dart';
+import 'param_config.dart';
 
 class InfoManager {
   static final InfoManager _instance = InfoManager._internal();
@@ -11,23 +12,18 @@ class InfoManager {
     loadInitialConfig();
   }
 
-  String? apiKey;
-  String? proxySettings;
-  late PromptConfig config;
+  String? apiKey = 'pst-abc';
+  String? proxy;
+
+  late PromptConfig promptConfig;
+  late ParamConfig paramConfig;
 
   Future<void> loadInitialConfig() async {
-    config = PromptConfig.fromJson({}, 0);
+    promptConfig = PromptConfig.fromJson({}, 0);
+    paramConfig = ParamConfig();
   }
 
   void loadPrompts(Map<String, dynamic> jsonData) {
-    config = PromptConfig.fromJson(jsonData, 0);
-  }
-
-  void setApiKey(String key) {
-    apiKey = key;
-  }
-
-  void setProxySettings(String proxy) {
-    proxySettings = proxy;
+    promptConfig = PromptConfig.fromJson(jsonData, 0);
   }
 }

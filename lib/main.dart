@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'screens/prompt_generator_screen.dart';
+import 'screens/generator_screen.dart';
 import 'screens/settings_screen.dart';
 import 'screens/prompt_config_screen.dart';
 
@@ -59,7 +59,7 @@ class MyHomePageState extends State<MyHomePage> {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.create),
-            label: 'Generate Prompt',
+            label: 'Generate',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.visibility),

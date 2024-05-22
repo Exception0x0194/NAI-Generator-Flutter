@@ -167,3 +167,17 @@ Future<PromptConfig?> getConfigFromClipboard() async {
   }
   return null; // 剪切板无数据或不是有效的JSON
 }
+
+// Future<PromptConfig?> getConfigFromFile(String fileName) async {
+//   ClipboardData? clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
+//   if (clipboardData != null && clipboardData.text != null) {
+//     try {
+//       final Map<String, dynamic> jsonConfig = json.decode(clipboardData.text!);
+//       return PromptConfig.fromJson(jsonConfig, 0);
+//     } catch (e) {
+//       print("Error parsing config from clipboard: $e");
+//       return null; // 返回null表示解析失败
+//     }
+//   }
+//   return null; // 剪切板无数据或不是有效的JSON
+// }
