@@ -33,6 +33,7 @@ class EditableListTile extends StatelessWidget {
           content: TextField(
             controller: controller,
             keyboardType: keyboardType,
+            maxLines: null,
           ),
           actions: <Widget>[
             TextButton(

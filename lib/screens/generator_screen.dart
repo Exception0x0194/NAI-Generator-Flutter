@@ -13,15 +13,9 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
   String _displayedText = "Please load a config to generate prompts.";
 
   void _generatePrompt() {
-    var promptResult = InfoManager().promptConfig.pickPromptsFromConfig();
-    Map<String, dynamic> requestData = {};
-    requestData['input'] = promptResult['prompt'];
-    requestData['model'] = "nai-diffusion-3";
-    requestData['action'] = 'generate';
-    requestData['parameters'] = InfoManager().paramConfig.toJson();
+    var requestData = InfoManager().getRequestBody();
     setState(() {
-      _displayedText =
-          "${json.encode(requestData)}\n\n${promptResult['comment']}";
+      _displayedText = json.encode(requestData);
     });
   }
 
@@ -38,6 +32,11 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
             ElevatedButton(
               onPressed: _generatePrompt,
               child: const Text('Generate Prompt'),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: InfoManager().generateImage,
+              child: const Text('Generate Image'),
             ),
             const SizedBox(height: 20),
             Expanded(

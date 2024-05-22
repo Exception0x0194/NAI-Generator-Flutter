@@ -266,7 +266,7 @@ class _PromptConfigWidgetState extends State<PromptConfigWidget> {
                   Expanded(
                     child: ListTile(
                       leading: const Icon(Icons.add),
-                      title: const Text('Add New Config'),
+                      title: const Text('Add Config'),
                       onTap: () => _addNewConfig(),
                     ),
                   ),
@@ -282,7 +282,7 @@ class _PromptConfigWidgetState extends State<PromptConfigWidget> {
                   Expanded(
                     child: ListTile(
                       leading: const Icon(Icons.remove),
-                      title: const Text('Remove Last Config'),
+                      title: const Text('Remove Config'),
                       onTap: () => _removeConfig(),
                     ),
                   ),
@@ -395,8 +395,8 @@ class _PromptConfigWidgetState extends State<PromptConfigWidget> {
         ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Config imported successfully')));
       } catch (e) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text('Failed to import config')));
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Failed to import config')));
       }
     } else {
       ScaffoldMessenger.of(context)

@@ -1,6 +1,6 @@
 {
-    "api_key": null,
-    "proxy": null,
+    "api_key": "pst-abc",
+    "proxy": "http://localhost:99999",
     "prompt_config": {
         "selectionMethod": "all",
         "shuffled": true,
@@ -143,7 +143,7 @@
         "scale": 6.5,
         "sampler": "k_euler_ancestral",
         "steps": 28,
-        "seed": 138964368,
+        "seed": 611492583,
         "n_samples": 1,
         "ucPreset": 0,
         "qualityToggle": true,

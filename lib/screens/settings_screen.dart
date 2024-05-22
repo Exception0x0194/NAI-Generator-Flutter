@@ -58,7 +58,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             title: const Text('Param config'),
             children: [
               Padding(
-                  padding: const EdgeInsets.only(left: 20),
+                  padding: const EdgeInsets.only(left: 20, right: 80),
                   child: ParamConfigWidget(config: InfoManager().paramConfig))
             ],
           )
@@ -125,6 +125,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           title: const Text('Edit API Key'),
           content: TextField(
             controller: controller,
+            maxLines: null,
           ),
           actions: [
             TextButton(

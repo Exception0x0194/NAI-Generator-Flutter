@@ -51,19 +51,24 @@ class ParamConfigWidgetState extends State<ParamConfigWidget> {
         _buildSwitchTile("SM Dyn", widget.config.smDyn, (newValue) {
           setState(() => widget.config.smDyn = newValue);
         }),
-        ListTile(
-          title: const Text('UC'),
-          subtitle: 
-            Padding(
-                padding: const EdgeInsets.only(left: 20.0),
-                child: ListTile(
-                  subtitle: Text(widget.config.negativePrompt),
-                  onTap: () {
-                    _editUC();
-                  },
-                ))
-          ,
-        )
+        EditableListTile(
+          title: "UC",
+          currentValue: widget.config.negativePrompt,
+          onEditComplete: (value) =>
+              setState(() => widget.config.negativePrompt = value),
+          keyboardType: TextInputType.text,
+        ),
+        // ListTile(
+        //   title: const Text('UC'),
+        //   subtitle: Padding(
+        //       padding: const EdgeInsets.only(left: 20.0),
+        //       child: ListTile(
+        //         subtitle: Text(widget.config.negativePrompt),
+        //         onTap: () {
+        //           _editUC();
+        //         },
+        //       )),
+        // )
       ],
     );
   }

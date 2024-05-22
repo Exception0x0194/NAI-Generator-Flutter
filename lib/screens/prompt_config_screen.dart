@@ -22,11 +22,13 @@ class PromptConfigScreenState extends State<PromptConfigScreen> {
         title: const Text('Prompt Configuration'),
       ),
       body: SingleChildScrollView(
+          child: Padding(
+        padding: EdgeInsets.only(right: 80),
         child: PromptConfigWidget(
           config: InfoManager().promptConfig, // 使用全局配置
           indentLevel: 0,
         ),
-      ),
+      )),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       floatingActionButton: Padding(
         padding: const EdgeInsets.all(10.0),
