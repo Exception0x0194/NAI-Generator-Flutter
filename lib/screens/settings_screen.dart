@@ -20,12 +20,6 @@ class SettingsScreenState extends State<SettingsScreen> {
   final TextEditingController _proxyController = TextEditingController();
 
   @override
-  void initState() {
-    super.initState();
-    _apiKeyController.text = InfoManager().apiKey ?? "";
-  }
-
-  @override
   void dispose() {
     _apiKeyController.dispose();
     _proxyController.dispose();
@@ -42,7 +36,7 @@ class SettingsScreenState extends State<SettingsScreen> {
         children: [
           ListTile(
             title: const Text('NAI API Key'),
-            subtitle: Text(InfoManager().apiKey ?? ""),
+            subtitle: Text(InfoManager().apiKey),
             onTap: () {
               _editApiKey();
             },
@@ -73,37 +67,6 @@ class SettingsScreenState extends State<SettingsScreen> {
               tooltip: 'Export to file',
               child: const Icon(Icons.save),
             ),
-            // FloatingActionButton(
-            //   onPressed: () async {
-            //     Map<String, dynamic>? jsonData = await _getJsonFromClipboard();
-            //     if (jsonData == null) {
-            //       ScaffoldMessenger.of(context).showSnackBar(
-            //           const SnackBar(content: Text('Import failed!')));
-            //       return;
-            //     }
-            //     setState(() {
-            //       if (InfoManager().fromJson(jsonData!)) {
-            //         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            //             content: Text('Imported from clipboard.')));
-            //       } else {
-            //         ScaffoldMessenger.of(context).showSnackBar(
-            //             const SnackBar(content: Text('Import failed!')));
-            //       }
-            //     });
-            //   },
-            //   tooltip: 'Import from clipboard',
-            //   child: const Icon(Icons.file_upload),
-            // ),
-            // const SizedBox(height: 20),
-            // FloatingActionButton(
-            //   onPressed: () {
-            //     _copyConfigToClipboard();
-            //     ScaffoldMessenger.of(context).showSnackBar(
-            //         const SnackBar(content: Text('Exported to clipboard')));
-            //   },
-            //   tooltip: 'Export to clipboard',
-            //   child: const Icon(Icons.save),
-            // ),
           ],
         ),
       ),

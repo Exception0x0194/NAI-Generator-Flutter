@@ -89,17 +89,17 @@ class InfoManager with ChangeNotifier {
           var filename = '${generateRandomFileName()}.png';
           var imageBytes = file.content as Uint8List;
           await saveBlob(imageBytes, filename);
-          log += 'Success $filename${data['comment']}\n';
+          log += 'Success: $filename${data['comment']}\n\n';
           img = Image.memory(imageBytes);
           success = true;
           break;
         }
       }
       if (!success) {
-        log += 'Failed: Could not find image in HTTP response.\n';
+        log += 'Failed: Could not find image in HTTP response.\n\n';
       }
     } catch (e) {
-      log += 'Failed: ${e.toString()}\n';
+      log += 'Failed: ${e.toString()}\n\n';
     } finally {
       isRequesting = false;
     }
@@ -108,5 +108,11 @@ class InfoManager with ChangeNotifier {
     if (isGenerating) {
       generateImage();
     }
+  }
+
+  void generatePrompt() {
+    var data = getRequestData()['comment'];
+    log += 'Generated prompt: $data\n\n';
+    notifyListeners();
   }
 }

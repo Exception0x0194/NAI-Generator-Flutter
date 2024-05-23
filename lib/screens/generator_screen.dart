@@ -16,40 +16,7 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
           title: const Text('Generate'),
         ),
         body: Center(
-          child: Column(
-            children: [
-              Expanded(
-                // 使用Expanded让ListView使用所有可用空间，但不会覆盖下方的按钮
-                child: Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(20),
-                            child: ListTile(
-                              title: const Text("Log"),
-                              subtitle: SingleChildScrollView(
-                                // 添加滚动
-                                reverse: true,
-                                // 添加滚动
-                                child: Text(InfoManager().log),
-                              ),
-                              dense: true,
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: Container(
-                            padding: const EdgeInsets.all(20),
-                            child: InfoManager().img,
-                          ),
-                        ),
-                      ],
-                    )),
-              )
-            ],
-          ),
+          child: _buildResponsiveLayout(),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
         floatingActionButton: Padding(
@@ -58,32 +25,72 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               FloatingActionButton(
-                  onPressed: _generateImage,
-                  tooltip: 'Generate one image',
-                  child: const Icon(Icons.image)),
+                  onPressed: _generatePrompt,
+                  tooltip: 'Generate one prompt',
+                  child: const Icon(Icons.edit)),
               const SizedBox(
                 height: 20,
               ),
               FloatingActionButton(
                   onPressed: _toggleGeneration,
-                  tooltip: 'Start generation',
+                  tooltip: 'Toggle generation',
                   child: InfoManager().isGenerating
                       ? const Icon(Icons.pause)
-                      : const Icon(Icons.alarm))
+                      : const Icon(Icons.play_arrow))
             ],
           ),
         ));
   }
 
-  void _generateImage() async {
-    InfoManager().generateImage();
+  void _generatePrompt() async {
+    InfoManager().generatePrompt();
   }
 
   void _toggleGeneration() async {
     InfoManager().isGenerating = !InfoManager().isGenerating;
-    setState(() {});
     if (InfoManager().isGenerating) {
-      _generateImage();
+      InfoManager().generateImage();
+    }
+  }
+
+  Widget _buildResponsiveLayout() {
+    var size = MediaQuery.of(context).size;
+    bool useRow = size.width > size.height; // 当屏幕宽度大于高度时使用Row
+
+    var content = [
+      Expanded(
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          child: InfoManager().img,
+        ),
+      ),
+      Expanded(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: ListTile(
+            title: const Text("Log"),
+            subtitle: SingleChildScrollView(
+              reverse: true,
+              child: Text(InfoManager().log),
+            ),
+            dense: true,
+          ),
+        ),
+      ),
+    ];
+
+    if (useRow) {
+      return Padding(
+          padding: EdgeInsets.all(20),
+          child: Row(
+            children: content,
+          ));
+    } else {
+      return Padding(
+          padding: EdgeInsets.all(20),
+          child: Column(
+            children: content,
+          ));
     }
   }
 }

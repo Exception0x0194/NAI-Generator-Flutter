@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'dart:convert';
 import '../models/prompt_config.dart';
 import 'editable_list_tile.dart';
@@ -25,8 +27,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
       padding: EdgeInsets.only(left: widget.indentLevel * 20.0),
       child: ExpansionTile(
         title: Row(children: [
-          Text(widget.config.comment),
-          const Spacer(),
+          Expanded(child: Text(widget.config.comment)),
           IconButton(
             icon: const Icon(Icons.copy),
             onPressed: () {
@@ -34,7 +35,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
                   ClipboardData(text: json.encode(widget.config.toJson())));
             },
             tooltip: 'Copy to Clipboard',
-          )
+          ),
         ]),
         children: [
           Padding(
@@ -169,23 +170,32 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
               Row(
                 children: [
                   Expanded(
-                    child: ListTile(
-                      leading: const Icon(Icons.add),
-                      onTap: () => _addNewConfig(),
+                    child: Tooltip(
+                      message: 'Add New Config',
+                      child: IconButton(
+                        icon: Icon(Icons.add),
+                        onPressed: () => _addNewConfig(),
+                      ),
                     ),
                   ),
                   Expanded(
-                    child: ListTile(
-                      leading: const Icon(Icons.paste),
-                      onTap: () async {
-                        await _importConfigFromClipboard();
-                      },
+                    child: Tooltip(
+                      message: 'Import from Clipboard',
+                      child: IconButton(
+                        icon: Icon(Icons.paste),
+                        onPressed: () async {
+                          await _importConfigFromClipboard();
+                        },
+                      ),
                     ),
                   ),
                   Expanded(
-                    child: ListTile(
-                      leading: const Icon(Icons.remove),
-                      onTap: () => _removeConfig(),
+                    child: Tooltip(
+                      message: 'Remove Config',
+                      child: IconButton(
+                        icon: Icon(Icons.remove),
+                        onPressed: () => _removeConfig(),
+                      ),
                     ),
                   ),
                 ],
