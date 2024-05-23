@@ -1,7 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'dart:convert';
 import '../models/prompt_config.dart';
 import 'editable_list_tile.dart';
@@ -26,6 +24,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
     return Padding(
       padding: EdgeInsets.only(left: widget.indentLevel * 20.0),
       child: ExpansionTile(
+        initiallyExpanded: widget.indentLevel == 0,
         title: Row(children: [
           Expanded(child: Text(widget.config.comment)),
           IconButton(
@@ -161,6 +160,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
   Widget _buildConfigsExpansion() {
     return widget.config.type == 'config'
         ? ExpansionTile(
+            initiallyExpanded: widget.indentLevel == 0,
             title: const Text('Configs'),
             children: [
               ...widget.config.prompts.map((config) => PromptConfigWidget(

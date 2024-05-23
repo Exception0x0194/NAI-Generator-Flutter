@@ -7,7 +7,7 @@
         "num": 1,
         "randomBrackets": 0,
         "type": "config",
-        "comment": "正向提示词",
+        "comment": "示例提示词",
         "filter": "",
         "depth": 0,
         "strs": [],
