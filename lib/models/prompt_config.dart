@@ -1,7 +1,5 @@
-import 'dart:convert';
 import 'dart:math';
 
-import 'package:flutter/services.dart';
 
 class PromptConfig {
   String selectionMethod;
@@ -32,8 +30,8 @@ class PromptConfig {
 
   factory PromptConfig.fromJson(Map<String, dynamic> json, int depth) {
     return PromptConfig(
-      selectionMethod: json['selectionMethod'] as String? ?? 'all',
-      shuffled: json['shuffled'] as bool? ?? true,
+      selectionMethod: json['selectionMethod'],
+      shuffled: json['shuffled'],
       prob: (json['prob'] as double?)?.toDouble() ?? 0.0,
       num: json['num'] as int? ?? 1,
       randomBrackets: json['randomBrackets'] as int? ?? 0,
@@ -131,7 +129,7 @@ class PromptConfig {
     // if (prompt.isNotEmpty) prompt = prompt.substring(0, prompt.length - 2);
     // if (comment.isNotEmpty) comment = comment.substring(0, comment.length - 2);
     if (prompt.isNotEmpty) {
-      comment = '\n${'--' * depth}' + this.comment + ": " + comment;
+      comment = '\n${'--' * depth}${this.comment}: $comment';
     }
 
     return {'prompt': prompt, 'comment': comment};

@@ -1,17 +1,13 @@
 import 'dart:convert';
-import 'dart:html' as html;
-import 'dart:io';
-import 'dart:js_interop';
-import 'dart:math';
 import 'package:archive/archive.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:path_provider/path_provider.dart';
 import 'prompt_config.dart';
 import 'param_config.dart';
-import 'downloads.dart';
+import 'utils.dart';
 
-class InfoManager {
+class InfoManager with ChangeNotifier {
   static final InfoManager _instance = InfoManager._internal();
 
   factory InfoManager() {
@@ -20,9 +16,13 @@ class InfoManager {
   InfoManager._internal();
 
   String apiKey = 'pst-abcd';
-
-  PromptConfig promptConfig = PromptConfig();
+  late PromptConfig promptConfig = PromptConfig();
   ParamConfig paramConfig = ParamConfig();
+
+  String log = '';
+  Image img = Image.asset('imgs/image_48dp.png');
+  bool isRequesting = false;
+  bool isGenerating = false;
 
   Map<String, dynamic> toJson() {
     return {
@@ -67,25 +67,46 @@ class InfoManager {
     };
   }
 
-  Future<Map<String, dynamic>> generateImage() async {
+  Future<void> generateImage() async {
+    if (isRequesting) {
+      return;
+    }
+    log += 'Requesting...';
+    isRequesting = true;
+    notifyListeners();
+
     var url = Uri.parse('https://image.novelai.net/ai/generate-image');
     var data = getRequestData();
-    var response =
-        await http.post(url, headers: headers, body: json.encode(data['body']));
-    var bytes = response.bodyBytes;
+
     try {
+      var response = await http.post(url,
+          headers: headers, body: json.encode(data['body']));
+      var bytes = response.bodyBytes;
       var archive = ZipDecoder().decodeBytes(bytes);
+      bool success = false;
       for (var file in archive) {
         if (file.name == "image_0.png") {
-          var filename = generateRandomFileName() + '.png';
-          var imageBytes = file.content as List<int>;
+          var filename = '${generateRandomFileName()}.png';
+          var imageBytes = file.content as Uint8List;
           await saveBlob(imageBytes, filename);
-          return {'status': 'success', 'comment': data['comment']};
+          log += 'Success $filename${data['comment']}\n';
+          img = Image.memory(imageBytes);
+          success = true;
+          break;
         }
       }
-      return {'status': 'failed', 'error': utf8.decode(response.bodyBytes)};
+      if (!success) {
+        log += 'Failed: Could not find image in HTTP response.\n';
+      }
     } catch (e) {
-      return {'status': 'failed', 'error': e};
+      log += 'Failed: ${e.toString()}\n';
+    } finally {
+      isRequesting = false;
+    }
+    notifyListeners();
+
+    if (isGenerating) {
+      generateImage();
     }
   }
 }

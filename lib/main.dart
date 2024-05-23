@@ -1,10 +1,18 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'screens/generator_screen.dart';
 import 'screens/settings_screen.dart';
 import 'screens/prompt_config_screen.dart';
+import 'models/info_manager.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(ChangeNotifierProvider(
+    create: (context) => InfoManager(),
+    child: const MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -14,10 +22,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.pink.shade700),
           useMaterial3: true,
           fontFamily: 'Noto'),
-      home: const MyHomePage(title: 'Flutter Demo'),
+      home: const MyHomePage(title: 'NAI在自己画涩图'),
     );
   }
 }
@@ -33,8 +41,19 @@ class MyHomePage extends StatefulWidget {
 
 class MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadInitialInfo();
+  }
+
   static final List<Widget> _widgetOptions = <Widget>[
-    const PromptGenerationScreen(),
+    Consumer<InfoManager>(builder: (context, manager, child) {
+      // ignore: prefer_const_constructors
+      return PromptGenerationScreen();
+    }),
+    // const PromptGenerationScreen(),
     const PromptConfigScreen(),
     const SettingsScreen(),
   ];
@@ -73,5 +92,10 @@ class MyHomePageState extends State<MyHomePage> {
         onTap: _onItemTapped,
       ),
     );
+  }
+
+  void _loadInitialInfo () async {
+    var jsonData = json.decode(await rootBundle.loadString('json/example.json'));
+    InfoManager().fromJson(jsonData);
   }
 }

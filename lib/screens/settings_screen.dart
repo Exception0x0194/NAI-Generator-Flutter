@@ -3,11 +3,10 @@ import 'dart:convert';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../models/info_manager.dart';
 import '../widgets/param_config_widget.dart';
-import '../models/downloads.dart';
+import '../models/utils.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -143,26 +142,6 @@ class SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  void _copyConfigToClipboard() {
-    final jsonString = json.encode(InfoManager().toJson());
-    Clipboard.setData(ClipboardData(text: jsonString));
-  }
-
-  Future<Map<String, dynamic>?> _getJsonFromClipboard() async {
-    ClipboardData? clipboardData =
-        await Clipboard.getData(Clipboard.kTextPlain);
-    if (clipboardData != null && clipboardData.text != null) {
-      try {
-        final Map<String, dynamic> jsonConfig =
-            json.decode(clipboardData.text!);
-        return jsonConfig;
-      } catch (e) {
-        return null;
-      }
-    }
-    return null;
-  }
-
   Future<void> _loadJsonConfig() async {
     try {
       FilePickerResult? result = await FilePicker.platform.pickFiles();
@@ -186,6 +165,6 @@ class SettingsScreenState extends State<SettingsScreen> {
 
   _saveJsonConfig() {
     saveStringToFile(json.encode(InfoManager().toJson()),
-        generateRandomFileName() + '.json');
+        '${generateRandomFileName()}.json');
   }
 }

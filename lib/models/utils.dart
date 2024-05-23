@@ -6,7 +6,7 @@ import 'dart:html' as html;
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 
-Future<void> saveBlob(List<int> bytes, String filename) async {
+Future<void> saveBlob(Uint8List bytes, String filename) async {
   if (kIsWeb) {
     // Web平台使用Blob进行下载
     final blob = html.Blob([Uint8List.fromList(bytes)]);

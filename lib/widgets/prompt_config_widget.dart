@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'dart:convert'; // 用于处理JSON操作
-import '../models/prompt_config.dart'; // 导入PromptConfig模型
+import 'dart:convert';
+import '../models/prompt_config.dart';
+import 'editable_list_tile.dart';
 
 class PromptConfigWidget extends StatefulWidget {
   final PromptConfig config;
@@ -14,23 +15,26 @@ class PromptConfigWidget extends StatefulWidget {
   });
 
   @override
-  _PromptConfigWidgetState createState() => _PromptConfigWidgetState();
+  PromptConfigWidgetState createState() => PromptConfigWidgetState();
 }
 
-class _PromptConfigWidgetState extends State<PromptConfigWidget> {
+class PromptConfigWidgetState extends State<PromptConfigWidget> {
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(left: widget.indentLevel * 20.0),
       child: ExpansionTile(
         title: Row(children: [
-          Expanded(child: Text(widget.config.comment)),
-          Expanded(
-              child: ListTile(
-            leading: const Icon(Icons.download),
-            title: const SizedBox.shrink(),
-            onTap: () => {},
-          )),
+          Text(widget.config.comment),
+          const Spacer(),
+          IconButton(
+            icon: const Icon(Icons.copy),
+            onPressed: () {
+              Clipboard.setData(
+                  ClipboardData(text: json.encode(widget.config.toJson())));
+            },
+            tooltip: 'Copy to Clipboard',
+          )
         ]),
         children: [
           Padding(
@@ -39,10 +43,10 @@ class _PromptConfigWidgetState extends State<PromptConfigWidget> {
               children: [
                 _buildCommentInput(),
                 _buildSelectionMethodSelector(),
-                _buildTypeSelector(),
+                _buildShuffled(),
                 _buildInputProb(),
                 _buildInputNum(),
-                _buildShuffled(),
+                _buildRandomBrackets(),
                 _buildStrsExpansion(),
                 _buildConfigsExpansion(),
               ],
@@ -97,149 +101,42 @@ class _PromptConfigWidgetState extends State<PromptConfigWidget> {
   }
 
   Widget _buildCommentInput() {
-    return ListTile(
-      title: const Text('Comment'),
-      subtitle: Text(widget.config.comment),
-      onTap: () {
-        _editComment();
-      },
+    return EditableListTile(
+      title: "Comment",
+      currentValue: widget.config.comment,
+      onEditComplete: (value) => setState(() => widget.config.comment = value),
+      keyboardType: TextInputType.text,
     );
   }
 
   Widget _buildInputProb() {
     return widget.config.selectionMethod == 'multiple_prob'
-        ? ListTile(
-            title: const Text('Prob'),
-            subtitle: Text(widget.config.prob.toStringAsFixed(2)),
-            onTap: () {
-              _editInputProb();
-            },
+        ? EditableListTile(
+            title: "Prob",
+            currentValue: widget.config.prob.toString(),
+            onEditComplete: (value) => setState(() => widget.config.prob =
+                double.tryParse(value) ?? widget.config.prob),
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
           )
         : const SizedBox.shrink();
   }
 
   Widget _buildInputNum() {
     return widget.config.selectionMethod == 'multiple_num'
-        ? ListTile(
-            title: const Text('Num'),
-            subtitle: Text(widget.config.num.toString()),
-            onTap: () {
-              _editInputNum();
-            },
+        ? EditableListTile(
+            title: "Num",
+            currentValue: widget.config.prob.toString(),
+            onEditComplete: (value) => setState(() =>
+                widget.config.num = int.tryParse(value) ?? widget.config.num),
+            keyboardType: TextInputType.number,
           )
         : const SizedBox.shrink();
   }
 
-  // Edit functions
-  void _editComment() {
-    TextEditingController controller =
-        TextEditingController(text: widget.config.comment);
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Edit Comment'),
-          content: TextField(
-            controller: controller,
-          ),
-          actions: [
-            TextButton(
-              child: const Text('Cancel'),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-            TextButton(
-              child: const Text('Save'),
-              onPressed: () {
-                setState(() {
-                  widget.config.comment = controller.text;
-                  Navigator.of(context).pop();
-                });
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _editInputProb() {
-    TextEditingController controller =
-        TextEditingController(text: widget.config.prob.toString());
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Edit Probability'),
-          content: TextField(
-            controller: controller,
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-          ),
-          actions: [
-            TextButton(
-              child: const Text('Cancel'),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-            TextButton(
-              child: const Text('Save'),
-              onPressed: () {
-                setState(() {
-                  widget.config.prob =
-                      double.tryParse(controller.text) ?? widget.config.prob;
-                  Navigator.of(context).pop();
-                });
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _editInputNum() {
-    TextEditingController controller =
-        TextEditingController(text: widget.config.num.toString());
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Edit Number'),
-          content: TextField(
-            controller: controller,
-            keyboardType: TextInputType.number,
-          ),
-          actions: [
-            TextButton(
-              child: const Text('Cancel'),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-            TextButton(
-              child: const Text('Save'),
-              onPressed: () {
-                setState(() {
-                  widget.config.num =
-                      int.tryParse(controller.text) ?? widget.config.num;
-                  Navigator.of(context).pop();
-                });
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   Widget _buildShuffled() {
-    return ListTile(
-      title: const Text('Shuffled'),
-      trailing: Switch(
-        value: widget.config.shuffled,
-        onChanged: (bool val) {
-          setState(() {
-            widget.config.shuffled = val;
-          });
-        },
-      ),
-    );
+    return _buildSwitchTile("Shuffled", widget.config.shuffled, (newValue) {
+      setState(() => widget.config.shuffled = newValue);
+    });
   }
 
   Widget _buildStrsExpansion() {
@@ -274,14 +171,12 @@ class _PromptConfigWidgetState extends State<PromptConfigWidget> {
                   Expanded(
                     child: ListTile(
                       leading: const Icon(Icons.add),
-                      title: const Text('Add Config'),
                       onTap: () => _addNewConfig(),
                     ),
                   ),
                   Expanded(
                     child: ListTile(
-                      leading: const Icon(Icons.download),
-                      title: const Text('Import from clipboard'),
+                      leading: const Icon(Icons.paste),
                       onTap: () async {
                         await _importConfigFromClipboard();
                       },
@@ -290,7 +185,6 @@ class _PromptConfigWidgetState extends State<PromptConfigWidget> {
                   Expanded(
                     child: ListTile(
                       leading: const Icon(Icons.remove),
-                      title: const Text('Remove Config'),
                       onTap: () => _removeConfig(),
                     ),
                   ),
@@ -299,6 +193,16 @@ class _PromptConfigWidgetState extends State<PromptConfigWidget> {
             ],
           )
         : const SizedBox.shrink();
+  }
+
+  _buildRandomBrackets() {
+    return EditableListTile(
+      title: "Random brackets",
+      currentValue: widget.config.randomBrackets.toString(),
+      onEditComplete: (value) => setState(() => widget.config.randomBrackets =
+          int.tryParse(value) ?? widget.config.randomBrackets),
+      keyboardType: TextInputType.number,
+    );
   }
 
   void _editStrList() {
@@ -338,36 +242,27 @@ class _PromptConfigWidgetState extends State<PromptConfigWidget> {
   }
 
   void _addNewConfig() async {
-    int? position = await _promptForPosition();
+    int? position = await _getInsertPosition();
     if (position == null) {
       return;
     }
+    var newConfig = PromptConfig(comment: 'New config');
 
     setState(() {
-      var newConfig = PromptConfig(
-        selectionMethod: 'all',
-        shuffled: true,
-        prob: 0.0,
-        num: 1,
-        randomBrackets: 0,
-        type: 'str',
-        comment: 'New config',
-        filter: '',
-        depth: widget.config.depth + 1,
-        strs: [],
-        prompts: [],
-      );
-
       if (position >= 0 && position <= widget.config.prompts.length) {
         widget.config.prompts.insert(position, newConfig);
       } else {
-        widget.config.prompts.add(newConfig); // 如果位置无效，添加到末尾
+        if (widget.config.prompts.isEmpty) {
+          widget.config.prompts = [newConfig];
+        } else {
+          widget.config.prompts.add(newConfig); // 如果位置无效，添加到末尾
+        }
       }
     });
   }
 
   void _removeConfig() async {
-    int? position = await _promptForPosition();
+    int? position = await _getInsertPosition();
     if (position == null) {
       return;
     }
@@ -382,7 +277,7 @@ class _PromptConfigWidgetState extends State<PromptConfigWidget> {
   }
 
   Future<void> _importConfigFromClipboard() async {
-    int? position = await _promptForPosition();
+    int? position = await _getInsertPosition();
     if (position == null) {
       return;
     }
@@ -397,22 +292,20 @@ class _PromptConfigWidgetState extends State<PromptConfigWidget> {
           if (position >= 0 && position <= widget.config.prompts.length) {
             widget.config.prompts.insert(position, newConfig);
           } else {
-            widget.config.prompts.add(newConfig); // 如果位置无效，添加到末尾
+            if (widget.config.prompts.isEmpty) {
+              widget.config.prompts = [newConfig];
+            } else {
+              widget.config.prompts.add(newConfig); // 如果位置无效，添加到末尾
+            }
           }
         });
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Config imported successfully')));
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Failed to import config')));
+        //
       }
-    } else {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('No data in clipboard')));
     }
   }
 
-  Future<int?> _promptForPosition() async {
+  Future<int?> _getInsertPosition() async {
     return showDialog<int>(
       context: context,
       builder: (BuildContext context) {
@@ -440,6 +333,16 @@ class _PromptConfigWidgetState extends State<PromptConfigWidget> {
           ],
         );
       },
+    );
+  }
+
+  Widget _buildSwitchTile(
+      String title, bool currentValue, ValueChanged<bool> onChanged) {
+    return SwitchListTile(
+      title: Text(title),
+      value: currentValue,
+      onChanged: onChanged,
+      subtitle: Text(currentValue ? "Enabled" : "Disabled"),
     );
   }
 }

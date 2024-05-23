@@ -39,6 +39,7 @@ dependencies:
   path_provider: ^2.0.1
   http: ^0.13.3
   archive: ^3.1.2
+  provider: ^6.1.2
 
 dev_dependencies:
   flutter_test:
@@ -60,13 +61,14 @@ flutter:
   fonts:
   - family: Noto
     fonts:
-      - asset: assets/fonts/notosanssc.ttf
+      - asset: fonts/notosanssc.ttf
   - family: Roboto
     fonts:
-      - asset: assets/fonts/roboto.ttf
+      - asset: fonts/roboto.ttf
 
   assets:
-    - assets/json/example.json
+    - json/example.json
+    - imgs/image_48dp.png
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

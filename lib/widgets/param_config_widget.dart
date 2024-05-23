@@ -105,36 +105,4 @@ class ParamConfigWidgetState extends State<ParamConfigWidget> {
     );
   }
 
-  void _editUC() {
-    TextEditingController controller =
-        TextEditingController(text: widget.config.negativePrompt);
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Edit UC'),
-          content: TextField(
-            controller: controller,
-            keyboardType: TextInputType.multiline,
-            maxLines: null, // 允许无限行
-          ),
-          actions: [
-            TextButton(
-              child: const Text('Cancel'),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-            TextButton(
-              child: const Text('Save'),
-              onPressed: () {
-                setState(() {
-                  widget.config.negativePrompt = controller.text;
-                  Navigator.of(context).pop();
-                });
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
 }

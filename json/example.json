@@ -1,6 +1,5 @@
 {
     "api_key": "pst-abc",
-    "proxy": "http://localhost:99999",
     "prompt_config": {
         "selectionMethod": "all",
         "shuffled": true,
