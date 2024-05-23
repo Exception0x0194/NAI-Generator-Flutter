@@ -13100,13 +13100,15 @@ n=p.b
 return n+(a-o)/(q-o)*(r.b-n)},
 lg:function lg(a,b){this.a=a
 this.b=b},
-ary(a,b){return new A.xv(b,a,null)},
+ary(a,b,c){return new A.xv(c,a,b,null)},
 azh(a){var s=null
 return new A.aiL(a,s,s,s,s,s,s,s,s,s,s,s,s,s)},
 a30:function a30(){this.a=null},
-xv:function xv(a,b,c){this.d=a
-this.r=b
-this.a=c},
+xv:function xv(a,b,c,d){var _=this
+_.d=a
+_.r=b
+_.z=c
+_.a=d},
 CW:function CW(a,b,c,d,e,f,g,h){var _=this
 _.d=a
 _.e=b
@@ -53979,8 +53981,8 @@ if(o==null)s=l
 else{s=m.c
 s.toString
 s=o.Wl(s)}A.nv(s)
-if(s==null){m.a.toString
-s=!1}m.ay=s
+if(s==null)s=m.a.z
+m.ay=s
 if(s)m.x.sl(0,1)
 m.a.toString
 s=new A.a30()
@@ -88581,7 +88583,7 @@ aj(){return new A.M3(B.i)}}
 A.M3.prototype={
 H(a){var s=this,r=null,q=s.a,p=q.d,o=t.p
 q=A.mK(A.b([A.of(A.dr(q.c.r,r,r,r,r,r,r),1),A.xV(r,B.ER,r,new A.aan(s),r,"Copy to Clipboard")],o),B.ar,B.aO,B.b1)
-return new A.bQ(new A.aF(p*20,0,0,0),A.ary(A.b([new A.bQ(new A.aF(s.a.d*20+20,0,0,0),A.j4(A.b([s.a3k(),s.a3A(),s.a3B(),s.a3p(),s.a3o(),s.a3x(),s.a3E(),s.a3l()],o),B.ar,B.aO,B.b1),r)],o),q),r)},
+return new A.bQ(new A.aF(p*20,0,0,0),A.ary(A.b([new A.bQ(new A.aF(s.a.d*20+20,0,0,0),A.j4(A.b([s.a3k(),s.a3A(),s.a3B(),s.a3p(),s.a3o(),s.a3x(),s.a3E(),s.a3l()],o),B.ar,B.aO,B.b1),r)],o),p===0,q),r)},
 a3A(){var s=null,r=this.a.c.a,q=t.fo
 return A.oR(!1,s,s,s,!0,s,s,!1,s,s,s,!1,s,s,s,s,s,B.SL,A.awb(A.a8(new A.a7(A.b(["all","single","multiple_prob","multiple_num"],t.s),new A.aa8(),q),!0,q.i("av.E")),new A.aa9(this),s,r,t.N),s)},
 a3k(){return new A.hq("Comment",this.a.c.r,new A.a9X(this),B.ku,null)},
@@ -88592,12 +88594,13 @@ return s.a==="multiple_num"?new A.hq("Num",B.c.k(s.c),new A.aa2(this),B.cI,null)
 a3B(){var s=null,r=this.a.c.b,q=A.dr("Shuffled",s,s,s,s,s,s)
 return A.ayy(new A.aab(this),A.dr(r?"Enabled":"Disabled",s,s,s,s,s,s),q,r)},
 a3E(){var s=null,r=this.a.c
-return r.f==="str"?A.ary(A.b([new A.bQ(B.DO,A.oR(!1,s,s,s,!0,s,s,!1,s,s,new A.aac(this),!1,s,s,s,A.dr(B.b.bz(r.y,"\n"),s,s,s,s,s,s),s,s,s,s),s)],t.p),B.SM):B.af},
-a3l(){var s=this,r=null,q=s.a.c
-if(q.f==="config"){q=q.z
-q=A.a8(new A.a7(q,new A.a9Y(s),A.a_(q).i("a7<1,i>")),!0,t.l7)
-q.push(A.mK(A.b([A.of(A.Oo(A.xV(r,A.JW(B.Es,r),r,new A.a9Z(s),r,r),r,"Add New Config",r,r),1),A.of(A.Oo(A.xV(r,A.JW(B.Ev,r),r,new A.aa_(s),r,r),r,"Import from Clipboard",r,r),1),A.of(A.Oo(A.xV(r,A.JW(B.EC,r),r,new A.aa0(s),r,r),r,"Remove Config",r,r),1)],t.p),B.ar,B.aO,B.b1))
-q=A.ary(q,B.SE)}else q=B.af
+return r.f==="str"?A.ary(A.b([new A.bQ(B.DO,A.oR(!1,s,s,s,!0,s,s,!1,s,s,new A.aac(this),!1,s,s,s,A.dr(B.b.bz(r.y,"\n"),s,s,s,s,s,s),s,s,s,s),s)],t.p),!1,B.SM):B.af},
+a3l(){var s=this,r=null,q=s.a,p=q.c
+if(p.f==="config"){q=q.d
+p=p.z
+p=A.a8(new A.a7(p,new A.a9Y(s),A.a_(p).i("a7<1,i>")),!0,t.l7)
+p.push(A.mK(A.b([A.of(A.Oo(A.xV(r,A.JW(B.Es,r),r,new A.a9Z(s),r,r),r,"Add New Config",r,r),1),A.of(A.Oo(A.xV(r,A.JW(B.Ev,r),r,new A.aa_(s),r,r),r,"Import from Clipboard",r,r),1),A.of(A.Oo(A.xV(r,A.JW(B.EC,r),r,new A.aa0(s),r,r),r,"Remove Config",r,r),1)],t.p),B.ar,B.aO,B.b1))
+q=A.ary(p,q===0,B.SE)}else q=B.af
 return q},
 a3x(){return new A.hq("Random brackets",B.e.k(this.a.c.e),new A.aa6(this),B.cI,null)},
 a5F(){var s=B.b.bz(this.a.c.y,"\n"),r=$.au(),q=this.c
