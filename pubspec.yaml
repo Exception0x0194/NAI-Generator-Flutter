@@ -58,13 +58,13 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
 
-  fonts:
-  - family: Noto
-    fonts:
-      - asset: fonts/notosanssc.ttf
-  - family: Roboto
-    fonts:
-      - asset: fonts/roboto.ttf
+  # fonts:
+  # - family: Noto
+  #   fonts:
+  #     - asset: fonts/notosanssc.ttf
+  # - family: Roboto
+  #   fonts:
+  #     - asset: fonts/roboto.ttf
 
   assets:
     - json/example.json

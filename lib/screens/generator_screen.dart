@@ -47,7 +47,9 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
   }
 
   void _toggleGeneration() async {
-    InfoManager().isGenerating = !InfoManager().isGenerating;
+    setState(() {
+      InfoManager().isGenerating = !InfoManager().isGenerating;
+    });
     if (InfoManager().isGenerating) {
       InfoManager().generateImage();
     }
