@@ -24,6 +24,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
     return Padding(
       padding: EdgeInsets.only(left: widget.indentLevel * 20.0),
       child: ExpansionTile(
+        leading: const Icon(Icons.arrow_forward),
         initiallyExpanded: widget.indentLevel == 0,
         title: Row(children: [
           Expanded(child: Text(widget.config.comment)),
@@ -57,51 +58,44 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
     );
   }
 
-  // Widget builders
-  Widget _buildTypeSelector() {
+  Widget _buildSelectionMethodSelector() {
     return ListTile(
-      title: const Text('Type'),
-      trailing: DropdownButton<String>(
-        value: widget.config.type,
-        onChanged: (String? newValue) {
-          setState(() {
-            widget.config.type = newValue!;
-          });
-        },
-        items: <String>['config', 'str'] // 根据需要添加更多类型
-            .map<DropdownMenuItem<String>>((String value) {
-          return DropdownMenuItem<String>(
-            value: value,
-            child: Text(value),
-          );
-        }).toList(),
-      ),
+      leading: const Icon(Icons.select_all),
+      title: const Text('Selection Method'),
+      subtitle: Text(widget.config.selectionMethod),
+      onTap: () => _showSelectionMethodDialog(),
     );
   }
 
-  Widget _buildSelectionMethodSelector() {
-    return ListTile(
-      title: const Text('Selection Method'),
-      trailing: DropdownButton<String>(
-        value: widget.config.selectionMethod,
-        onChanged: (String? newValue) {
-          setState(() {
-            widget.config.selectionMethod = newValue!;
-          });
-        },
-        items: <String>['all', 'single', 'multiple_prob', 'multiple_num']
-            .map<DropdownMenuItem<String>>((String value) {
-          return DropdownMenuItem<String>(
-            value: value,
-            child: Text(value),
-          );
-        }).toList(),
-      ),
+  void _showSelectionMethodDialog() {
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          title: const Text('Select Method'),
+          children: <String>['all', 'single', 'multiple_prob', 'multiple_num']
+              .map((String value) => SimpleDialogOption(
+                    onPressed: () {
+                      setState(() {
+                        widget.config.selectionMethod = value;
+                      });
+                      Navigator.pop(context);
+                    },
+                    child: Text(value,
+                        style: TextStyle(
+                            fontWeight: widget.config.selectionMethod == value
+                                ? FontWeight.bold
+                                : FontWeight.normal)),
+                  ))
+              .toList(),
+        );
+      },
     );
   }
 
   Widget _buildCommentInput() {
     return EditableListTile(
+      leading: const Icon(Icons.comment),
       title: "Comment",
       currentValue: widget.config.comment,
       onEditComplete: (value) => setState(() => widget.config.comment = value),
@@ -112,6 +106,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
   Widget _buildInputProb() {
     return widget.config.selectionMethod == 'multiple_prob'
         ? EditableListTile(
+            leading: const Icon(Icons.question_mark),
             title: "Prob",
             currentValue: widget.config.prob.toString(),
             onEditComplete: (value) => setState(() => widget.config.prob =
@@ -124,6 +119,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
   Widget _buildInputNum() {
     return widget.config.selectionMethod == 'multiple_num'
         ? EditableListTile(
+            leading: const Icon(Icons.question_mark),
             title: "Num",
             currentValue: widget.config.num.toString(),
             onEditComplete: (value) => setState(() =>
@@ -142,6 +138,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
   Widget _buildStrsExpansion() {
     return widget.config.type == 'str'
         ? ExpansionTile(
+            leading: const Icon(Icons.text_snippet),
             title: const Text('Strings'),
             children: [
               Padding(
@@ -160,6 +157,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
   Widget _buildConfigsExpansion() {
     return widget.config.type == 'config'
         ? ExpansionTile(
+            leading: const Icon(Icons.arrow_downward),
             initiallyExpanded: widget.indentLevel == 0,
             title: const Text('Configs'),
             children: [
@@ -173,7 +171,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
                     child: Tooltip(
                       message: 'Add New Config',
                       child: IconButton(
-                        icon: Icon(Icons.add),
+                        icon: const Icon(Icons.add),
                         onPressed: () => _addNewConfig(),
                       ),
                     ),
@@ -182,7 +180,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
                     child: Tooltip(
                       message: 'Import from Clipboard',
                       child: IconButton(
-                        icon: Icon(Icons.paste),
+                        icon: const Icon(Icons.paste),
                         onPressed: () async {
                           await _importConfigFromClipboard();
                         },
@@ -193,7 +191,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
                     child: Tooltip(
                       message: 'Remove Config',
                       child: IconButton(
-                        icon: Icon(Icons.remove),
+                        icon: const Icon(Icons.remove),
                         onPressed: () => _removeConfig(),
                       ),
                     ),
@@ -207,6 +205,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
 
   _buildRandomBrackets() {
     return EditableListTile(
+      leading: const Icon(Icons.code),
       title: "Random brackets",
       currentValue: widget.config.randomBrackets.toString(),
       onEditComplete: (value) => setState(() => widget.config.randomBrackets =
@@ -349,6 +348,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
   Widget _buildSwitchTile(
       String title, bool currentValue, ValueChanged<bool> onChanged) {
     return SwitchListTile(
+      secondary: const Icon(Icons.shuffle),
       title: Text(title),
       value: currentValue,
       onChanged: onChanged,

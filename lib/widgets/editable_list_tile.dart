@@ -5,6 +5,7 @@ class EditableListTile extends StatelessWidget {
   final String currentValue;
   final Function(String) onEditComplete;
   final TextInputType keyboardType;
+  final Icon? leading;
 
   const EditableListTile({
     super.key,
@@ -12,11 +13,13 @@ class EditableListTile extends StatelessWidget {
     required this.currentValue,
     required this.onEditComplete,
     this.keyboardType = TextInputType.text, // 默认为文本输入
+    this.leading,
   });
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      leading: leading,
       title: Text(title),
       subtitle: Text(currentValue),
       onTap: () => _showEditDialog(context),

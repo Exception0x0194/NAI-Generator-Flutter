@@ -35,6 +35,7 @@ class SettingsScreenState extends State<SettingsScreen> {
       body: ListView(
         children: [
           ListTile(
+            leading: const Icon(Icons.key),
             title: const Text('NAI API Key'),
             subtitle: Text(InfoManager().apiKey),
             onTap: () {

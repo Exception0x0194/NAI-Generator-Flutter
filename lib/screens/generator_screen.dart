@@ -83,13 +83,13 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
 
     if (useRow) {
       return Padding(
-          padding: EdgeInsets.all(20),
+          padding: const EdgeInsets.all(20),
           child: Row(
             children: content,
           ));
     } else {
       return Padding(
-          padding: EdgeInsets.all(20),
+          padding: const EdgeInsets.all(20),
           child: Column(
             children: content,
           ));
