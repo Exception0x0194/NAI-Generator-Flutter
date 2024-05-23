@@ -88590,7 +88590,7 @@ a3k(){return new A.hq("Comment",this.a.c.r,new A.a9X(this),B.ku,null)},
 a3p(){var s=this.a.c
 return s.a==="multiple_prob"?new A.hq("Prob",B.c.k(s.c),new A.aa4(this),B.On,null):B.af},
 a3o(){var s=this.a.c
-return s.a==="multiple_num"?new A.hq("Num",B.c.k(s.c),new A.aa2(this),B.cI,null):B.af},
+return s.a==="multiple_num"?new A.hq("Num",B.e.k(s.d),new A.aa2(this),B.cI,null):B.af},
 a3B(){var s=null,r=this.a.c.b,q=A.dr("Shuffled",s,s,s,s,s,s)
 return A.ayy(new A.aab(this),A.dr(r?"Enabled":"Disabled",s,s,s,s,s,s),q,r)},
 a3E(){var s=null,r=this.a.c
