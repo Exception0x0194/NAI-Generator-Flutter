@@ -125,7 +125,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
     return widget.config.selectionMethod == 'multiple_num'
         ? EditableListTile(
             title: "Num",
-            currentValue: widget.config.prob.toString(),
+            currentValue: widget.config.num.toString(),
             onEditComplete: (value) => setState(() =>
                 widget.config.num = int.tryParse(value) ?? widget.config.num),
             keyboardType: TextInputType.number,
