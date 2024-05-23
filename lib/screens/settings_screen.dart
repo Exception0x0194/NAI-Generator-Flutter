@@ -4,17 +4,19 @@ import 'dart:convert';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../models/info_manager.dart'; // 引用全局状态管理器
+
+import '../models/info_manager.dart';
 import '../widgets/param_config_widget.dart';
+import '../models/downloads.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
 
   @override
-  _SettingsScreenState createState() => _SettingsScreenState();
+  SettingsScreenState createState() => SettingsScreenState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen> {
+class SettingsScreenState extends State<SettingsScreen> {
   final TextEditingController _apiKeyController = TextEditingController();
   final TextEditingController _proxyController = TextEditingController();
 
@@ -22,7 +24,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void initState() {
     super.initState();
     _apiKeyController.text = InfoManager().apiKey ?? "";
-    _proxyController.text = InfoManager().proxy ?? "";
   }
 
   @override
@@ -47,21 +48,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
               _editApiKey();
             },
           ),
-          ListTile(
-            title: const Text('Proxy'),
-            subtitle: Text(InfoManager().proxy ?? ""),
-            onTap: () {
-              _editProxy();
-            },
-          ),
-          ExpansionTile(
-            title: const Text('Param config'),
-            children: [
-              Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 80),
-                  child: ParamConfigWidget(config: InfoManager().paramConfig))
-            ],
-          )
+          Padding(
+              padding: const EdgeInsets.only(left: 20, right: 80),
+              child: ParamConfigWidget(config: InfoManager().paramConfig))
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
@@ -80,35 +69,42 @@ class _SettingsScreenState extends State<SettingsScreen> {
             const SizedBox(height: 20),
             FloatingActionButton(
               onPressed: () async {
-                Map<String, dynamic>? jsonData = await _getJsonFromClipboard();
-                if (jsonData == null) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Import failed!')));
-                  return;
-                }
-                setState(() {
-                  if (InfoManager().fromJson(jsonData!)) {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text('Imported from clipboard.')));
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Import failed!')));
-                  }
-                });
+                await _saveJsonConfig();
               },
-              tooltip: 'Import from clipboard',
-              child: const Icon(Icons.file_upload),
-            ),
-            const SizedBox(height: 20),
-            FloatingActionButton(
-              onPressed: () {
-                _copyConfigToClipboard();
-                ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Exported to clipboard')));
-              },
-              tooltip: 'Export to clipboard',
+              tooltip: 'Export to file',
               child: const Icon(Icons.save),
             ),
+            // FloatingActionButton(
+            //   onPressed: () async {
+            //     Map<String, dynamic>? jsonData = await _getJsonFromClipboard();
+            //     if (jsonData == null) {
+            //       ScaffoldMessenger.of(context).showSnackBar(
+            //           const SnackBar(content: Text('Import failed!')));
+            //       return;
+            //     }
+            //     setState(() {
+            //       if (InfoManager().fromJson(jsonData!)) {
+            //         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            //             content: Text('Imported from clipboard.')));
+            //       } else {
+            //         ScaffoldMessenger.of(context).showSnackBar(
+            //             const SnackBar(content: Text('Import failed!')));
+            //       }
+            //     });
+            //   },
+            //   tooltip: 'Import from clipboard',
+            //   child: const Icon(Icons.file_upload),
+            // ),
+            // const SizedBox(height: 20),
+            // FloatingActionButton(
+            //   onPressed: () {
+            //     _copyConfigToClipboard();
+            //     ScaffoldMessenger.of(context).showSnackBar(
+            //         const SnackBar(content: Text('Exported to clipboard')));
+            //   },
+            //   tooltip: 'Export to clipboard',
+            //   child: const Icon(Icons.save),
+            // ),
           ],
         ),
       ),
@@ -137,37 +133,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
               onPressed: () {
                 setState(() {
                   InfoManager().apiKey = controller.text;
-                  Navigator.of(context).pop();
-                });
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _editProxy() {
-    TextEditingController controller =
-        TextEditingController(text: InfoManager().proxy);
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Edit Proxy'),
-          content: TextField(
-            controller: controller,
-          ),
-          actions: [
-            TextButton(
-              child: const Text('Cancel'),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-            TextButton(
-              child: const Text('Save'),
-              onPressed: () {
-                setState(() {
-                  InfoManager().proxy = controller.text;
                   Navigator.of(context).pop();
                 });
               },
@@ -217,5 +182,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ScaffoldMessenger.of(context)
           .showSnackBar(const SnackBar(content: Text('Import failed!')));
     }
+  }
+
+  _saveJsonConfig() {
+    saveStringToFile(json.encode(InfoManager().toJson()),
+        generateRandomFileName() + '.json');
   }
 }

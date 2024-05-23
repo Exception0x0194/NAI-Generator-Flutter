@@ -23,7 +23,15 @@ class _PromptConfigWidgetState extends State<PromptConfigWidget> {
     return Padding(
       padding: EdgeInsets.only(left: widget.indentLevel * 20.0),
       child: ExpansionTile(
-        title: Text(widget.config.comment),
+        title: Row(children: [
+          Expanded(child: Text(widget.config.comment)),
+          Expanded(
+              child: ListTile(
+            leading: const Icon(Icons.download),
+            title: const SizedBox.shrink(),
+            onTap: () => {},
+          )),
+        ]),
         children: [
           Padding(
             padding: EdgeInsets.only(left: widget.indentLevel * 20.0 + 20),
