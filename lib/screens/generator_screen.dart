@@ -64,7 +64,7 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
         flex: 3,
         child: Container(
           padding: const EdgeInsets.all(20),
-          child: InfoManager().img,
+          child: InfoManager().img??const Icon(Icons.image),
         ),
       ),
       Expanded(

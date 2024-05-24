@@ -131,7 +131,7 @@ class SettingsScreenState extends State<SettingsScreen> {
 
   _saveJsonConfig() {
     saveStringToFile(json.encode(InfoManager().toJson()),
-        '${generateRandomFileName()}.json');
+        'nai-generator-config-${generateRandomFileName()}.json');
   }
 
   _buildLinkTile() {

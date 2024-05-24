@@ -20,7 +20,7 @@ class InfoManager with ChangeNotifier {
   ParamConfig paramConfig = ParamConfig();
 
   String log = '';
-  Image img = Image.asset('imgs/image_48dp.png');
+  Image? img;
   bool isRequesting = false;
   bool isGenerating = false;
 
