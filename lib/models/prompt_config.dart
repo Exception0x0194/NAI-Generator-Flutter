@@ -31,21 +31,16 @@ class PromptConfig {
     return PromptConfig(
       selectionMethod: json['selectionMethod'],
       shuffled: json['shuffled'],
-      prob: (json['prob'] as double?)?.toDouble() ?? 0.0,
-      num: json['num'] as int? ?? 1,
-      randomBrackets: json['randomBrackets'] as int? ?? 0,
-      type: json['type'] as String? ?? 'config',
-      comment: json['comment'] as String? ?? 'Unnamed config',
-      filter: json['filter'] as String? ?? '',
-      depth: json['depth'] as int? ?? depth,
-      strs:
-          (json['strs'] as List<dynamic>?)?.map((e) => e as String).toList() ??
-              [],
-      prompts: (json['prompts'] as List<dynamic>?)
-              ?.map((x) =>
-                  PromptConfig.fromJson(x as Map<String, dynamic>, depth + 1))
-              .toList() ??
-          [],
+      prob:
+          json['prob'] is int ? (json['prob'] as int).toDouble() : json['prob'],
+      num: json['num'],
+      randomBrackets: json['randomBrackets'],
+      type: json['type'],
+      comment: json['comment'],
+      filter: json['filter'],
+      depth: json['depth'] ?? depth,
+      strs: json['strs'],
+      prompts: json['prompts'] as List<PromptConfig>,
     );
   }
 

@@ -103,13 +103,20 @@ class ParamConfig {
       sm: json['sm'],
       smDyn: json['sm_dyn'], // 注意名字已转换为snake_case
       dynamicThresholding: json['dynamic_thresholding'],
-      controlNetStrength: json['controlnet_strength'],
+      controlNetStrength: json['controlnet_strength'] is int
+          ? (json['controlnet_strength'] as int).toDouble()
+          : json['controlnet_strength'],
       legacy: json['legacy'],
       addOriginalImage: json['add_original_image'],
-      uncondScale: json['uncond_scale'],
-      cfgRescale: json['cfg_rescale'],
+      uncondScale: json['uncond_scale'] is int
+          ? (json['uncond_scale'] as int).toDouble()
+          : json['uncond_scale'],
+      cfgRescale: json['cfg_rescale'] is int
+          ? (json['cfg_rescale'] as int).toDouble()
+          : json['cfg_rescale'],
       noiseSchedule: json['noise_schedule'],
-      negativePrompt: json['negative_prompt'],  // Assuming this field is a String
+      negativePrompt:
+          json['negative_prompt'], // Assuming this field is a String
     );
   }
 }
