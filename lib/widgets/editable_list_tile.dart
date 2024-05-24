@@ -56,3 +56,55 @@ class EditableListTile extends StatelessWidget {
     );
   }
 }
+
+class SelectableListTile extends StatelessWidget {
+  final String title;
+  final String currentValue;
+  final List<String> options;
+  final Function(String) onSelectComplete;
+  final Icon? leading;
+
+  const SelectableListTile({
+    required this.title,
+    required this.currentValue,
+    required this.options,
+    required this.onSelectComplete,
+    super.key,
+    this.leading,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: leading,
+      title: Text(title),
+      subtitle: Text(currentValue),
+      onTap: () => _showSelectDialog(context),
+    );
+  }
+
+  void _showSelectDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return SimpleDialog(
+          title: Text('Select $title'),
+          children: options
+              .map((String value) => SimpleDialogOption(
+                    onPressed: () {
+                      onSelectComplete(value);
+                      Navigator.pop(context);
+                    },
+                    child: ListTile(
+                        title: Text(value,
+                            style: TextStyle(
+                                fontWeight: currentValue == value
+                                    ? FontWeight.bold
+                                    : FontWeight.normal))),
+                  ))
+              .toList(),
+        );
+      },
+    );
+  }
+}

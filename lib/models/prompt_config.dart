@@ -94,7 +94,7 @@ class PromptConfig {
         }
         break;
       case 'all':
-        chosenPrompts = List.from(toChoosePrompts);
+        chosenPrompts = toChoosePrompts;
         break;
       case 'multiple_prob':
         chosenPrompts =
@@ -107,6 +107,10 @@ class PromptConfig {
         break;
       default:
         chosenPrompts = List.from(toChoosePrompts);
+    }
+
+    if (shuffled) {
+      chosenPrompts.shuffle();
     }
 
     for (var p in chosenPrompts) {
@@ -124,9 +128,6 @@ class PromptConfig {
       }
     }
 
-    // 移除尾部的逗号和空格
-    // if (prompt.isNotEmpty) prompt = prompt.substring(0, prompt.length - 2);
-    // if (comment.isNotEmpty) comment = comment.substring(0, comment.length - 2);
     if (prompt.isNotEmpty) {
       comment = '\n${'--' * depth}${this.comment}: $comment';
     }

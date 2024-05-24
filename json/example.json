@@ -2,7 +2,7 @@
     "api_key": "pst-abc",
     "prompt_config": {
         "selectionMethod": "all",
-        "shuffled": true,
+        "shuffled": false,
         "prob": 0,
         "num": 1,
         "randomBrackets": 0,
@@ -14,7 +14,7 @@
         "prompts": [
             {
                 "selectionMethod": "single",
-                "shuffled": true,
+                "shuffled": false,
                 "prob": 0,
                 "num": 1,
                 "randomBrackets": 0,
@@ -72,7 +72,7 @@
             },
             {
                 "selectionMethod": "all",
-                "shuffled": true,
+                "shuffled": false,
                 "prob": 0,
                 "num": 1,
                 "randomBrackets": 0,
@@ -88,7 +88,7 @@
             },
             {
                 "selectionMethod": "single",
-                "shuffled": true,
+                "shuffled": false,
                 "prob": 0,
                 "num": 1,
                 "randomBrackets": 0,
@@ -106,7 +106,7 @@
             },
             {
                 "selectionMethod": "all",
-                "shuffled": true,
+                "shuffled": false,
                 "prob": 0,
                 "num": 1,
                 "randomBrackets": 0,
@@ -121,7 +121,7 @@
             },
             {
                 "selectionMethod": "single",
-                "shuffled": true,
+                "shuffled": false,
                 "prob": 0,
                 "num": 1,
                 "randomBrackets": 0,
@@ -142,7 +142,7 @@
         "scale": 6.5,
         "sampler": "k_euler_ancestral",
         "steps": 28,
-        "seed": 611492583,
+        "seed": 0,
         "n_samples": 1,
         "ucPreset": 0,
         "qualityToggle": true,

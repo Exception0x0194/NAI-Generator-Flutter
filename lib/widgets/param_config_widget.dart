@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'editable_list_tile.dart'; // 确保引入了我们前面定义的EditableListTile
 import '../models/param_config.dart';
 
@@ -17,22 +16,31 @@ class ParamConfigWidgetState extends State<ParamConfigWidget> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        EditableListTile(
-          leading: const Icon(Icons.swap_horiz),
-          title: "Width",
-          currentValue: widget.config.width.toString(),
-          onEditComplete: (value) => setState(() =>
-              widget.config.width = int.tryParse(value) ?? widget.config.width),
-          keyboardType: TextInputType.number,
-        ),
-        EditableListTile(
-          leading: const Icon(Icons.swap_vert),
-          title: "Height",
-          currentValue: widget.config.height.toString(),
-          onEditComplete: (value) => setState(() => widget.config.height =
-              int.tryParse(value) ?? widget.config.height),
-          keyboardType: TextInputType.number,
-        ),
+        _buildSizeSelector(),
+        Padding(
+            padding: const EdgeInsets.only(left: 20),
+            child: ExpansionTile(
+                title: const Text('Custom Size'),
+                leading: const Icon(Icons.back_hand),
+                dense: true,
+                children: [
+                  EditableListTile(
+                    leading: const Icon(Icons.swap_horiz),
+                    title: "Width",
+                    currentValue: widget.config.width.toString(),
+                    onEditComplete: (value) => setState(() => widget.config
+                        .width = int.tryParse(value) ?? widget.config.width),
+                    keyboardType: TextInputType.number,
+                  ),
+                  EditableListTile(
+                    leading: const Icon(Icons.swap_vert),
+                    title: "Height",
+                    currentValue: widget.config.height.toString(),
+                    onEditComplete: (value) => setState(() => widget.config
+                        .height = int.tryParse(value) ?? widget.config.height),
+                    keyboardType: TextInputType.number,
+                  ),
+                ])),
         EditableListTile(
           leading: const Icon(Icons.numbers),
           title: "Scale",
@@ -49,7 +57,21 @@ class ParamConfigWidgetState extends State<ParamConfigWidget> {
               double.tryParse(value) ?? widget.config.cfgRescale),
           keyboardType: TextInputType.number,
         ),
-        _buildSamplerSelector(),
+        SelectableListTile(
+            leading: const Icon(Icons.search),
+            title: 'Sampler',
+            currentValue: widget.config.sampler,
+            options: const [
+              'k_euler',
+              'k_euler_ancestral',
+              'k_dpmpp_2s_ancestral',
+              'k_dpmpp_sde'
+            ],
+            onSelectComplete: (value) => {
+                  setState(() {
+                    widget.config.sampler = value;
+                  })
+                }),
         _buildSwitchTile("SM", widget.config.sm, (newValue) {
           setState(() => widget.config.sm = newValue);
         }, const Icon(Icons.keyboard_double_arrow_right)),
@@ -64,17 +86,6 @@ class ParamConfigWidgetState extends State<ParamConfigWidget> {
               setState(() => widget.config.negativePrompt = value),
           keyboardType: TextInputType.text,
         ),
-        // ListTile(
-        //   title: const Text('UC'),
-        //   subtitle: Padding(
-        //       padding: const EdgeInsets.only(left: 20.0),
-        //       child: ListTile(
-        //         subtitle: Text(widget.config.negativePrompt),
-        //         onTap: () {
-        //           _editUC();
-        //         },
-        //       )),
-        // )
       ],
     );
   }
@@ -90,62 +101,31 @@ class ParamConfigWidgetState extends State<ParamConfigWidget> {
     );
   }
 
-  // Widget _buildSamplerSelector() {
-  //   return ListTile(
-  //     leading: const Icon(Icons.search),
-  //     title: const Text('Sampler'),
-  //     trailing: DropdownButton<String>(
-  //       value: widget.config.sampler,
-  //       onChanged: (String? newValue) {
-  //         setState(() {
-  //           widget.config.sampler = newValue!;
-  //         });
-  //       },
-  //       items: <String>['k_euler', 'k_euler_ancestral', 'k_dpmpp_2s_ancestral']
-  //           .map<DropdownMenuItem<String>>((String value) {
-  //         return DropdownMenuItem<String>(
-  //           value: value,
-  //           child: Text(value),
-  //         );
-  //       }).toList(),
-  //       underline: Container(), // 移除下划线
-  //     ),
-  //   );
-  // }
-
-  Widget _buildSamplerSelector() {
-    return ListTile(
-      leading: const Icon(Icons.search),
-      title: const Text('Selection Method'),
-      subtitle: Text(widget.config.sampler),
-      onTap: () => _showSamplerDialog(),
+  Widget _buildSizeSelector() {
+    return SelectableListTile(
+      title: 'Image Size',
+      currentValue: _getSizeString(),
+      options: const ['832 x 1216', '1024 x 1024', '1216 x 832'],
+      onSelectComplete: (value) => {_setSize(value)},
+      leading: const Icon(Icons.photo_size_select_large),
     );
   }
 
-  void _showSamplerDialog() {
-    showDialog<String>(
-      context: context,
-      builder: (BuildContext context) {
-        return SimpleDialog(
-          title: const Text('Select Sampler'),
-          children:
-              <String>['k_euler', 'k_euler_ancestral', 'k_dpmpp_2s_ancestral']
-                  .map((String value) => SimpleDialogOption(
-                        onPressed: () {
-                          setState(() {
-                            widget.config.sampler = value;
-                          });
-                          Navigator.pop(context);
-                        },
-                        child: Text(value,
-                            style: TextStyle(
-                                fontWeight: widget.config.sampler == value
-                                    ? FontWeight.bold
-                                    : FontWeight.normal)),
-                      ))
-                  .toList(),
-        );
-      },
-    );
+  String _getSizeString() {
+    return '${widget.config.width.toString()} x ${widget.config.height.toString()}';
+  }
+
+  void _setSize(String value) {
+    List<String> parts = value.split(' x ');
+    if (parts.length == 2) {
+      int? width = int.tryParse(parts[0]);
+      int? height = int.tryParse(parts[1]);
+      if (width != null && height != null) {
+        setState(() {
+          widget.config.width = width;
+          widget.config.height = height;
+        });
+      }
+    }
   }
 }

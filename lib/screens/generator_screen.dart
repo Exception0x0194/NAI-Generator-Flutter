@@ -61,12 +61,14 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
 
     var content = [
       Expanded(
+        flex: 3,
         child: Container(
           padding: const EdgeInsets.all(20),
           child: InfoManager().img,
         ),
       ),
       Expanded(
+        flex: 1,
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: ListTile(

@@ -48,6 +48,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
                 _buildInputProb(),
                 _buildInputNum(),
                 _buildRandomBrackets(),
+                _buildTypeSelector(),
                 _buildStrsExpansion(),
                 _buildConfigsExpansion(),
               ],
@@ -59,37 +60,23 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
   }
 
   Widget _buildSelectionMethodSelector() {
-    return ListTile(
+    return SelectableListTile(
+      title: 'Selection Method',
+      currentValue: widget.config.selectionMethod,
+      options: ['all', 'single', 'multiple_prob', 'multiple_num'],
+      onSelectComplete: (value) =>
+          setState(() => widget.config.selectionMethod = value),
       leading: const Icon(Icons.select_all),
-      title: const Text('Selection Method'),
-      subtitle: Text(widget.config.selectionMethod),
-      onTap: () => _showSelectionMethodDialog(),
     );
   }
 
-  void _showSelectionMethodDialog() {
-    showDialog<String>(
-      context: context,
-      builder: (BuildContext context) {
-        return SimpleDialog(
-          title: const Text('Select Method'),
-          children: <String>['all', 'single', 'multiple_prob', 'multiple_num']
-              .map((String value) => SimpleDialogOption(
-                    onPressed: () {
-                      setState(() {
-                        widget.config.selectionMethod = value;
-                      });
-                      Navigator.pop(context);
-                    },
-                    child: Text(value,
-                        style: TextStyle(
-                            fontWeight: widget.config.selectionMethod == value
-                                ? FontWeight.bold
-                                : FontWeight.normal)),
-                  ))
-              .toList(),
-        );
-      },
+  _buildTypeSelector() {
+    return SelectableListTile(
+      title: 'Config Type',
+      currentValue: widget.config.type,
+      options: ['str', 'config'],
+      onSelectComplete: (value) => setState(() => widget.config.type = value),
+      leading: const Icon(Icons.type_specimen),
     );
   }
 
