@@ -60,13 +60,15 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
     bool useRow = size.width > size.height; // 当屏幕宽度大于高度时使用Row
 
     var content = [
-      Expanded(
-        flex: 3,
-        child: Container(
-          padding: const EdgeInsets.all(20),
-          child: InfoManager().img??const Icon(Icons.image),
-        ),
-      ),
+      InfoManager().img == null
+          ? const SizedBox.shrink()
+          : Expanded(
+              flex: 3,
+              child: Container(
+                padding: const EdgeInsets.all(20),
+                child: InfoManager().img!,
+              ),
+            ),
       Expanded(
         flex: 1,
         child: Padding(
