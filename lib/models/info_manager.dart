@@ -86,7 +86,7 @@ class InfoManager with ChangeNotifier {
       bool success = false;
       for (var file in archive) {
         if (file.name == "image_0.png") {
-          var filename = '${generateRandomFileName()}.png';
+          var filename = 'nai-generated-${generateRandomFileName()}.png';
           var imageBytes = file.content as Uint8List;
           await saveBlob(imageBytes, filename);
           log += 'Success: $filename${data['comment']}\n\n';

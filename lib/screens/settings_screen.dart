@@ -110,10 +110,11 @@ class SettingsScreenState extends State<SettingsScreen> {
 
   Future<void> _loadJsonConfig() async {
     try {
-      FilePickerResult? result = await FilePicker.platform.pickFiles();
+      FilePickerResult? result =
+          await FilePicker.platform.pickFiles(withData: true);
       if (result != null) {
-        String fileContent = utf8.decode(result.files.single.bytes!);
-        Map<String, dynamic> jsonData = jsonDecode(fileContent);
+        var fileContent = utf8.decode(result.files.single.bytes!);
+        Map<String, dynamic> jsonData = json.decode(fileContent);
         setState(() {
           if (InfoManager().fromJson(jsonData)) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -138,9 +139,12 @@ class SettingsScreenState extends State<SettingsScreen> {
     return ListTile(
       title: const Text('Github Repo'),
       leading: const Icon(Icons.link),
-      subtitle:
-          const Text('https://github.com/Exception0x0194/NAI-Generator-Flutter'),
-      onTap: () => {launchUrl(Uri.parse('https://github.com/Exception0x0194/NAI-Generator-Flutter'))},
+      subtitle: const Text(
+          'https://github.com/Exception0x0194/NAI-Generator-Flutter'),
+      onTap: () => {
+        launchUrl(Uri.parse(
+            'https://github.com/Exception0x0194/NAI-Generator-Flutter'))
+      },
     );
   }
 }

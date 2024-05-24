@@ -37,12 +37,12 @@ dependencies:
   cupertino_icons: ^1.0.6
   file_picker: ^8.0.3
   path_provider: ^2.0.1
+  url_launcher: ^6.2.6
   archive: ^3.1.2
   provider: ^6.1.2
-  url_launcher: ^6.2.6
-  permission_handler: ^11.3.1
-  simple_file_saver: ^2.0.0
   http: ^1.2.1
+  universal_html: ^2.2.4
+  image_gallery_saver: ^2.0.3
 
 dev_dependencies:
   flutter_test:
