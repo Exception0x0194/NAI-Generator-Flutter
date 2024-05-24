@@ -39,8 +39,14 @@ class PromptConfig {
       comment: json['comment'],
       filter: json['filter'],
       depth: json['depth'] ?? depth,
-      strs: json['strs'],
-      prompts: json['prompts'] as List<PromptConfig>,
+      strs: json['type'] == 'str'
+          ? (json['strs'] as List<dynamic>).map((e) => e as String).toList()
+          : [],
+      prompts: json['type'] == 'config'
+          ? (json['prompts'] as List<dynamic>)
+              .map((e) => PromptConfig.fromJson(e, depth + 1))
+              .toList()
+          : [],
     );
   }
 
