@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../models/info_manager.dart';
 import '../widgets/param_config_widget.dart';
@@ -44,7 +45,8 @@ class SettingsScreenState extends State<SettingsScreen> {
           ),
           Padding(
               padding: const EdgeInsets.only(left: 20, right: 80),
-              child: ParamConfigWidget(config: InfoManager().paramConfig))
+              child: ParamConfigWidget(config: InfoManager().paramConfig)),
+          _buildLinkTile()
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
@@ -130,5 +132,15 @@ class SettingsScreenState extends State<SettingsScreen> {
   _saveJsonConfig() {
     saveStringToFile(json.encode(InfoManager().toJson()),
         '${generateRandomFileName()}.json');
+  }
+
+  _buildLinkTile() {
+    return ListTile(
+      title: const Text('Github Repo'),
+      leading: const Icon(Icons.link),
+      subtitle:
+          const Text('https://github.com/Exception0x0194/NAI-Generator-Flutter'),
+      onTap: () => {launchUrl(Uri.parse('https://github.com/Exception0x0194/NAI-Generator-Flutter'))},
+    );
   }
 }

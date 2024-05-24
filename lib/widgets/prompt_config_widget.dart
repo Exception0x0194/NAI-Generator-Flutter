@@ -63,7 +63,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
     return SelectableListTile(
       title: 'Selection Method',
       currentValue: widget.config.selectionMethod,
-      options: ['all', 'single', 'multiple_prob', 'multiple_num'],
+      options: const ['all', 'single', 'multiple_prob', 'multiple_num'],
       onSelectComplete: (value) =>
           setState(() => widget.config.selectionMethod = value),
       leading: const Icon(Icons.select_all),
@@ -74,7 +74,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
     return SelectableListTile(
       title: 'Config Type',
       currentValue: widget.config.type,
-      options: ['str', 'config'],
+      options: const ['str', 'config'],
       onSelectComplete: (value) => setState(() => widget.config.type = value),
       leading: const Icon(Icons.type_specimen),
     );
@@ -152,7 +152,8 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
                     config: config,
                     indentLevel: widget.indentLevel + 1,
                   )),
-              Row(
+              ListTile(
+                  title: Row(
                 children: [
                   Expanded(
                     child: Tooltip(
@@ -184,7 +185,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
                     ),
                   ),
                 ],
-              )
+              ))
             ],
           )
         : const SizedBox.shrink();
