@@ -13,7 +13,7 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Generate'),
+          title: const Text('Generation'),
         ),
         body: Center(
           child: _buildResponsiveLayout(),

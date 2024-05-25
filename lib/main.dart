@@ -25,15 +25,13 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.pink.shade700),
           useMaterial3: true,
           fontFamily: 'Noto'),
-      home: const MyHomePage(title: 'NAI在自己画涩图'),
+      home: const MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
+  const MyHomePage({super.key});
 
   @override
   State<MyHomePage> createState() => MyHomePageState();
@@ -67,9 +65,6 @@ class MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
@@ -94,8 +89,9 @@ class MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  void _loadInitialInfo () async {
-    var jsonData = json.decode(await rootBundle.loadString('json/example.json'));
+  void _loadInitialInfo() async {
+    var jsonData =
+        json.decode(await rootBundle.loadString('json/example.json'));
     InfoManager().fromJson(jsonData);
   }
 }
