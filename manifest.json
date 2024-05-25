@@ -1,35 +1,44 @@
 {
-    "name": "nai3_autodraw",
-    "short_name": "nai3_autodraw",
+    "name": "NAI Cascaded Random Generator",
+    "short_name": "NAI CasRand",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "A flutter application for generating images from random prompts of specified patterns.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
         {
-            "src": "icons/Icon-192.png",
-            "sizes": "192x192",
-            "type": "image/png"
-        },
-        {
-            "src": "icons/Icon-512.png",
-            "sizes": "512x512",
-            "type": "image/png"
-        },
-        {
-            "src": "icons/Icon-maskable-192.png",
-            "sizes": "192x192",
-            "type": "image/png",
-            "purpose": "maskable"
-        },
-        {
-            "src": "icons/Icon-maskable-512.png",
-            "sizes": "512x512",
-            "type": "image/png",
-            "purpose": "maskable"
+            "icons": [
+                {
+                    "src": "/favicon.ico",
+                    "type": "image/x-icon",
+                    "sizes": "16x16 32x32"
+                },
+                {
+                    "src": "/icons/icon-192.png",
+                    "type": "image/png",
+                    "sizes": "192x192"
+                },
+                {
+                    "src": "/icons/icon-512.png",
+                    "type": "image/png",
+                    "sizes": "512x512"
+                },
+                {
+                    "src": "/icons/icon-192-maskable.png",
+                    "type": "image/png",
+                    "sizes": "192x192",
+                    "purpose": "maskable"
+                },
+                {
+                    "src": "/icons/icon-512-maskable.png",
+                    "type": "image/png",
+                    "sizes": "512x512",
+                    "purpose": "maskable"
+                }
+            ]
         }
     ]
 }
