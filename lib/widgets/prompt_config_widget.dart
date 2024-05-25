@@ -22,7 +22,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(left: widget.indentLevel * 20.0),
+      padding: EdgeInsets.only(left: widget.indentLevel * 10.0),
       child: ExpansionTile(
         leading: const Icon(Icons.arrow_forward),
         initiallyExpanded: widget.indentLevel == 0,
@@ -39,7 +39,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
         ]),
         children: [
           Padding(
-            padding: EdgeInsets.only(left: widget.indentLevel * 20.0 + 20),
+            padding: EdgeInsets.only(left: widget.indentLevel * 10.0 + 10),
             child: Column(
               children: [
                 _buildCommentInput(),
@@ -129,7 +129,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
             title: const Text('Strings'),
             children: [
               Padding(
-                  padding: const EdgeInsets.only(left: 20.0),
+                  padding: const EdgeInsets.only(left: 10.0),
                   child: ListTile(
                     subtitle: Text(widget.config.strs.join('\n')),
                     onTap: () {
@@ -194,7 +194,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
   _buildRandomBrackets() {
     return EditableListTile(
       leading: const Icon(Icons.code),
-      title: "Random brackets",
+      title: "Random Brackets",
       currentValue: widget.config.randomBrackets.toString(),
       onEditComplete: (value) => setState(() => widget.config.randomBrackets =
           int.tryParse(value) ?? widget.config.randomBrackets),
