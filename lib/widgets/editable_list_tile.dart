@@ -6,6 +6,7 @@ class EditableListTile extends StatelessWidget {
   final Function(String) onEditComplete;
   final TextInputType keyboardType;
   final Icon? leading;
+  final bool? dense;
 
   const EditableListTile({
     super.key,
@@ -14,6 +15,7 @@ class EditableListTile extends StatelessWidget {
     required this.onEditComplete,
     this.keyboardType = TextInputType.text, // 默认为文本输入
     this.leading,
+    this.dense,
   });
 
   @override
@@ -23,6 +25,7 @@ class EditableListTile extends StatelessWidget {
       title: Text(title),
       subtitle: Text(currentValue),
       onTap: () => _showEditDialog(context),
+      dense: dense,
     );
   }
 
@@ -63,6 +66,7 @@ class SelectableListTile extends StatelessWidget {
   final List<String> options;
   final Function(String) onSelectComplete;
   final Icon? leading;
+  final bool? dense;
 
   const SelectableListTile({
     required this.title,
@@ -71,6 +75,7 @@ class SelectableListTile extends StatelessWidget {
     required this.onSelectComplete,
     super.key,
     this.leading,
+    this.dense,
   });
 
   @override
@@ -80,6 +85,7 @@ class SelectableListTile extends StatelessWidget {
       title: Text(title),
       subtitle: Text(currentValue),
       onTap: () => _showSelectDialog(context),
+      dense: dense,
     );
   }
 

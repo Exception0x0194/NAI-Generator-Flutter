@@ -9,7 +9,6 @@ import 'utils.dart';
 
 class InfoManager with ChangeNotifier {
   static final InfoManager _instance = InfoManager._internal();
-
   factory InfoManager() {
     return _instance;
   }
@@ -23,6 +22,8 @@ class InfoManager with ChangeNotifier {
   Image? img;
   bool isRequesting = false;
   bool isGenerating = false;
+
+  bool showPromptParameters = true;
 
   Map<String, dynamic> toJson() {
     return {

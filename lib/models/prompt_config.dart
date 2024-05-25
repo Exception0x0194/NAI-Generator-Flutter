@@ -12,6 +12,7 @@ class PromptConfig {
   int depth;
   List<String> strs;
   List<PromptConfig> prompts;
+  bool enabled;
 
   PromptConfig({
     this.selectionMethod = 'all',
@@ -25,6 +26,7 @@ class PromptConfig {
     this.depth = 0,
     this.strs = const [],
     this.prompts = const [],
+    this.enabled = true,
   });
 
   factory PromptConfig.fromJson(Map<String, dynamic> json, int depth) {
@@ -46,6 +48,7 @@ class PromptConfig {
               ?.map((e) => PromptConfig.fromJson(e, depth + 1))
               .toList() ??
           [],
+      enabled: json['enabled'] ?? true,
     );
   }
 
@@ -62,6 +65,7 @@ class PromptConfig {
       'depth': depth,
       'strs': strs,
       'prompts': prompts.map((x) => x.toJson()).toList(),
+      'enabled': enabled,
     };
   }
 
@@ -82,7 +86,7 @@ class PromptConfig {
     if (type == 'str') {
       toChoosePrompts = List.from(strs);
     } else if (type == 'config') {
-      toChoosePrompts = List.from(prompts);
+      toChoosePrompts = List.from(prompts.where((p) => p.enabled));
     }
     final random = Random();
 

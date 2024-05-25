@@ -1,3 +1,4 @@
+import 'package:NAI_CasRand/models/info_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:convert';
@@ -27,7 +28,21 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
         leading: const Icon(Icons.arrow_forward),
         initiallyExpanded: widget.indentLevel == 0,
         title: Row(children: [
-          Expanded(child: Text(widget.config.comment)),
+          Expanded(
+              child: Row(children: [
+            Text(widget.config.comment +
+                (widget.config.enabled ? "" : " - disabled")),
+            IconButton(
+                onPressed: () => _showEditCommentDialog(context),
+                icon: const Icon(Icons.edit))
+          ])),
+          Switch(
+              value: widget.config.enabled,
+              onChanged: (value) => {
+                    setState(() {
+                      widget.config.enabled = value;
+                    })
+                  }),
           IconButton(
             icon: const Icon(Icons.copy),
             onPressed: () {
@@ -41,17 +56,19 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
           Padding(
             padding: EdgeInsets.only(left: widget.indentLevel * 10.0 + 10),
             child: Column(
-              children: [
-                _buildCommentInput(),
-                _buildSelectionMethodSelector(),
-                _buildShuffled(),
-                _buildInputProb(),
-                _buildInputNum(),
-                _buildRandomBrackets(),
-                _buildTypeSelector(),
-                _buildStrsExpansion(),
-                _buildConfigsExpansion(),
-              ],
+              children: InfoManager().showPromptParameters
+                  ? [
+                      // _buildCommentInput(),
+                      _buildSelectionMethodSelector(),
+                      _buildShuffled(),
+                      _buildInputProb(),
+                      _buildInputNum(),
+                      _buildRandomBrackets(),
+                      _buildTypeSelector(),
+                      _buildStrsExpansion(),
+                      _buildConfigsExpansion(),
+                    ]
+                  : _buildDirectChildList(),
             ),
           )
         ],
@@ -67,6 +84,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
       onSelectComplete: (value) =>
           setState(() => widget.config.selectionMethod = value),
       leading: const Icon(Icons.select_all),
+      dense: true,
     );
   }
 
@@ -77,6 +95,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
       options: const ['str', 'config'],
       onSelectComplete: (value) => setState(() => widget.config.type = value),
       leading: const Icon(Icons.type_specimen),
+      dense: true,
     );
   }
 
@@ -87,6 +106,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
       currentValue: widget.config.comment,
       onEditComplete: (value) => setState(() => widget.config.comment = value),
       keyboardType: TextInputType.text,
+      dense: true,
     );
   }
 
@@ -99,6 +119,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
             onEditComplete: (value) => setState(() => widget.config.prob =
                 double.tryParse(value) ?? widget.config.prob),
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
+            dense: true,
           )
         : const SizedBox.shrink();
   }
@@ -112,6 +133,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
             onEditComplete: (value) => setState(() =>
                 widget.config.num = int.tryParse(value) ?? widget.config.num),
             keyboardType: TextInputType.number,
+            dense: true,
           )
         : const SizedBox.shrink();
   }
@@ -199,6 +221,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
       onEditComplete: (value) => setState(() => widget.config.randomBrackets =
           int.tryParse(value) ?? widget.config.randomBrackets),
       keyboardType: TextInputType.number,
+      dense: true,
     );
   }
 
@@ -341,6 +364,100 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
       value: currentValue,
       onChanged: onChanged,
       subtitle: Text(currentValue ? "Enabled" : "Disabled"),
+      dense: true,
     );
+  }
+
+  void _showEditCommentDialog(BuildContext context) {
+    final controller = TextEditingController(text: widget.config.comment);
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Edit Comment'),
+          content: TextField(
+            controller: controller,
+            keyboardType: TextInputType.text,
+            maxLines: null,
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  widget.config.comment = controller.text;
+                });
+              },
+              child: const Text('Save'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  List<Widget> _buildDirectChildList() {
+    if (widget.config.type == 'str') {
+      return [
+        ExpansionTile(
+          leading: const Icon(Icons.text_snippet),
+          title: const Text('Strings'),
+          children: [
+            Padding(
+                padding: const EdgeInsets.only(left: 10.0),
+                child: ListTile(
+                  subtitle: Text(widget.config.strs.join('\n')),
+                  onTap: () {
+                    _editStrList();
+                  },
+                ))
+          ],
+        )
+      ];
+    } else {
+      return [
+        ...widget.config.prompts.map((config) => PromptConfigWidget(
+              config: config,
+              indentLevel: widget.indentLevel + 1,
+            )),
+        ListTile(
+            title: Row(
+          children: [
+            Expanded(
+              child: Tooltip(
+                message: 'Add New Config',
+                child: IconButton(
+                  icon: const Icon(Icons.add),
+                  onPressed: () => _addNewConfig(),
+                ),
+              ),
+            ),
+            Expanded(
+              child: Tooltip(
+                message: 'Import from Clipboard',
+                child: IconButton(
+                  icon: const Icon(Icons.paste),
+                  onPressed: () async {
+                    await _importConfigFromClipboard();
+                  },
+                ),
+              ),
+            ),
+            Expanded(
+              child: Tooltip(
+                message: 'Remove Config',
+                child: IconButton(
+                  icon: const Icon(Icons.remove),
+                  onPressed: () => _removeConfig(),
+                ),
+              ),
+            ),
+          ],
+        ))
+      ];
+    }
   }
 }

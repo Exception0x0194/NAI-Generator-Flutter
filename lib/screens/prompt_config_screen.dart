@@ -24,6 +24,20 @@ class PromptConfigScreenState extends State<PromptConfigScreen> {
           indentLevel: 0,
         ),
       )),
+      floatingActionButton: FloatingActionButton(
+        tooltip: InfoManager().showPromptParameters
+            ? "Hide prompt parameters"
+            : "Show prompt parameters",
+        onPressed: () => {
+          setState(() {
+            InfoManager().showPromptParameters =
+                !InfoManager().showPromptParameters;
+          })
+        },
+        child: InfoManager().showPromptParameters
+            ? const Icon(Icons.visibility_off)
+            : const Icon(Icons.visibility),
+      ),
     );
   }
 }
