@@ -38,7 +38,7 @@ class PromptConfig {
       type: json['type'],
       comment: json['comment'],
       filter: json['filter'],
-      depth: json['depth'] ?? depth,
+      depth: depth,
       strs:
           (json['strs'] as List<dynamic>?)?.map((e) => e as String).toList() ??
               [],
