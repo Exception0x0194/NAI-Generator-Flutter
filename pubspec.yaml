@@ -1,4 +1,4 @@
-name: "NAI CasRand"
+name: NAI_CasRand
 description: "A flutter application for generating images from random prompts of specified patterns."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
