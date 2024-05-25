@@ -1,12 +1,10 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:universal_html/html.dart' as html;
-import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:image_save/image_save.dart';
 
 Future<void> saveBlob(Uint8List bytes, String fileName) async {
   if (kIsWeb) {
@@ -17,11 +15,7 @@ Future<void> saveBlob(Uint8List bytes, String fileName) async {
       ..click();
     html.Url.revokeObjectUrl(url);
   } else {
-    var dir = await getTemporaryDirectory();
-    var fileAbsPath = '${dir.path}/$fileName';
-    File file = File(fileAbsPath);
-    await file.writeAsBytes(bytes);
-    ImageGallerySaver.saveFile(fileAbsPath);
+    ImageSave.saveImage(bytes, fileName, albumName: 'nai-generated');
   }
 }
 
