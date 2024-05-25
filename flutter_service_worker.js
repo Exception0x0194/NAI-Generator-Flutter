@@ -8,27 +8,20 @@ const RESOURCES = {"assets/AssetManifest.bin": "26863ed4340f577272bc8759e1afe69e
 "assets/AssetManifest.json": "156adea327e4c54c0fea03473c647e51",
 "assets/FontManifest.json": "dc3d03800ccca4601324923c0b1d6d57",
 "assets/fonts/MaterialIcons-Regular.otf": "a28587c7db26728ff0cae9c4349ecde4",
-<<<<<<< HEAD
 "assets/json/example.json": "d3d8259802ff4e6af802e55f09246736",
 "assets/NOTICES": "1bb9553e25a8e7c4c0d8bbf1eb24d217",
-=======
-"assets/imgs/image_48dp.png": "3e95450d0ddce51d6b468025e5a2e4a9",
-"assets/json/example.json": "d3d8259802ff4e6af802e55f09246736",
-"assets/NOTICES": "33c24b7c2ef56f9035aa873101d82140",
->>>>>>> 6b0e3f96a4fed4dc2b45df87e531b2481b5846b0
 "assets/packages/cupertino_icons/assets/CupertinoIcons.ttf": "e986ebe42ef785b27164c36a9abc7818",
 "assets/shaders/ink_sparkle.frag": "ecc85a2e95f5e9f53123dcaf8cb9b6ce",
-"canvaskit/canvaskit.js": "738255d00768497e86aa4ca510cce1e1",
-"canvaskit/canvaskit.js.symbols": "74a84c23f5ada42fe063514c587968c6",
-"canvaskit/canvaskit.wasm": "9251bb81ae8464c4df3b072f84aa969b",
-"canvaskit/chromium/canvaskit.js": "901bb9e28fac643b7da75ecfd3339f3f",
-"canvaskit/chromium/canvaskit.js.symbols": "ee7e331f7f5bbf5ec937737542112372",
-"canvaskit/chromium/canvaskit.wasm": "399e2344480862e2dfa26f12fa5891d7",
-"canvaskit/skwasm.js": "5d4f9263ec93efeb022bb14a3881d240",
-"canvaskit/skwasm.js.symbols": "c3c05bd50bdf59da8626bbe446ce65a3",
-"canvaskit/skwasm.wasm": "4051bfc27ba29bf420d17aa0c3a98bce",
+"canvaskit/canvaskit.js": "c86fbd9e7b17accae76e5ad116583dc4",
+"canvaskit/canvaskit.js.symbols": "38cba9233b92472a36ff011dc21c2c9f",
+"canvaskit/canvaskit.wasm": "3d2a2d663e8c5111ac61a46367f751ac",
+"canvaskit/chromium/canvaskit.js": "43787ac5098c648979c27c13c6f804c3",
+"canvaskit/chromium/canvaskit.js.symbols": "4525682ef039faeb11f24f37436dca06",
+"canvaskit/chromium/canvaskit.wasm": "f5934e694f12929ed56a671617acd254",
+"canvaskit/skwasm.js": "445e9e400085faead4493be2224d95aa",
+"canvaskit/skwasm.js.symbols": "741d50ffba71f89345996b0aa8426af8",
+"canvaskit/skwasm.wasm": "e42815763c5d05bba43f9d0337fa7d84",
 "canvaskit/skwasm.worker.js": "bfb704a6c714a75da9ef320991e88b03",
-<<<<<<< HEAD
 "favicon.ico": "a4fbbb5a5f5ab506f5026963bf19e6c6",
 "flutter.js": "c71a09214cb6f5f8996a531350400a9a",
 "icons/apple-touch-icon.png": "1a2c3265134b0f931251027b46826768",
@@ -36,29 +29,15 @@ const RESOURCES = {"assets/AssetManifest.bin": "26863ed4340f577272bc8759e1afe69e
 "icons/Icon-192.png": "3a42eab1483e6853058b4caf790e15da",
 "icons/icon-512-maskable.png": "22899ef61cbc336e66481831808345e6",
 "icons/Icon-512.png": "c355e1e2e58787ffb1b9681981fce1eb",
-"index.html": "fe6c8a51ec093a20a8f55341442bb3b2",
-"/": "fe6c8a51ec093a20a8f55341442bb3b2",
+"index.html": "78f3ddad271d0b809f054f0b0b8c5fca",
+"/": "78f3ddad271d0b809f054f0b0b8c5fca",
 "main.dart.js": "592ede6a4d8d02fe34ff7a9830016002",
 "manifest.json": "65c41895e2c0e9a374f19c48035daad1",
-=======
-"favicon.png": "5dcef449791fa27946b3d35ad8803796",
-"flutter.js": "383e55f7f3cce5be08fcf1f3881f585c",
-"flutter_bootstrap.js": "3d92f939cad24b871370442c715a4c65",
-"icons/Icon-192.png": "ac9a721a12bbc803b44f645561ecb1e1",
-"icons/Icon-512.png": "96e752610906ba2a93c65f8abe1645f1",
-"icons/Icon-maskable-192.png": "c457ef57daa1d16f64b27b786ec2ea3c",
-"icons/Icon-maskable-512.png": "301a7604d45b3e739efc881eb04896ea",
-"index.html": "117bf0e2344c60adfa25e32216833922",
-"/": "117bf0e2344c60adfa25e32216833922",
-"main.dart.js": "aa2270378b877cc52b16f76f216116ea",
-"manifest.json": "d7f38400db50504e5186e903bc870398",
->>>>>>> 6b0e3f96a4fed4dc2b45df87e531b2481b5846b0
 "version.json": "295ee6348569f6ef4e2cfd899809fbbb"};
 // The application shell files that are downloaded before a service worker can
 // start.
 const CORE = ["main.dart.js",
 "index.html",
-"flutter_bootstrap.js",
 "assets/AssetManifest.bin.json",
 "assets/FontManifest.json"];
 
