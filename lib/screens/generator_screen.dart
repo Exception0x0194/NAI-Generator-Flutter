@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../models/info_manager.dart'; // 引用全局状态管理器
+import '../models/utils.dart';
+import '../models/info_manager.dart';
 
 class PromptGenerationScreen extends StatefulWidget {
   const PromptGenerationScreen({super.key});
@@ -73,13 +74,25 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
         flex: 1,
         child: Padding(
           padding: const EdgeInsets.all(20),
-          child: ListTile(
-            title: const Text("Log"),
-            subtitle: SingleChildScrollView(
-              reverse: true,
-              child: Text(InfoManager().log),
-            ),
-            dense: true,
+          child: Stack(
+            children: [
+              ListTile(
+                title: const Text("Log"),
+                subtitle: SingleChildScrollView(
+                  reverse: true,
+                  child: Text(InfoManager().log),
+                ),
+                dense: true,
+              ),
+              Align(
+                alignment: Alignment.topRight,
+                child: IconButton(
+                  onPressed: _dumpLog,
+                  icon: const Icon(Icons.download),
+                  tooltip: 'Dump logs',
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -98,5 +111,10 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
             children: content,
           ));
     }
+  }
+
+  void _dumpLog() {
+    saveStringToFile(
+        InfoManager().log, 'nai-generator-log-${generateRandomFileName()}.txt');
   }
 }

@@ -1,9 +1,10 @@
-import 'package:NAI_CasRand/models/info_manager.dart';
+import '../models/info_manager.dart';
+import '../models/prompt_config.dart';
+import 'editable_list_tile.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:convert';
-import '../models/prompt_config.dart';
-import 'editable_list_tile.dart';
 
 class PromptConfigWidget extends StatefulWidget {
   final PromptConfig config;
@@ -23,7 +24,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(left: widget.indentLevel * 10.0),
+      padding: const EdgeInsets.only(left: 10.0),
       child: ExpansionTile(
         leading: const Icon(Icons.arrow_forward),
         initiallyExpanded: widget.indentLevel == 0,
@@ -52,26 +53,24 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
             tooltip: 'Copy to Clipboard',
           ),
         ]),
-        children: [
-          Padding(
-            padding: EdgeInsets.only(left: widget.indentLevel * 10.0 + 10),
-            child: Column(
-              children: InfoManager().showPromptParameters
-                  ? [
-                      // _buildCommentInput(),
-                      _buildSelectionMethodSelector(),
-                      _buildShuffled(),
-                      _buildInputProb(),
-                      _buildInputNum(),
-                      _buildRandomBrackets(),
-                      _buildTypeSelector(),
-                      _buildStrsExpansion(),
-                      _buildConfigsExpansion(),
-                    ]
-                  : _buildDirectChildList(),
-            ),
-          )
-        ],
+        children: InfoManager().showPromptParameters
+            ? [
+                Padding(
+                  padding: const EdgeInsets.only(left: 10.0),
+                  child: Column(children: [
+                    // _buildCommentInput(),
+                    _buildSelectionMethodSelector(),
+                    _buildShuffled(),
+                    _buildInputProb(),
+                    _buildInputNum(),
+                    _buildRandomBrackets(),
+                    _buildTypeSelector(),
+                    _buildStrsExpansion(),
+                    _buildConfigsExpansion(),
+                  ]),
+                )
+              ]
+            : _buildDirectChildList(),
       ),
     );
   }
@@ -84,7 +83,6 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
       onSelectComplete: (value) =>
           setState(() => widget.config.selectionMethod = value),
       leading: const Icon(Icons.select_all),
-      dense: true,
     );
   }
 
@@ -95,7 +93,6 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
       options: const ['str', 'config'],
       onSelectComplete: (value) => setState(() => widget.config.type = value),
       leading: const Icon(Icons.type_specimen),
-      dense: true,
     );
   }
 
@@ -106,7 +103,6 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
       currentValue: widget.config.comment,
       onEditComplete: (value) => setState(() => widget.config.comment = value),
       keyboardType: TextInputType.text,
-      dense: true,
     );
   }
 
@@ -119,7 +115,6 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
             onEditComplete: (value) => setState(() => widget.config.prob =
                 double.tryParse(value) ?? widget.config.prob),
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            dense: true,
           )
         : const SizedBox.shrink();
   }
@@ -133,7 +128,6 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
             onEditComplete: (value) => setState(() =>
                 widget.config.num = int.tryParse(value) ?? widget.config.num),
             keyboardType: TextInputType.number,
-            dense: true,
           )
         : const SizedBox.shrink();
   }
@@ -221,7 +215,6 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
       onEditComplete: (value) => setState(() => widget.config.randomBrackets =
           int.tryParse(value) ?? widget.config.randomBrackets),
       keyboardType: TextInputType.number,
-      dense: true,
     );
   }
 
@@ -364,7 +357,6 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
       value: currentValue,
       onChanged: onChanged,
       subtitle: Text(currentValue ? "Enabled" : "Disabled"),
-      dense: true,
     );
   }
 
@@ -390,6 +382,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
                 setState(() {
                   widget.config.comment = controller.text;
                 });
+                Navigator.of(context).pop();
               },
               child: const Text('Save'),
             ),
@@ -402,19 +395,12 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
   List<Widget> _buildDirectChildList() {
     if (widget.config.type == 'str') {
       return [
-        ExpansionTile(
-          leading: const Icon(Icons.text_snippet),
+        ListTile(
           title: const Text('Strings'),
-          children: [
-            Padding(
-                padding: const EdgeInsets.only(left: 10.0),
-                child: ListTile(
-                  subtitle: Text(widget.config.strs.join('\n')),
-                  onTap: () {
-                    _editStrList();
-                  },
-                ))
-          ],
+          subtitle: Text(widget.config.strs.join('\n')),
+          onTap: () {
+            _editStrList();
+          },
         )
       ];
     } else {
