@@ -79,7 +79,13 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
     return SelectableListTile(
       title: 'Selection Method',
       currentValue: widget.config.selectionMethod,
-      options: const ['all', 'single', 'multiple_prob', 'multiple_num'],
+      options: const [
+        'all',
+        'single',
+        'single_sequential',
+        'multiple_prob',
+        'multiple_num'
+      ],
       onSelectComplete: (value) =>
           setState(() => widget.config.selectionMethod = value),
       leading: const Icon(Icons.select_all),
@@ -133,9 +139,11 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
   }
 
   Widget _buildShuffled() {
-    return _buildSwitchTile("Shuffled", widget.config.shuffled, (newValue) {
-      setState(() => widget.config.shuffled = newValue);
-    });
+    return widget.config.selectionMethod == 'single_sequential'
+        ? SizedBox.shrink()
+        : _buildSwitchTile("Shuffled", widget.config.shuffled, (newValue) {
+            setState(() => widget.config.shuffled = newValue);
+          });
   }
 
   Widget _buildStrsExpansion() {

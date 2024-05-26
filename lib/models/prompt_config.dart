@@ -14,6 +14,8 @@ class PromptConfig {
   List<PromptConfig> prompts;
   bool enabled;
 
+  int sequentialIdx = 0;
+
   PromptConfig({
     this.selectionMethod = 'all',
     this.shuffled = true,
@@ -109,6 +111,9 @@ class PromptConfig {
         chosenPrompts.shuffle();
         chosenPrompts = chosenPrompts.take(num).toList();
         break;
+      case 'single_sequential':
+        chosenPrompts = [toChoosePrompts[sequentialIdx]];
+        sequentialIdx = (sequentialIdx + 1) % toChoosePrompts.length;
       default:
         chosenPrompts = List.from(toChoosePrompts);
     }
