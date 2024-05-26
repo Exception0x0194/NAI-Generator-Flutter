@@ -25,9 +25,7 @@ class PromptConfigScreenState extends State<PromptConfigScreen> {
         ),
       )),
       floatingActionButton: FloatingActionButton(
-        tooltip: InfoManager().showPromptParameters
-            ? "Hide prompt parameters"
-            : "Show prompt parameters",
+        tooltip: 'Toggle compact view',
         onPressed: () => {
           setState(() {
             InfoManager().showPromptParameters =

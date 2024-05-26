@@ -78,6 +78,7 @@ class ParamConfigWidgetState extends State<ParamConfigWidget> {
         _buildSwitchTile("SM Dyn", widget.config.smDyn, (newValue) {
           setState(() => widget.config.smDyn = newValue);
         }, const Icon(Icons.keyboard_double_arrow_right)),
+        _buildRandomSeedTile(),
         EditableListTile(
           leading: const Icon(Icons.do_not_disturb),
           title: "UC",
@@ -127,5 +128,34 @@ class ParamConfigWidgetState extends State<ParamConfigWidget> {
         });
       }
     }
+  }
+
+  Widget _buildRandomSeedTile() {
+    return Column(
+      children: [
+        _buildSwitchTile(
+          "Use Random Seed",
+          widget.config.randomSeed,
+          (newValue) {
+            setState(() {
+              widget.config.randomSeed = newValue;
+            });
+          },
+          const Icon(Icons.shuffle),
+        ),
+        if (!widget.config.randomSeed)
+          Padding(
+              padding: EdgeInsets.only(left: 20),
+              child: (EditableListTile(
+                  title: 'Seed',
+                  currentValue: widget.config.seed.toString(),
+                  onEditComplete: (value) => {
+                        setState(() {
+                          widget.config.seed =
+                              int.tryParse(value) ?? widget.config.seed;
+                        })
+                      })))
+      ],
+    );
   }
 }
