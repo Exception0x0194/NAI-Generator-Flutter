@@ -1,68 +1,54 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../models/generation_info.dart';
 
-class ImgInfoWidget extends StatelessWidget {
-  final ImgInfo imgInfo;
+class GenerationInfoWidget extends StatelessWidget {
+  final GenerationInfo info;
 
-  const ImgInfoWidget({super.key, required this.imgInfo});
-
-  void _showInfoDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Image Info'),
-          content: Text(imgInfo.info!),
-          actions: <Widget>[
-            TextButton(
-              child: Text('Close'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
+  const GenerationInfoWidget({super.key, required this.info});
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => _showInfoDialog(context),
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey, width: 1),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Column(
+    return Container(
+      width: info.type == 'img' ? 600 : 300, // Adjust the width as needed
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey, width: 1),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      child: Stack(children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ListTile(
-              title: imgInfo.type == 'img'
-                  ? Text('Generated Image')
-                  : Text('Plain Log'),
+              title: Text(info.type == 'img' ? 'Generated Image' : 'Plain Log'),
+              subtitle: Text(info.info),
             ),
-            imgInfo.type == 'img'
-                ? Expanded(
-                    child: Row(children: [
-                    Expanded(
-                        flex: 4,
-                        child:
-                            FittedBox(fit: BoxFit.contain, child: imgInfo.img)),
-                    Expanded(
-                        flex: 1,
-                        child: ListTile(
-                          title: Text('Generation Info'),
-                          subtitle: Text(imgInfo.info),
-                        ))
-                  ]))
-                : ListTile(
-                    subtitle: Text(imgInfo.info),
-                  )
+            if (info.img != null)
+              Expanded(
+                child: Container(
+                  alignment: Alignment.center,
+                  child: info.img,
+                ),
+              ),
           ],
         ),
-      ),
+        Positioned(
+          right: 0,
+          child: IconButton(
+            icon: const Icon(Icons.copy),
+            onPressed: () => _copyToClipboard(context),
+          ),
+        ),
+      ]),
+    );
+  }
+
+  void _copyToClipboard(BuildContext context) async {
+    await Clipboard.setData(ClipboardData(text: info.info));
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Info copied to clipboard')),
     );
   }
 }

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-class ImgInfo {
+class GenerationInfo {
   Image? img;
   final String type;
   final String info;
 
-  ImgInfo({this.img, required this.info, required this.type});
+  GenerationInfo({this.img, required this.info, required this.type});
 }

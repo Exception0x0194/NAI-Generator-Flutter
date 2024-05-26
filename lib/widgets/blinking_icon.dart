@@ -30,7 +30,7 @@ class BlinkingIconState extends State<BlinkingIcon>
   Widget build(BuildContext context) {
     return FadeTransition(
       opacity: _controller,
-      child: Icon(Icons.cloud_upload, color: Colors.red),
+      child: const Icon(Icons.cloud_upload, color: Colors.red),
     );
   }
 }

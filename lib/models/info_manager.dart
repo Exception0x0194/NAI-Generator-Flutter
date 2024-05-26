@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:js_interop';
 import 'package:archive/archive.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -20,10 +19,12 @@ class InfoManager with ChangeNotifier {
   late PromptConfig promptConfig = PromptConfig();
   ParamConfig paramConfig = ParamConfig();
 
-  final List<ImgInfo> _imgInfos = [];
+  final List<GenerationInfo> _imgInfos = [];
+  final ValueNotifier<List<GenerationInfo>> imgInfosNotifier =
+      ValueNotifier<List<GenerationInfo>>([]);
   int _imgInfosCurrentIdx = 0;
   final int _imgInfosMaxLength = 200;
-  List<ImgInfo> get imgInfos {
+  List<GenerationInfo> get imgInfos {
     return [
       ..._imgInfos.sublist(_imgInfosCurrentIdx),
       ..._imgInfos.sublist(0, _imgInfosCurrentIdx)
@@ -86,7 +87,8 @@ class InfoManager with ChangeNotifier {
     }
     log += 'Requesting...';
 
-    var infoIdx = addNewInfo(ImgInfo(type: 'info', info: 'Requesting...'));
+    var infoIdx =
+        addNewInfo(GenerationInfo(type: 'info', info: 'Requesting...'));
 
     isRequesting = true;
     notifyListeners();
@@ -107,21 +109,21 @@ class InfoManager with ChangeNotifier {
           await saveBlob(imageBytes, filename);
           // log += 'Success: $filename${data['comment']}\n\n';
           // img = Image.memory(imageBytes);
-          _imgInfos[infoIdx] = ImgInfo(
+          _imgInfos[infoIdx] = GenerationInfo(
               img: Image.memory(imageBytes),
-              info: data['body']['input'] ?? '',
+              info: data['comment'] ?? '',
               type: 'img');
           success = true;
           break;
         }
       }
       if (!success) {
-        _imgInfos[infoIdx] = ImgInfo(
+        _imgInfos[infoIdx] = GenerationInfo(
             info: 'Error: cannot find image in HTTP response.', type: 'info');
       }
     } catch (e) {
       _imgInfos[infoIdx] =
-          ImgInfo(info: 'Error: ${e.toString()}', type: 'info');
+          GenerationInfo(info: 'Error: ${e.toString()}', type: 'info');
     } finally {
       isRequesting = false;
     }
@@ -139,10 +141,10 @@ class InfoManager with ChangeNotifier {
   }
 
   void addLog(String content) {
-    addNewInfo(ImgInfo(img: null, info: content, type: 'info'));
+    addNewInfo(GenerationInfo(img: null, info: content, type: 'info'));
   }
 
-  int addNewInfo(ImgInfo newInfo) {
+  int addNewInfo(GenerationInfo newInfo) {
     if (imgInfos.length < _imgInfosMaxLength) {
       _imgInfos.add(newInfo);
       return _imgInfos.length - 1;
