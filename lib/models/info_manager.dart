@@ -111,7 +111,7 @@ class InfoManager with ChangeNotifier {
           // img = Image.memory(imageBytes);
           _imgInfos[infoIdx] = GenerationInfo(
               img: Image.memory(imageBytes),
-              info: data['comment'] ?? '',
+              info: filename + data['comment'],
               type: 'img');
           success = true;
           break;
