@@ -1,6 +1,10 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import '../models/utils.dart';
+import 'package:nai_casrand/widgets/generation_info_widget.dart';
+
 import '../models/info_manager.dart';
+
+import '../widgets/blinking_icon.dart';
 
 class PromptGenerationScreen extends StatefulWidget {
   const PromptGenerationScreen({super.key});
@@ -10,10 +14,15 @@ class PromptGenerationScreen extends StatefulWidget {
 }
 
 class PromptGenerationScreenState extends State<PromptGenerationScreen> {
+  final ScrollController _scrollController = ScrollController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          leading: InfoManager().isRequesting
+              ? const BlinkingIcon()
+              : const Icon(Icons.cloud_upload, color: Colors.grey),
           title: const Text('Generation'),
         ),
         body: Center(
@@ -43,6 +52,36 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
         ));
   }
 
+  Widget _buildResponsiveLayout() {
+    return Padding(
+        padding: const EdgeInsets.only(bottom: 20),
+        child: Scrollbar(
+          controller: _scrollController,
+          thickness: 20,
+          radius: const Radius.circular(10),
+          child: Listener(
+            onPointerSignal: (pointerSignal) {
+              if (pointerSignal is PointerScrollEvent) {
+                _scrollController.animateTo(
+                  _scrollController.offset + pointerSignal.scrollDelta.dy,
+                  duration: const Duration(milliseconds: 50),
+                  curve: Curves.ease,
+                );
+              }
+            },
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              controller: _scrollController,
+              itemCount: InfoManager().imgInfos.length,
+              itemBuilder: (context, index) {
+                return GenerationInfoWidget(
+                    info: InfoManager().imgInfos[index]);
+              },
+            ),
+          ),
+        ));
+  }
+
   void _generatePrompt() async {
     InfoManager().generatePrompt();
   }
@@ -54,67 +93,5 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
     if (InfoManager().isGenerating) {
       InfoManager().generateImage();
     }
-  }
-
-  Widget _buildResponsiveLayout() {
-    var size = MediaQuery.of(context).size;
-    bool useRow = size.width > size.height; // 当屏幕宽度大于高度时使用Row
-
-    var content = [
-      InfoManager().img == null
-          ? const SizedBox.shrink()
-          : Expanded(
-              flex: 3,
-              child: Container(
-                padding: const EdgeInsets.all(20),
-                child: InfoManager().img!,
-              ),
-            ),
-      Expanded(
-        flex: 1,
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Stack(
-            children: [
-              ListTile(
-                title: const Text("Log"),
-                subtitle: SingleChildScrollView(
-                  reverse: true,
-                  child: Text(InfoManager().log),
-                ),
-                dense: true,
-              ),
-              Align(
-                alignment: Alignment.topRight,
-                child: IconButton(
-                  onPressed: _dumpLog,
-                  icon: const Icon(Icons.download),
-                  tooltip: 'Dump logs',
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    ];
-
-    if (useRow) {
-      return Padding(
-          padding: const EdgeInsets.all(20),
-          child: Row(
-            children: content,
-          ));
-    } else {
-      return Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            children: content,
-          ));
-    }
-  }
-
-  void _dumpLog() {
-    saveStringToFile(
-        InfoManager().log, 'nai-generator-log-${generateRandomFileName()}.txt');
   }
 }

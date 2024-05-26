@@ -31,8 +31,12 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
         title: Row(children: [
           Expanded(
               child: Row(children: [
-            Text(widget.config.comment +
-                (widget.config.enabled ? "" : " - disabled")),
+            Text(widget.config.comment,
+                style: TextStyle(
+                  decoration: widget.config.enabled
+                      ? TextDecoration.none
+                      : TextDecoration.lineThrough,
+                )),
             IconButton(
                 onPressed: () => _showEditCommentDialog(context),
                 icon: const Icon(Icons.edit))
