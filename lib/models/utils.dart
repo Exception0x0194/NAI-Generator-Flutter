@@ -29,7 +29,7 @@ Future<void> saveStringToFile(String content, String fileName) async {
       ..click();
     html.Url.revokeObjectUrl(url);
   } else {
-    await FilePicker.platform
+    FilePicker.platform
         .saveFile(fileName: fileName, bytes: utf8.encode(content));
   }
 }

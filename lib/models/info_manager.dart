@@ -1,10 +1,12 @@
 import 'dart:convert';
+import 'dart:js_interop';
 import 'package:archive/archive.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'prompt_config.dart';
 import 'param_config.dart';
+import 'generation_info.dart';
 import 'utils.dart';
 
 class InfoManager with ChangeNotifier {
@@ -17,6 +19,16 @@ class InfoManager with ChangeNotifier {
   String apiKey = 'pst-abcd';
   late PromptConfig promptConfig = PromptConfig();
   ParamConfig paramConfig = ParamConfig();
+
+  final List<ImgInfo> _imgInfos = [];
+  int _imgInfosCurrentIdx = 0;
+  final int _imgInfosMaxLength = 200;
+  List<ImgInfo> get imgInfos {
+    return [
+      ..._imgInfos.sublist(_imgInfosCurrentIdx),
+      ..._imgInfos.sublist(0, _imgInfosCurrentIdx)
+    ].reversed.toList();
+  }
 
   String log = '';
   Image? img;
@@ -73,6 +85,9 @@ class InfoManager with ChangeNotifier {
       return;
     }
     log += 'Requesting...';
+
+    var infoIdx = addNewInfo(ImgInfo(type: 'info', info: 'Requesting...'));
+
     isRequesting = true;
     notifyListeners();
 
@@ -90,17 +105,23 @@ class InfoManager with ChangeNotifier {
           var filename = 'nai-generated-${generateRandomFileName()}.png';
           var imageBytes = file.content as Uint8List;
           await saveBlob(imageBytes, filename);
-          log += 'Success: $filename${data['comment']}\n\n';
-          img = Image.memory(imageBytes);
+          // log += 'Success: $filename${data['comment']}\n\n';
+          // img = Image.memory(imageBytes);
+          _imgInfos[infoIdx] = ImgInfo(
+              img: Image.memory(imageBytes),
+              info: data['body']['input'] ?? '',
+              type: 'img');
           success = true;
           break;
         }
       }
       if (!success) {
-        log += 'Failed: Could not find image in HTTP response.\n\n';
+        _imgInfos[infoIdx] = ImgInfo(
+            info: 'Error: cannot find image in HTTP response.', type: 'info');
       }
     } catch (e) {
-      log += 'Failed: ${e.toString()}\n\n';
+      _imgInfos[infoIdx] =
+          ImgInfo(info: 'Error: ${e.toString()}', type: 'info');
     } finally {
       isRequesting = false;
     }
@@ -112,8 +133,23 @@ class InfoManager with ChangeNotifier {
   }
 
   void generatePrompt() {
-    var data = getRequestData()['comment'];
-    log += 'Generated prompt: $data\n\n';
+    var data = (getRequestData()['comment'] as String).substring(1);
+    addLog(data);
     notifyListeners();
+  }
+
+  void addLog(String content) {
+    addNewInfo(ImgInfo(img: null, info: content, type: 'info'));
+  }
+
+  int addNewInfo(ImgInfo newInfo) {
+    if (imgInfos.length < _imgInfosMaxLength) {
+      _imgInfos.add(newInfo);
+      return _imgInfos.length - 1;
+    } else {
+      imgInfos[_imgInfosCurrentIdx] = newInfo;
+      _imgInfosCurrentIdx = (_imgInfosCurrentIdx + 1) % _imgInfosMaxLength;
+      return _imgInfosCurrentIdx - 1;
+    }
   }
 }
