@@ -19,24 +19,22 @@ class InfoManager with ChangeNotifier {
   late PromptConfig promptConfig = PromptConfig();
   ParamConfig paramConfig = ParamConfig();
 
-  final List<GenerationInfo> _imgInfos = [];
-  final ValueNotifier<List<GenerationInfo>> imgInfosNotifier =
-      ValueNotifier<List<GenerationInfo>>([]);
-  int _imgInfosCurrentIdx = 0;
-  final int _imgInfosMaxLength = 200;
-  List<GenerationInfo> get imgInfos {
+  final List<GenerationInfo> _generationInfos = [];
+  int _generationInfoCurrentIdx = 0;
+  int _generationCount = 0;
+  final int _generationInfosMaxLength = 200;
+  List<GenerationInfo> get generationInfos {
     return [
-      ..._imgInfos.sublist(_imgInfosCurrentIdx),
-      ..._imgInfos.sublist(0, _imgInfosCurrentIdx)
+      ..._generationInfos.sublist(_generationInfoCurrentIdx),
+      ..._generationInfos.sublist(0, _generationInfoCurrentIdx)
     ].reversed.toList();
   }
 
-  String log = '';
-  Image? img;
   bool isRequesting = false;
+  int remainingRequests = 0;
   bool isGenerating = false;
 
-  bool showPromptParameters = true;
+  bool showCompactPromptView = false;
 
   Map<String, dynamic> toJson() {
     return {
@@ -85,10 +83,12 @@ class InfoManager with ChangeNotifier {
     if (isRequesting) {
       return;
     }
-    log += 'Requesting...';
 
-    var infoIdx =
-        addNewInfo(GenerationInfo(type: 'info', info: 'Requesting...'));
+    String log = remainingRequests == 0
+        ? 'Looping - '
+        : '${remainingRequests.toString()} request${remainingRequests > 1 ? 's' : ''} remaining - ';
+    var infoIdx = addNewInfo(
+        GenerationInfo(type: 'info', info: {'log': '${log}Requesting...'}));
 
     isRequesting = true;
     notifyListeners();
@@ -107,23 +107,39 @@ class InfoManager with ChangeNotifier {
           var filename = 'nai-generated-${generateRandomFileName()}.png';
           var imageBytes = file.content as Uint8List;
           await saveBlob(imageBytes, filename);
-          // log += 'Success: $filename${data['comment']}\n\n';
-          // img = Image.memory(imageBytes);
-          _imgInfos[infoIdx] = GenerationInfo(
-              img: Image.memory(imageBytes),
-              info: filename + data['comment'],
+          var img = Image.memory(
+            imageBytes,
+            fit: BoxFit.fitHeight,
+          );
+
+          _generationInfos[infoIdx] = GenerationInfo(
+              img: img,
+              info: {
+                'filename': filename,
+                'log': (data['comment'] as String).substring(1),
+                'prompt': data['body']['input'],
+                'seed': data['body']['parameters']['seed'],
+                'height': data['body']['parameters']['height'],
+                'width': data['body']['parameters']['width'],
+              },
               type: 'img');
           success = true;
+          if (remainingRequests > 0) {
+            remainingRequests--;
+            if (remainingRequests == 0) {
+              addLog('Requests completed!');
+              isGenerating = false;
+            }
+          }
           break;
         }
       }
       if (!success) {
-        _imgInfos[infoIdx] = GenerationInfo(
-            info: 'Error: cannot find image in HTTP response.', type: 'info');
+        _generationInfos[infoIdx].info['log'] =
+            'Error: Cannot find image in HTTP response';
       }
     } catch (e) {
-      _imgInfos[infoIdx] =
-          GenerationInfo(info: 'Error: ${e.toString()}', type: 'info');
+      _generationInfos[infoIdx].info['log'] = 'Error: ${e.toString()}';
     } finally {
       isRequesting = false;
     }
@@ -141,17 +157,21 @@ class InfoManager with ChangeNotifier {
   }
 
   void addLog(String content) {
-    addNewInfo(GenerationInfo(img: null, info: content, type: 'info'));
+    addNewInfo(GenerationInfo(img: null, info: {'log': content}, type: 'info'));
   }
 
   int addNewInfo(GenerationInfo newInfo) {
-    if (imgInfos.length < _imgInfosMaxLength) {
-      _imgInfos.add(newInfo);
-      return _imgInfos.length - 1;
+    newInfo.info['idx'] = _generationCount;
+    _generationCount++;
+    if (_generationInfos.length < _generationInfosMaxLength) {
+      _generationInfos.add(newInfo);
+      return _generationInfos.length - 1;
     } else {
-      imgInfos[_imgInfosCurrentIdx] = newInfo;
-      _imgInfosCurrentIdx = (_imgInfosCurrentIdx + 1) % _imgInfosMaxLength;
-      return _imgInfosCurrentIdx - 1;
+      _generationInfos[_generationInfoCurrentIdx] = newInfo;
+      int addedIndex = _generationInfoCurrentIdx;
+      _generationInfoCurrentIdx =
+          (_generationInfoCurrentIdx + 1) % _generationInfosMaxLength;
+      return addedIndex;
     }
   }
 }

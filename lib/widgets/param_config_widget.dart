@@ -145,7 +145,7 @@ class ParamConfigWidgetState extends State<ParamConfigWidget> {
         ),
         if (!widget.config.randomSeed)
           Padding(
-              padding: EdgeInsets.only(left: 20),
+              padding: const EdgeInsets.only(left: 20),
               child: (EditableListTile(
                   title: 'Seed',
                   currentValue: widget.config.seed.toString(),

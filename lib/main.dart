@@ -72,11 +72,11 @@ class MyHomePageState extends State<MyHomePage> {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.create),
-            label: 'Generate',
+            label: 'Generation',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.visibility),
-            label: 'View Config',
+            label: 'Cascaded Config',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),

@@ -1,10 +1,12 @@
+import 'dart:convert';
+
+import '../models/utils.dart';
 import '../models/info_manager.dart';
 import '../models/prompt_config.dart';
 import 'editable_list_tile.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'dart:convert';
 
 class PromptConfigWidget extends StatefulWidget {
   final PromptConfig config;
@@ -26,7 +28,17 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
     return Padding(
       padding: const EdgeInsets.only(left: 10.0),
       child: ExpansionTile(
-        leading: const Icon(Icons.arrow_forward),
+        leading: InfoManager().showCompactPromptView
+            ? IconButton(
+                onPressed: () => setState(() {
+                      if (widget.config.type == 'str') {
+                        widget.config.type = 'config';
+                      } else {
+                        widget.config.type = 'str';
+                      }
+                    }),
+                icon: const Icon(Icons.cached))
+            : const Icon(Icons.arrow_forward),
         initiallyExpanded: widget.indentLevel == 0,
         title: Row(children: [
           Expanded(
@@ -51,18 +63,18 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
           IconButton(
             icon: const Icon(Icons.copy),
             onPressed: () {
-              Clipboard.setData(
-                  ClipboardData(text: json.encode(widget.config.toJson())));
+              copyToClipboard(json.encode(widget.config.toJson()));
+              showInfoBar(context, 'Exported to clipboard.');
             },
             tooltip: 'Copy to Clipboard',
           ),
         ]),
-        children: InfoManager().showPromptParameters
-            ? [
+        children: InfoManager().showCompactPromptView
+            ? _buildCompactChildList()
+            : [
                 Padding(
                   padding: const EdgeInsets.only(left: 10.0),
                   child: Column(children: [
-                    // _buildCommentInput(),
                     _buildSelectionMethodSelector(),
                     _buildShuffled(),
                     _buildInputProb(),
@@ -73,8 +85,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
                     _buildConfigsExpansion(),
                   ]),
                 )
-              ]
-            : _buildDirectChildList(),
+              ],
       ),
     );
   }
@@ -96,23 +107,14 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
     );
   }
 
-  _buildTypeSelector() {
+  _buildTypeSelector({bool dense = false}) {
     return SelectableListTile(
       title: 'Config Type',
       currentValue: widget.config.type,
       options: const ['str', 'config'],
       onSelectComplete: (value) => setState(() => widget.config.type = value),
       leading: const Icon(Icons.type_specimen),
-    );
-  }
-
-  Widget _buildCommentInput() {
-    return EditableListTile(
-      leading: const Icon(Icons.comment),
-      title: "Comment",
-      currentValue: widget.config.comment,
-      onEditComplete: (value) => setState(() => widget.config.comment = value),
-      keyboardType: TextInputType.text,
+      dense: dense,
     );
   }
 
@@ -144,7 +146,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
 
   Widget _buildShuffled() {
     return widget.config.selectionMethod == 'single_sequential'
-        ? SizedBox.shrink()
+        ? const SizedBox.shrink()
         : _buildSwitchTile("Shuffled", widget.config.shuffled, (newValue) {
             setState(() => widget.config.shuffled = newValue);
           });
@@ -308,6 +310,8 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
     }
 
     ClipboardData? data = await Clipboard.getData(Clipboard.kTextPlain);
+    if (!mounted) return;
+
     if (data != null && data.text != null) {
       try {
         final Map<String, dynamic> jsonConfig = json.decode(data.text!);
@@ -325,7 +329,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
           }
         });
       } catch (e) {
-        //
+        showErrorBar(context, 'Import failed!');
       }
     }
   }
@@ -404,7 +408,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
     );
   }
 
-  List<Widget> _buildDirectChildList() {
+  List<Widget> _buildCompactChildList() {
     if (widget.config.type == 'str') {
       return [
         ListTile(
@@ -413,7 +417,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
           onTap: () {
             _editStrList();
           },
-        )
+        ),
       ];
     } else {
       return [
@@ -454,7 +458,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
               ),
             ),
           ],
-        ))
+        )),
       ];
     }
   }

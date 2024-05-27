@@ -28,11 +28,11 @@ class PromptConfigScreenState extends State<PromptConfigScreen> {
         tooltip: 'Toggle compact view',
         onPressed: () => {
           setState(() {
-            InfoManager().showPromptParameters =
-                !InfoManager().showPromptParameters;
+            InfoManager().showCompactPromptView =
+                !InfoManager().showCompactPromptView;
           })
         },
-        child: InfoManager().showPromptParameters
+        child: InfoManager().showCompactPromptView
             ? const Icon(Icons.visibility_off)
             : const Icon(Icons.visibility),
       ),

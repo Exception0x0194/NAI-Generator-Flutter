@@ -49,29 +49,26 @@ class SettingsScreenState extends State<SettingsScreen> {
           _buildLinkTile()
         ],
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            FloatingActionButton(
-              onPressed: () async {
-                await _loadJsonConfig();
-              },
-              tooltip: 'Import from file',
-              child: const Icon(Icons.file_open),
-            ),
-            const SizedBox(height: 20),
-            FloatingActionButton(
-              onPressed: () async {
-                await _saveJsonConfig();
-              },
-              tooltip: 'Export to file',
-              child: const Icon(Icons.save),
-            ),
-          ],
-        ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            onPressed: () async {
+              await _loadJsonConfig();
+            },
+            tooltip: 'Import from file',
+            child: const Icon(Icons.file_open),
+          ),
+          const SizedBox(height: 20),
+          FloatingActionButton(
+            onPressed: () async {
+              await _saveJsonConfig();
+            },
+            tooltip: 'Export to file',
+            child: const Icon(Icons.save),
+          ),
+        ],
       ),
     );
   }
@@ -117,16 +114,14 @@ class SettingsScreenState extends State<SettingsScreen> {
         Map<String, dynamic> jsonData = json.decode(fileContent);
         setState(() {
           if (InfoManager().fromJson(jsonData)) {
-            ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Imported from file')));
+            showInfoBar(context, 'Imported from file');
           } else {
             throw Exception();
           }
         });
       }
     } catch (e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Import failed!')));
+      showErrorBar(context, 'Import failed!');
     }
   }
 

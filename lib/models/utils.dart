@@ -2,9 +2,13 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:universal_html/html.dart' as html;
 import 'package:image_save/image_save.dart';
+import 'package:another_flushbar/flushbar.dart';
 
 Future<void> saveBlob(Uint8List bytes, String fileName) async {
   if (kIsWeb) {
@@ -42,4 +46,42 @@ String generateRandomFileName() {
   return List.generate(length,
           (index) => lettersAndDigits[random.nextInt(lettersAndDigits.length)])
       .join();
+}
+
+void copyToClipboard(String content) async {
+  await Clipboard.setData(ClipboardData(text: content));
+}
+
+void showInfoBar(BuildContext context, String message) {
+  Flushbar(
+    flushbarPosition: FlushbarPosition.TOP,
+    margin: const EdgeInsets.all(8),
+    borderRadius: BorderRadius.circular(8),
+    animationDuration: const Duration(milliseconds: 300),
+    duration: const Duration(milliseconds: 1500),
+    leftBarIndicatorColor: Colors.blue.shade300,
+    icon: Icon(
+      Icons.info_outline,
+      size: 28.0,
+      color: Colors.blue.shade300,
+    ),
+    message: message,
+  ).show(context);
+}
+
+void showErrorBar(BuildContext context, String message) {
+  Flushbar(
+    flushbarPosition: FlushbarPosition.TOP,
+    margin: const EdgeInsets.all(8),
+    borderRadius: BorderRadius.circular(8),
+    animationDuration: const Duration(milliseconds: 300),
+    duration: const Duration(milliseconds: 1500),
+    leftBarIndicatorColor: Colors.red.shade500,
+    icon: Icon(
+      Icons.error_outline,
+      size: 28.0,
+      color: Colors.red.shade500,
+    ),
+    message: message,
+  ).show(context);
 }
