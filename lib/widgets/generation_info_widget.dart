@@ -33,14 +33,16 @@ class GenerationInfoWidget extends StatelessWidget {
           ? const EdgeInsets.symmetric(vertical: 8, horizontal: 8)
           : null,
       child: Stack(children: [
-        ListTile(
-          title: Text('Log #${info.info['idx'].toString()}'),
-          subtitle: Text(
-            info.info['log'] ?? '',
-            softWrap: false,
-            overflow: TextOverflow.fade,
-          ),
-        ),
+        ListView(children: [
+          ListTile(
+            title: Text('Log #${info.info['idx'].toString()}'),
+            subtitle: Text(
+              info.info['log'] ?? '',
+              softWrap: false,
+              overflow: TextOverflow.fade,
+            ),
+          )
+        ]),
         _buildButtons(context),
       ]),
     );
