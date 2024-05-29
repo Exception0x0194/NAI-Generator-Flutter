@@ -35,6 +35,7 @@ class InfoManager with ChangeNotifier {
   bool isGenerating = false;
 
   bool showCompactPromptView = false;
+  bool showInfoForImg = true;
 
   Map<String, dynamic> toJson() {
     return {
@@ -116,6 +117,7 @@ class InfoManager with ChangeNotifier {
               img: img,
               info: {
                 'filename': filename,
+                'idx': infoIdx,
                 'log': (data['comment'] as String).substring(1),
                 'prompt': data['body']['input'],
                 'seed': data['body']['parameters']['seed'],

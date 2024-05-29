@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:nai_casrand/models/utils.dart';
 
 import '../models/generation_info.dart';
+import '../models/info_manager.dart';
 
 class GenerationInfoWidget extends StatelessWidget {
   final GenerationInfo info;
@@ -13,49 +14,60 @@ class GenerationInfoWidget extends StatelessWidget {
     if (info.type == 'img') {
       return _buildImgWidget(context);
     } else {
-      return _buildInfoWidget(context);
+      return LayoutBuilder(builder: ((context, constraints) {
+        return _buildInfoWidget(context);
+      }));
     }
   }
 
-  Widget _buildInfoWidget(BuildContext context) {
+  Widget _buildInfoWidget(BuildContext context, {bool margined = true}) {
     return Container(
       width: 300,
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey, width: 1),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      child: Column(
-        children: [
-          Stack(children: [
-            ListTile(
-              title: Text('Plain Log #${info.info['idx'].toString()}'),
-              subtitle: Text(info.info['log'] ?? ''),
-            ),
-            _buildButtons(context),
-          ]),
-        ],
-      ),
+      decoration: margined
+          ? BoxDecoration(
+              border: Border.all(color: Colors.grey, width: 1),
+            )
+          : null,
+      margin: margined
+          ? const EdgeInsets.symmetric(vertical: 8, horizontal: 8)
+          : null,
+      child: Stack(children: [
+        ListTile(
+          title: Text('Log #${info.info['idx'].toString()}'),
+          subtitle: Text(
+            info.info['log'] ?? '',
+            overflow: TextOverflow.clip,
+          ),
+        ),
+        _buildButtons(context),
+      ]),
     );
   }
 
   Widget _buildImgWidget(BuildContext context) {
     return Container(
-        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-        child: Stack(
-          children: [
-            info.img!,
-            LayoutBuilder(builder: ((context, constraints) {
-              var aspect = info.info['width']! / info.info['height']!;
-              var width = aspect * constraints.maxHeight;
-              return SizedBox(
-                width: width,
-                child: ListTile(title: Text(info.info['filename']!)),
-              );
-            })),
-            _buildButtons(context)
-          ],
-        ));
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey, width: 1),
+        ),
+        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+        child: Row(children: [
+          Stack(
+            children: [
+              info.img!,
+              LayoutBuilder(builder: ((context, constraints) {
+                var aspect = info.info['width']! / info.info['height']!;
+                var width = aspect * constraints.maxHeight;
+                return SizedBox(
+                  width: width,
+                  child: ListTile(title: Text(info.info['filename']!)),
+                );
+              })),
+              if (!InfoManager().showInfoForImg) _buildButtons(context)
+            ],
+          ),
+          if (InfoManager().showInfoForImg)
+            _buildInfoWidget(context, margined: false)
+        ]));
   }
 
   Widget _buildButtons(BuildContext context) {

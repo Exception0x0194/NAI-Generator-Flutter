@@ -1,10 +1,12 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:nai_casrand/models/utils.dart';
-import 'package:nai_casrand/widgets/generation_info_widget.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 import '../models/info_manager.dart';
-
+import '../models/utils.dart';
+import '../widgets/generation_info_widget.dart';
 import '../widgets/blinking_icon.dart';
 
 class PromptGenerationScreen extends StatefulWidget {
@@ -29,84 +31,129 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
         title: const Text('Generation'),
       ),
       body: Column(children: [
-        Slider(
-          min: 0.5,
-          max: 1.0,
-          value: _boxHeight,
-          onChanged: (newHeight) {
-            setState(() {
-              _boxHeight = newHeight;
-            });
-          },
-          label: "Adjust image height",
-        ),
         Expanded(
             child: Align(
           alignment: Alignment.bottomCenter,
-          child: _buildResponsiveLayout(),
+          child: _buildGenerationInfoList(),
         ))
       ]),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: Column(
+      floatingActionButton: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          FloatingActionButton(
-              onPressed: _generatePrompt,
-              tooltip: 'Generate one prompt',
-              child: const Icon(Icons.edit)),
-          const SizedBox(
-            height: 20,
+          SizedBox(
+              height: 40,
+              child: Slider(
+                min: 0.3,
+                max: 1.0,
+                value: _boxHeight,
+                onChanged: (newHeight) {
+                  setState(() {
+                    _boxHeight = newHeight;
+                  });
+                },
+                label: "Adjust image height",
+              )),
+          const SizedBox(width: 10),
+          SpeedDial(
+            icon: Icons.visibility,
+            renderOverlay: false,
+            closeManually: true,
+            spaceBetweenChildren: 4,
+            children: [
+              SpeedDialChild(
+                child: const Icon(Icons.menu),
+                label: 'Toggle show image with info',
+                onTap: () => setState(() {
+                  InfoManager().showInfoForImg = !InfoManager().showInfoForImg;
+                }),
+              ),
+            ],
           ),
-          FloatingActionButton(
-              onPressed: _setRequestsNum,
-              tooltip: 'Set number of requests',
-              child: const Icon(Icons.alarm)),
-          const SizedBox(
-            height: 20,
+          const SizedBox(width: 20),
+          SpeedDial(
+            icon: Icons.construction,
+            renderOverlay: false,
+            closeManually: true,
+            spaceBetweenChildren: 4,
+            children: [
+              SpeedDialChild(
+                child: Icon(Icons.edit),
+                label: 'Generate one prompt',
+                onTap: _generatePrompt,
+              ),
+              SpeedDialChild(
+                child: Icon(Icons.alarm),
+                label: 'Set number of requests',
+                onTap: _setRequestsNum,
+              ),
+            ],
           ),
+          const SizedBox(width: 20),
           FloatingActionButton(
-              onPressed: _toggleGeneration,
-              tooltip: 'Toggle generation',
-              child: InfoManager().isGenerating
-                  ? const Icon(Icons.stop)
-                  : const Icon(Icons.play_arrow))
+            tooltip: 'Toggle generation',
+            onPressed: _toggleGeneration,
+            shape: CircleBorder(),
+            child: Icon(
+                InfoManager().isGenerating ? Icons.stop : Icons.play_arrow),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildResponsiveLayout() {
+  Widget _buildGenerationInfoList() {
     return Padding(
         padding: const EdgeInsets.only(bottom: 20),
         child: LayoutBuilder(builder: (context, constraints) {
-          return SizedBox(
-              height: _boxHeight * constraints.maxHeight,
-              child: Scrollbar(
+          return Scrollbar(
+            controller: _scrollController,
+            thickness: 20,
+            radius: const Radius.circular(10),
+            child: Listener(
+              onPointerSignal: (pointerSignal) {
+                if (pointerSignal is PointerScrollEvent) {
+                  _scrollController.animateTo(
+                    _scrollController.offset + pointerSignal.scrollDelta.dy,
+                    duration: const Duration(milliseconds: 50),
+                    curve: Curves.linear,
+                  );
+                }
+              },
+              child: ListView(
+                scrollDirection: Axis.horizontal,
                 controller: _scrollController,
-                thickness: 20,
-                radius: const Radius.circular(10),
-                child: Listener(
-                  onPointerSignal: (pointerSignal) {
-                    if (pointerSignal is PointerScrollEvent) {
-                      _scrollController.animateTo(
-                        _scrollController.offset + pointerSignal.scrollDelta.dy,
-                        duration: const Duration(milliseconds: 50),
-                        curve: Curves.linear,
-                      );
-                    }
-                  },
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    controller: _scrollController,
-                    itemCount: InfoManager().generationInfos.length,
-                    itemBuilder: (context, index) {
-                      return GenerationInfoWidget(
-                          info: InfoManager().generationInfos[index]);
-                    },
-                  ),
-                ),
-              ));
+                children: _buildColumns(),
+              ),
+            ),
+          );
         }));
+  }
+
+  List<Widget> _buildColumns() {
+    var columnItems = (1 / _boxHeight).floor();
+    List<Widget> columns = [];
+    List<dynamic> infos = InfoManager().generationInfos;
+    for (int i = 0; i < infos.length; i += columnItems) {
+      int end =
+          (i + columnItems > infos.length) ? infos.length : i + columnItems;
+      var col = LayoutBuilder(builder: ((context, constraints) {
+        List<Widget> columnChildren = [];
+        for (int j = i; j < end; j++) {
+          columnChildren.add(Align(
+              alignment: Alignment.topRight,
+              child: SizedBox(
+                  height: _boxHeight * constraints.maxHeight,
+                  child: GenerationInfoWidget(info: infos[j]))));
+        }
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: columnChildren,
+        );
+      }));
+      columns.add(col);
+    }
+    return columns;
   }
 
   void _generatePrompt() async {
