@@ -3,7 +3,6 @@ import 'package:nai_casrand/models/utils.dart';
 
 import '../models/generation_info.dart';
 import '../models/global_settings.dart';
-import '../models/info_manager.dart';
 
 class GenerationInfoWidget extends StatelessWidget {
   final GenerationInfo info;
@@ -36,11 +35,7 @@ class GenerationInfoWidget extends StatelessWidget {
         ListView(children: [
           ListTile(
             title: Text('Log #${info.info['idx'].toString()}'),
-            subtitle: Text(
-              info.info['log'] ?? '',
-              softWrap: false,
-              overflow: TextOverflow.fade,
-            ),
+            subtitle: Text(info.info['log'] ?? ''),
           )
         ]),
         _buildButtons(context),

@@ -1,8 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 import '../models/global_settings.dart';
 import '../models/info_manager.dart';
@@ -59,57 +56,64 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
   }
 
   Widget _buildGenerationInfoList() {
+    var itemsPerCol = (1 / GlobalSettings().infoHeight).floor();
     return Padding(
-        padding: const EdgeInsets.only(bottom: 20),
-        child: LayoutBuilder(builder: (context, constraints) {
-          return Scrollbar(
-            controller: _scrollController,
-            thickness: 20,
-            radius: const Radius.circular(10),
-            child: Listener(
-              onPointerSignal: (pointerSignal) {
-                if (pointerSignal is PointerScrollEvent) {
-                  _scrollController.animateTo(
-                    _scrollController.offset + pointerSignal.scrollDelta.dy,
-                    duration: const Duration(milliseconds: 50),
-                    curve: Curves.linear,
-                  );
-                }
+      padding: const EdgeInsets.only(bottom: 20),
+      child: LayoutBuilder(builder: (context, constraints) {
+        return Scrollbar(
+          controller: _scrollController,
+          thickness: 20,
+          radius: const Radius.circular(10),
+          child: Listener(
+            onPointerSignal: (pointerSignal) {
+              if (pointerSignal is PointerScrollEvent) {
+                _scrollController.animateTo(
+                  _scrollController.offset + pointerSignal.scrollDelta.dy,
+                  duration: const Duration(milliseconds: 50),
+                  curve: Curves.linear,
+                );
+              }
+            },
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              controller: _scrollController,
+              itemCount:
+                  (InfoManager().generationInfos.length / itemsPerCol).ceil(),
+              itemBuilder: (context, index) {
+                return _buildColumn(index);
               },
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                controller: _scrollController,
-                children: _buildColumns(),
-              ),
             ),
-          );
-        }));
+          ),
+        );
+      }),
+    );
   }
 
-  List<Widget> _buildColumns() {
+  Widget _buildColumn(int index) {
     var columnItems = (1 / GlobalSettings().infoHeight).floor();
-    List<Widget> columns = [];
-    List<dynamic> infos = InfoManager().generationInfos;
-    for (int i = 0; i < infos.length; i += columnItems) {
-      int end =
-          (i + columnItems > infos.length) ? infos.length : i + columnItems;
-      var col = LayoutBuilder(builder: ((context, constraints) {
-        List<Widget> columnChildren = [];
-        for (int j = i; j < end; j++) {
-          columnChildren.add(Align(
-              alignment: Alignment.topRight,
-              child: SizedBox(
-                  height: GlobalSettings().infoHeight * constraints.maxHeight,
-                  child: GenerationInfoWidget(info: infos[j]))));
-        }
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: columnChildren,
-        );
-      }));
-      columns.add(col);
+    int startIndex = index * columnItems;
+    int endIndex = startIndex + columnItems;
+    if (endIndex > InfoManager().generationInfos.length) {
+      endIndex = InfoManager().generationInfos.length;
     }
-    return columns;
+
+    return LayoutBuilder(builder: (context, constraints) {
+      List<Widget> columnChildren = [];
+      for (int j = startIndex; j < endIndex; j++) {
+        columnChildren.add(Align(
+          alignment: Alignment.topRight,
+          child: SizedBox(
+            height: GlobalSettings().infoHeight * constraints.maxHeight,
+            child: GenerationInfoWidget(info: InfoManager().generationInfos[j]),
+          ),
+        ));
+      }
+
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: columnChildren,
+      );
+    });
   }
 
   void _generatePrompt() async {
