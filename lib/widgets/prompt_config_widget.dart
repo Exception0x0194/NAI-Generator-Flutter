@@ -1,7 +1,7 @@
 import 'dart:convert';
 
+import '../models/global_settings.dart';
 import '../models/utils.dart';
-import '../models/info_manager.dart';
 import '../models/prompt_config.dart';
 import 'editable_list_tile.dart';
 
@@ -28,7 +28,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
     return Padding(
       padding: const EdgeInsets.only(left: 10.0),
       child: ExpansionTile(
-        leading: InfoManager().showCompactPromptView
+        leading: GlobalSettings().showCompactPromptView
             ? IconButton(
                 onPressed: () => setState(() {
                       if (widget.config.type == 'str') {
@@ -69,7 +69,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
             tooltip: 'Copy to Clipboard',
           ),
         ]),
-        children: InfoManager().showCompactPromptView
+        children: GlobalSettings().showCompactPromptView
             ? _buildCompactChildList()
             : [
                 Padding(

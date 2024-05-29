@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
+import '../models/global_settings.dart';
 import '../models/info_manager.dart';
 import '../models/utils.dart';
+import '../widgets/editable_list_tile.dart';
 import '../widgets/generation_info_widget.dart';
 import '../widgets/blinking_icon.dart';
 
@@ -18,8 +20,6 @@ class PromptGenerationScreen extends StatefulWidget {
 
 class PromptGenerationScreenState extends State<PromptGenerationScreen> {
   final ScrollController _scrollController = ScrollController();
-
-  double _boxHeight = 1.0;
 
   @override
   Widget build(BuildContext context) {
@@ -38,62 +38,18 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
         ))
       ]),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: Row(
+      floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          SizedBox(
-              height: 40,
-              child: Slider(
-                min: 0.3,
-                max: 1.0,
-                value: _boxHeight,
-                onChanged: (newHeight) {
-                  setState(() {
-                    _boxHeight = newHeight;
-                  });
-                },
-                label: "Adjust image height",
-              )),
-          const SizedBox(width: 10),
-          SpeedDial(
-            icon: Icons.visibility,
-            renderOverlay: false,
-            closeManually: true,
-            spaceBetweenChildren: 4,
-            children: [
-              SpeedDialChild(
-                child: const Icon(Icons.menu),
-                label: 'Toggle show image with info',
-                onTap: () => setState(() {
-                  InfoManager().showInfoForImg = !InfoManager().showInfoForImg;
-                }),
-              ),
-            ],
+          FloatingActionButton(
+            tooltip: 'Generation settings',
+            onPressed: _showGenerationSettingsDialog,
+            child: const Icon(Icons.construction),
           ),
-          const SizedBox(width: 20),
-          SpeedDial(
-            icon: Icons.construction,
-            renderOverlay: false,
-            closeManually: true,
-            spaceBetweenChildren: 4,
-            children: [
-              SpeedDialChild(
-                child: Icon(Icons.edit),
-                label: 'Generate one prompt',
-                onTap: _generatePrompt,
-              ),
-              SpeedDialChild(
-                child: Icon(Icons.alarm),
-                label: 'Set number of requests',
-                onTap: _setRequestsNum,
-              ),
-            ],
-          ),
-          const SizedBox(width: 20),
+          const SizedBox(height: 20),
           FloatingActionButton(
             tooltip: 'Toggle generation',
             onPressed: _toggleGeneration,
-            shape: CircleBorder(),
             child: Icon(
                 InfoManager().isGenerating ? Icons.stop : Icons.play_arrow),
           ),
@@ -131,7 +87,7 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
   }
 
   List<Widget> _buildColumns() {
-    var columnItems = (1 / _boxHeight).floor();
+    var columnItems = (1 / GlobalSettings().infoHeight).floor();
     List<Widget> columns = [];
     List<dynamic> infos = InfoManager().generationInfos;
     for (int i = 0; i < infos.length; i += columnItems) {
@@ -143,7 +99,7 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
           columnChildren.add(Align(
               alignment: Alignment.topRight,
               child: SizedBox(
-                  height: _boxHeight * constraints.maxHeight,
+                  height: GlobalSettings().infoHeight * constraints.maxHeight,
                   child: GenerationInfoWidget(info: infos[j]))));
         }
         return Column(
@@ -165,7 +121,7 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
       InfoManager().isGenerating = !InfoManager().isGenerating;
     });
     if (InfoManager().isGenerating) {
-      InfoManager().generateImage();
+      InfoManager().startGeneration();
     }
   }
 
@@ -215,5 +171,92 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
       InfoManager().remainingRequests = parseResult;
     });
     return true;
+  }
+
+  void _showGenerationSettingsDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setDialogState) {
+            return SimpleDialog(
+              title: const Text('Generation Settings'),
+              children: [
+                ListTile(
+                    leading: const Icon(Icons.search),
+                    title: const Text('Info tile height'),
+                    subtitle: Slider(
+                      min: 0.3,
+                      max: 1.0,
+                      divisions: 7,
+                      label: GlobalSettings().infoHeight.toStringAsFixed(1),
+                      value: GlobalSettings().infoHeight,
+                      onChanged: (newHeight) {
+                        setState(() {
+                          GlobalSettings().infoHeight = newHeight;
+                        });
+                        setDialogState(() {});
+                      },
+                    )),
+                SwitchListTile(
+                  secondary: GlobalSettings().showInfoForImg
+                      ? const Icon(Icons.visibility_off)
+                      : const Icon(Icons.visibility),
+                  title: const Text('Toggle info display aside images'),
+                  value: GlobalSettings().showInfoForImg,
+                  onChanged: (value) {
+                    setState(() => GlobalSettings().showInfoForImg = value);
+                    setDialogState(() {});
+                  },
+                ),
+                SwitchListTile(
+                  secondary: const Icon(Icons.shuffle),
+                  title: const Text('Use random seed'),
+                  subtitle: Text(InfoManager().paramConfig.randomSeed
+                      ? 'Enabled'
+                      : 'Disabled'),
+                  value: InfoManager().paramConfig.randomSeed,
+                  onChanged: (value) {
+                    setDialogState(
+                        () => InfoManager().paramConfig.randomSeed = value);
+                    setDialogState(() {});
+                  },
+                ),
+                if (!InfoManager().paramConfig.randomSeed)
+                  Padding(
+                      padding: const EdgeInsets.only(left: 20),
+                      child: EditableListTile(
+                          title: 'Seed',
+                          currentValue:
+                              InfoManager().paramConfig.seed.toString(),
+                          onEditComplete: (value) => {
+                                setDialogState(() {
+                                  InfoManager().paramConfig.seed =
+                                      int.tryParse(value) ??
+                                          InfoManager().paramConfig.seed;
+                                })
+                              })),
+                ListTile(
+                  leading: const Icon(Icons.alarm),
+                  title: const Text('Image numbers to generate'),
+                  subtitle: Text(InfoManager().remainingRequests == 0
+                      ? '∞'
+                      : InfoManager().remainingRequests.toString()),
+                  onTap: () {
+                    _setRequestsNum();
+                    setDialogState(() {});
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.info_outline),
+                  title: const Text('Generate one prompt'),
+                  onTap: _generatePrompt,
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:nai_casrand/models/utils.dart';
 
 import '../models/generation_info.dart';
+import '../models/global_settings.dart';
 import '../models/info_manager.dart';
 
 class GenerationInfoWidget extends StatelessWidget {
@@ -36,7 +37,8 @@ class GenerationInfoWidget extends StatelessWidget {
           title: Text('Log #${info.info['idx'].toString()}'),
           subtitle: Text(
             info.info['log'] ?? '',
-            overflow: TextOverflow.clip,
+            softWrap: false,
+            overflow: TextOverflow.fade,
           ),
         ),
         _buildButtons(context),
@@ -50,22 +52,22 @@ class GenerationInfoWidget extends StatelessWidget {
           border: Border.all(color: Colors.grey, width: 1),
         ),
         margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-        child: Row(children: [
+        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Stack(
             children: [
               info.img!,
               LayoutBuilder(builder: ((context, constraints) {
                 var aspect = info.info['width']! / info.info['height']!;
-                var width = aspect * constraints.maxHeight;
+                var width = aspect * constraints.maxHeight - 80;
                 return SizedBox(
                   width: width,
                   child: ListTile(title: Text(info.info['filename']!)),
                 );
               })),
-              if (!InfoManager().showInfoForImg) _buildButtons(context)
+              if (!GlobalSettings().showInfoForImg) _buildButtons(context)
             ],
           ),
-          if (InfoManager().showInfoForImg)
+          if (GlobalSettings().showInfoForImg)
             _buildInfoWidget(context, margined: false)
         ]));
   }

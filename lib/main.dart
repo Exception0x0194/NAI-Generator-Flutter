@@ -76,7 +76,7 @@ class MyHomePageState extends State<MyHomePage> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.visibility),
-            label: 'Cascaded Config',
+            label: 'Prompt Config',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),

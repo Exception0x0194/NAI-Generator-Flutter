@@ -1,12 +1,14 @@
 import 'dart:convert';
-import 'package:archive/archive.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+
 import 'prompt_config.dart';
 import 'param_config.dart';
 import 'generation_info.dart';
 import 'utils.dart';
+
+import 'package:archive/archive.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class InfoManager with ChangeNotifier {
   static final InfoManager _instance = InfoManager._internal();
@@ -15,10 +17,12 @@ class InfoManager with ChangeNotifier {
   }
   InfoManager._internal();
 
+  // Generation Config
   String apiKey = 'pst-abcd';
   late PromptConfig promptConfig = PromptConfig();
   ParamConfig paramConfig = ParamConfig();
 
+  // Generated info
   final List<GenerationInfo> _generationInfos = [];
   int _generationInfoCurrentIdx = 0;
   int _generationCount = 0;
@@ -30,12 +34,14 @@ class InfoManager with ChangeNotifier {
     ].reversed.toList();
   }
 
+  // Request status
   bool isRequesting = false;
   int remainingRequests = 0;
   bool isGenerating = false;
 
-  bool showCompactPromptView = false;
-  bool showInfoForImg = true;
+  // Output indexing
+  DateTime generationTimestamp = DateTime.now();
+  int generationIdx = 0;
 
   Map<String, dynamic> toJson() {
     return {
@@ -80,6 +86,12 @@ class InfoManager with ChangeNotifier {
     };
   }
 
+  void startGeneration() {
+    generationTimestamp = DateTime.now();
+    generationIdx = 0;
+    generateImage();
+  }
+
   Future<void> generateImage() async {
     if (isRequesting) {
       return;
@@ -105,13 +117,15 @@ class InfoManager with ChangeNotifier {
       bool success = false;
       for (var file in archive) {
         if (file.name == "image_0.png") {
-          var filename = 'nai-generated-${generateRandomFileName()}.png';
+          var filename =
+              'nai-generated-${getTimestampDigits(generationTimestamp)}-${generationIdx.toString().padLeft(4, '0')}-${generateRandomFileName()}.png';
           var imageBytes = file.content as Uint8List;
           await saveBlob(imageBytes, filename);
           var img = Image.memory(
             imageBytes,
             fit: BoxFit.fitHeight,
           );
+          generationIdx++;
 
           _generationInfos[infoIdx] = GenerationInfo(
               img: img,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/info_manager.dart';
+import '../models/global_settings.dart';
 import '../widgets/prompt_config_widget.dart';
 
 class PromptConfigScreen extends StatefulWidget {
@@ -28,11 +29,11 @@ class PromptConfigScreenState extends State<PromptConfigScreen> {
         tooltip: 'Toggle compact view',
         onPressed: () => {
           setState(() {
-            InfoManager().showCompactPromptView =
-                !InfoManager().showCompactPromptView;
+            GlobalSettings().showCompactPromptView =
+                !GlobalSettings().showCompactPromptView;
           })
         },
-        child: InfoManager().showCompactPromptView
+        child: GlobalSettings().showCompactPromptView
             ? const Icon(Icons.visibility_off)
             : const Icon(Icons.visibility),
       ),
