@@ -5,6 +5,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../generated/l10n.dart';
 import '../models/info_manager.dart';
 import '../widgets/param_config_widget.dart';
 import '../models/utils.dart';
@@ -31,7 +32,7 @@ class SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('User Settings'),
+        title: Text(S.of(context).settingScreenTitle),
       ),
       body: ListView(
         children: [

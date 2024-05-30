@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../generated/l10n.dart';
 import '../models/info_manager.dart';
 import '../models/global_settings.dart';
 import '../widgets/prompt_config_widget.dart';
@@ -15,7 +17,7 @@ class PromptConfigScreenState extends State<PromptConfigScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Prompt Configuration'),
+        title: Text(S.of(context).configScreenTitle),
       ),
       body: SingleChildScrollView(
           child: Padding(

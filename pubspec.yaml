@@ -45,6 +45,10 @@ dependencies:
   image_save: ^5.0.0
   another_flushbar: ^1.12.30
   flutter_speed_dial: ^7.0.0
+  intl: ^0.18.1
+  flutter_localizations:
+    sdk: flutter
+  
 
 dev_dependencies:
   flutter_test:

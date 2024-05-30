@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
+import '../generated/l10n.dart';
 import '../models/global_settings.dart';
 import '../models/info_manager.dart';
 import '../models/utils.dart';
@@ -25,7 +26,7 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
         leading: InfoManager().isRequesting
             ? const BlinkingIcon()
             : const Icon(Icons.cloud_upload, color: Colors.grey),
-        title: const Text('Generation'),
+        title: Text(S.of(context).generationScreenTitle),
       ),
       body: Column(children: [
         Expanded(

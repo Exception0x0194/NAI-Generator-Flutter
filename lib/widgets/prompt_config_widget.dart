@@ -145,7 +145,8 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
   }
 
   Widget _buildShuffled() {
-    return widget.config.selectionMethod == 'single_sequential'
+    return (widget.config.selectionMethod == 'single_sequential' ||
+            widget.config.selectionMethod == 'multiple_num')
         ? const SizedBox.shrink()
         : _buildSwitchTile("Shuffled", widget.config.shuffled, (newValue) {
             setState(() => widget.config.shuffled = newValue);

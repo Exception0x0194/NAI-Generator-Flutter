@@ -2,11 +2,14 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
+
 import 'screens/generator_screen.dart';
 import 'screens/settings_screen.dart';
 import 'screens/prompt_config_screen.dart';
 import 'models/info_manager.dart';
+import 'generated/l10n.dart';
 
 void main() {
   runApp(ChangeNotifierProvider(
@@ -25,6 +28,13 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.pink.shade700),
           useMaterial3: true,
           fontFamily: 'Noto'),
+      localizationsDelegates: const [
+        S.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: S.delegate.supportedLocales,
       home: const MyHomePage(),
     );
   }
@@ -39,22 +49,13 @@ class MyHomePage extends StatefulWidget {
 
 class MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
+  late Future _initializationFuture;
 
   @override
   void initState() {
     super.initState();
-    _loadInitialInfo();
+    _initializationFuture = _loadInitialInfo();
   }
-
-  static final List<Widget> _widgetOptions = <Widget>[
-    Consumer<InfoManager>(builder: (context, manager, child) {
-      // ignore: prefer_const_constructors
-      return PromptGenerationScreen();
-    }),
-    // const PromptGenerationScreen(),
-    const PromptConfigScreen(),
-    const SettingsScreen(),
-  ];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -62,36 +63,56 @@ class MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.create),
-            label: 'Generation',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.visibility),
-            label: 'Prompt Config',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-      ),
-    );
-  }
-
-  void _loadInitialInfo() async {
+  Future _loadInitialInfo() async {
     var jsonData =
         json.decode(await rootBundle.loadString('json/example.json'));
     InfoManager().fromJson(jsonData);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: _initializationFuture, // 使用预先初始化的Future
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          return Scaffold(
+            body: IndexedStack(
+              index: _selectedIndex,
+              children: [
+                Consumer<InfoManager>(builder: (context, manager, child) {
+                  // ignore: prefer_const_constructors
+                  return PromptGenerationScreen();
+                }),
+                // ignore: prefer_const_constructors
+                PromptConfigScreen(),
+                // ignore: prefer_const_constructors
+                SettingsScreen(),
+              ],
+            ),
+            bottomNavigationBar: BottomNavigationBar(
+              items: const <BottomNavigationBarItem>[
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.create),
+                  label: 'Generation',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.visibility),
+                  label: 'Prompt Config',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.settings),
+                  label: 'Settings',
+                )
+              ],
+              currentIndex: _selectedIndex,
+              onTap: _onItemTapped,
+            ),
+          );
+        } else {
+          // 显示加载指示器
+          return const Center(child: CircularProgressIndicator());
+        }
+      },
+    );
   }
 }
