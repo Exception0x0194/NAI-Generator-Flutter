@@ -17,7 +17,7 @@ class PromptConfigScreenState extends State<PromptConfigScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.of(context).configScreenTitle),
+        title: Text(S.of(context).prompt_config),
       ),
       body: SingleChildScrollView(
           child: Padding(
@@ -28,7 +28,7 @@ class PromptConfigScreenState extends State<PromptConfigScreen> {
         ),
       )),
       floatingActionButton: FloatingActionButton(
-        tooltip: 'Toggle compact view',
+        tooltip: S.of(context).toggle_compact_view,
         onPressed: () => {
           setState(() {
             GlobalSettings().showCompactPromptView =

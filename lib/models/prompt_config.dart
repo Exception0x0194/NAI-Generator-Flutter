@@ -138,7 +138,7 @@ class PromptConfig {
     }
 
     if (prompt.isNotEmpty) {
-      comment = '\n${'--' * depth}${this.comment}: $comment';
+      comment = '${'--' * depth}${this.comment}: $comment\n';
     }
 
     return {'prompt': prompt, 'comment': comment};

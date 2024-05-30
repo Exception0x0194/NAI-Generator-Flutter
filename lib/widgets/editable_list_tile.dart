@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../generated/l10n.dart';
+
 class EditableListTile extends StatelessWidget {
   final String title;
   final String currentValue;
@@ -35,7 +37,7 @@ class EditableListTile extends StatelessWidget {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Edit $title'),
+          title: Text('${S.of(context).edit}$title'),
           content: TextField(
             controller: controller,
             keyboardType: keyboardType,
@@ -44,14 +46,14 @@ class EditableListTile extends StatelessWidget {
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
+              child: Text(S.of(context).cancel),
             ),
             TextButton(
               onPressed: () {
                 onEditComplete(controller.text);
                 Navigator.of(context).pop();
               },
-              child: const Text('Save'),
+              child: Text(S.of(context).confirm),
             ),
           ],
         );
@@ -64,19 +66,20 @@ class SelectableListTile extends StatelessWidget {
   final String title;
   final String currentValue;
   final List<String> options;
+  final List<String>? options_text; // 可能为空的额外文本选项
   final Function(String) onSelectComplete;
   final Icon? leading;
   final bool? dense;
 
-  const SelectableListTile({
-    required this.title,
-    required this.currentValue,
-    required this.options,
-    required this.onSelectComplete,
-    super.key,
-    this.leading,
-    this.dense,
-  });
+  const SelectableListTile(
+      {required this.title,
+      required this.currentValue,
+      required this.options,
+      required this.onSelectComplete,
+      super.key,
+      this.leading,
+      this.dense,
+      this.options_text});
 
   @override
   Widget build(BuildContext context) {
@@ -94,21 +97,28 @@ class SelectableListTile extends StatelessWidget {
       context: context,
       builder: (context) {
         return SimpleDialog(
-          title: Text('Select $title'),
-          children: options
-              .map((String value) => SimpleDialogOption(
-                    onPressed: () {
-                      onSelectComplete(value);
-                      Navigator.pop(context);
-                    },
-                    child: ListTile(
-                        title: Text(value,
-                            style: TextStyle(
-                                fontWeight: currentValue == value
-                                    ? FontWeight.bold
-                                    : FontWeight.normal))),
-                  ))
-              .toList(),
+          title: Text('${S.of(context).select}$title'),
+          children: List<Widget>.generate(options.length, (int index) {
+            String displayText =
+                options_text != null && options_text!.length > index
+                    ? options_text![index]
+                    : options[index];
+            return SimpleDialogOption(
+              onPressed: () {
+                onSelectComplete(options[index]);
+                Navigator.pop(context);
+              },
+              child: ListTile(
+                title: Text(
+                  displayText,
+                  style: TextStyle(
+                      fontWeight: currentValue == options[index]
+                          ? FontWeight.bold
+                          : FontWeight.normal),
+                ),
+              ),
+            );
+          }),
         );
       },
     );

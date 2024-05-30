@@ -132,7 +132,7 @@ class InfoManager with ChangeNotifier {
               info: {
                 'filename': filename,
                 'idx': infoIdx,
-                'log': (data['comment'] as String).substring(1),
+                'log': (data['comment'] as String),
                 'prompt': data['body']['input'],
                 'seed': data['body']['parameters']['seed'],
                 'height': data['body']['parameters']['height'],
@@ -167,7 +167,7 @@ class InfoManager with ChangeNotifier {
   }
 
   void generatePrompt() {
-    var data = (getRequestData()['comment'] as String).substring(1);
+    var data = (getRequestData()['comment'] as String);
     addLog(data);
     notifyListeners();
   }

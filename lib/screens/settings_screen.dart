@@ -32,13 +32,13 @@ class SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.of(context).settingScreenTitle),
+        title: Text(S.of(context).settings),
       ),
       body: ListView(
         children: [
           ListTile(
             leading: const Icon(Icons.key),
-            title: const Text('NAI API Key'),
+            title: Text(S.of(context).NAI_API_key),
             subtitle: Text(InfoManager().apiKey),
             onTap: () {
               _editApiKey();
@@ -58,7 +58,7 @@ class SettingsScreenState extends State<SettingsScreen> {
             onPressed: () async {
               await _loadJsonConfig();
             },
-            tooltip: 'Import from file',
+            tooltip: S.of(context).import_settings_from_file,
             child: const Icon(Icons.file_open),
           ),
           const SizedBox(height: 20),
@@ -66,7 +66,7 @@ class SettingsScreenState extends State<SettingsScreen> {
             onPressed: () async {
               await _saveJsonConfig();
             },
-            tooltip: 'Export to file',
+            tooltip: S.of(context).export_settings_to_file,
             child: const Icon(Icons.save),
           ),
         ],
@@ -81,18 +81,18 @@ class SettingsScreenState extends State<SettingsScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Edit API Key'),
+          title: Text('${S.of(context).edit}${S.of(context).NAI_API_key}'),
           content: TextField(
             controller: controller,
             maxLines: null,
           ),
           actions: [
             TextButton(
-              child: const Text('Cancel'),
+              child: Text(S.of(context).cancel),
               onPressed: () => Navigator.of(context).pop(),
             ),
             TextButton(
-              child: const Text('Save'),
+              child: Text(S.of(context).confirm),
               onPressed: () {
                 setState(() {
                   InfoManager().apiKey = controller.text;
@@ -115,14 +115,16 @@ class SettingsScreenState extends State<SettingsScreen> {
         Map<String, dynamic> jsonData = json.decode(fileContent);
         setState(() {
           if (InfoManager().fromJson(jsonData)) {
-            showInfoBar(context, 'Imported from file');
+            showInfoBar(context,
+                '${S.of(context).info_import_file}${S.of(context).succeed}');
           } else {
             throw Exception();
           }
         });
       }
     } catch (e) {
-      showErrorBar(context, 'Import failed!');
+      showErrorBar(
+          context, '${S.of(context).info_import_file}${S.of(context).failed}');
     }
   }
 
@@ -133,7 +135,7 @@ class SettingsScreenState extends State<SettingsScreen> {
 
   _buildLinkTile() {
     return ListTile(
-      title: const Text('Github Repo'),
+      title: Text(S.of(context).github_repo),
       leading: const Icon(Icons.link),
       subtitle: const Text(
           'https://github.com/Exception0x0194/NAI-Generator-Flutter'),

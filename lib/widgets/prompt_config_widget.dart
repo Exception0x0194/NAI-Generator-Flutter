@@ -3,6 +3,7 @@ import 'dart:convert';
 import '../models/global_settings.dart';
 import '../models/utils.dart';
 import '../models/prompt_config.dart';
+import '../generated/l10n.dart';
 import 'editable_list_tile.dart';
 
 import 'package:flutter/material.dart';
@@ -64,9 +65,10 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
             icon: const Icon(Icons.copy),
             onPressed: () {
               copyToClipboard(json.encode(widget.config.toJson()));
-              showInfoBar(context, 'Exported to clipboard.');
+              showInfoBar(context,
+                  '${S.of(context).info_export_to_clipboard}${S.of(context).succeed}');
             },
-            tooltip: 'Copy to Clipboard',
+            tooltip: S.of(context).export_to_clipboard,
           ),
         ]),
         children: GlobalSettings().showCompactPromptView
@@ -92,7 +94,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
 
   Widget _buildSelectionMethodSelector() {
     return SelectableListTile(
-      title: 'Selection Method',
+      title: S.of(context).selection_method,
       currentValue: widget.config.selectionMethod,
       options: const [
         'all',
@@ -100,6 +102,13 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
         'single_sequential',
         'multiple_prob',
         'multiple_num'
+      ],
+      options_text: [
+        S.of(context).selection_method_all,
+        S.of(context).selection_method_single,
+        S.of(context).selection_method_single_sequential,
+        S.of(context).selection_method_multiple_prob,
+        S.of(context).selection_method_multiple_num
       ],
       onSelectComplete: (value) =>
           setState(() => widget.config.selectionMethod = value),
@@ -109,9 +118,13 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
 
   _buildTypeSelector({bool dense = false}) {
     return SelectableListTile(
-      title: 'Config Type',
+      title: S.of(context).cascaded_config_type,
       currentValue: widget.config.type,
       options: const ['str', 'config'],
+      options_text: [
+        S.of(context).cascaded_strings,
+        S.of(context).cascaded_config_type_config
+      ],
       onSelectComplete: (value) => setState(() => widget.config.type = value),
       leading: const Icon(Icons.type_specimen),
       dense: dense,
@@ -122,7 +135,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
     return widget.config.selectionMethod == 'multiple_prob'
         ? EditableListTile(
             leading: const Icon(Icons.question_mark),
-            title: "Prob",
+            title: S.of(context).selection_prob,
             currentValue: widget.config.prob.toString(),
             onEditComplete: (value) => setState(() => widget.config.prob =
                 double.tryParse(value) ?? widget.config.prob),
@@ -135,7 +148,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
     return widget.config.selectionMethod == 'multiple_num'
         ? EditableListTile(
             leading: const Icon(Icons.question_mark),
-            title: "Num",
+            title: S.of(context).selection_num,
             currentValue: widget.config.num.toString(),
             onEditComplete: (value) => setState(() =>
                 widget.config.num = int.tryParse(value) ?? widget.config.num),
@@ -145,19 +158,20 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
   }
 
   Widget _buildShuffled() {
-    return (widget.config.selectionMethod == 'single_sequential' ||
-            widget.config.selectionMethod == 'multiple_num')
-        ? const SizedBox.shrink()
-        : _buildSwitchTile("Shuffled", widget.config.shuffled, (newValue) {
+    return (widget.config.selectionMethod == 'all' ||
+            widget.config.selectionMethod == 'multiple_prob')
+        ? _buildSwitchTile(S.of(context).shuffled, widget.config.shuffled,
+            (newValue) {
             setState(() => widget.config.shuffled = newValue);
-          });
+          })
+        : const SizedBox.shrink();
   }
 
   Widget _buildStrsExpansion() {
     return widget.config.type == 'str'
         ? ExpansionTile(
             leading: const Icon(Icons.text_snippet),
-            title: const Text('Strings'),
+            title: Text(S.of(context).cascaded_strings),
             children: [
               Padding(
                   padding: const EdgeInsets.only(left: 10.0),
@@ -177,7 +191,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
         ? ExpansionTile(
             leading: const Icon(Icons.arrow_downward),
             initiallyExpanded: widget.indentLevel == 0,
-            title: const Text('Configs'),
+            title: Text(S.of(context).cascaded_configs),
             children: [
               ...widget.config.prompts.map((config) => PromptConfigWidget(
                     config: config,
@@ -188,7 +202,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
                 children: [
                   Expanded(
                     child: Tooltip(
-                      message: 'Add New Config',
+                      message: S.of(context).add_new_config,
                       child: IconButton(
                         icon: const Icon(Icons.add),
                         onPressed: () => _addNewConfig(),
@@ -197,7 +211,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
                   ),
                   Expanded(
                     child: Tooltip(
-                      message: 'Import from Clipboard',
+                      message: S.of(context).import_config_from_clipboard,
                       child: IconButton(
                         icon: const Icon(Icons.paste),
                         onPressed: () async {
@@ -208,7 +222,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
                   ),
                   Expanded(
                     child: Tooltip(
-                      message: 'Remove Config',
+                      message: S.of(context).delete_config,
                       child: IconButton(
                         icon: const Icon(Icons.remove),
                         onPressed: () => _removeConfig(),
@@ -225,7 +239,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
   _buildRandomBrackets() {
     return EditableListTile(
       leading: const Icon(Icons.code),
-      title: "Random Brackets",
+      title: S.of(context).random_brackets,
       currentValue: widget.config.randomBrackets.toString(),
       onEditComplete: (value) => setState(() => widget.config.randomBrackets =
           int.tryParse(value) ?? widget.config.randomBrackets),
@@ -240,7 +254,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Edit Strings'),
+          title: Text('${S.of(context).edit}${S.of(context).cascaded_strings}'),
           content: TextField(
             controller: controller,
             keyboardType: TextInputType.multiline,
@@ -248,11 +262,11 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
           ),
           actions: [
             TextButton(
-              child: const Text('Cancel'),
+              child: Text(S.of(context).cancel),
               onPressed: () => Navigator.of(context).pop(),
             ),
             TextButton(
-              child: const Text('Save'),
+              child: Text(S.of(context).confirm),
               onPressed: () {
                 setState(() {
                   widget.config.strs = controller.text
@@ -330,7 +344,8 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
           }
         });
       } catch (e) {
-        showErrorBar(context, 'Import failed!');
+        showErrorBar(context,
+            '${S.of(context).info_import_from_clipboard}${S.of(context).failed}');
       }
     }
   }
@@ -350,11 +365,11 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('Cancel'),
+              child: Text(S.of(context).cancel),
               onPressed: () => Navigator.of(context).pop(),
             ),
             TextButton(
-              child: const Text('OK'),
+              child: Text(S.of(context).confirm),
               onPressed: () {
                 final position = int.tryParse(controller.text);
                 Navigator.of(context).pop(position ?? -1);
@@ -373,7 +388,8 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
       title: Text(title),
       value: currentValue,
       onChanged: onChanged,
-      subtitle: Text(currentValue ? "Enabled" : "Disabled"),
+      subtitle:
+          Text(currentValue ? S.of(context).enabled : S.of(context).disabled),
     );
   }
 
@@ -383,7 +399,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Edit Comment'),
+          title: Text('${S.of(context).edit}${S.of(context).comment}'),
           content: TextField(
             controller: controller,
             keyboardType: TextInputType.text,
@@ -392,7 +408,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
+              child: Text(S.of(context).cancel),
             ),
             TextButton(
               onPressed: () {
@@ -401,7 +417,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
                 });
                 Navigator.of(context).pop();
               },
-              child: const Text('Save'),
+              child: Text(S.of(context).confirm),
             ),
           ],
         );
@@ -413,7 +429,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
     if (widget.config.type == 'str') {
       return [
         ListTile(
-          title: const Text('Strings'),
+          title: Text(S.of(context).cascaded_strings),
           subtitle: Text(widget.config.strs.join('\n')),
           onTap: () {
             _editStrList();
@@ -431,7 +447,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
           children: [
             Expanded(
               child: Tooltip(
-                message: 'Add New Config',
+                message: S.of(context).add_new_config,
                 child: IconButton(
                   icon: const Icon(Icons.add),
                   onPressed: () => _addNewConfig(),
@@ -440,7 +456,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
             ),
             Expanded(
               child: Tooltip(
-                message: 'Import from Clipboard',
+                message: S.of(context).import_config_from_clipboard,
                 child: IconButton(
                   icon: const Icon(Icons.paste),
                   onPressed: () async {
@@ -451,7 +467,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
             ),
             Expanded(
               child: Tooltip(
-                message: 'Remove Config',
+                message: S.of(context).delete_config,
                 child: IconButton(
                   icon: const Icon(Icons.remove),
                   onPressed: () => _removeConfig(),

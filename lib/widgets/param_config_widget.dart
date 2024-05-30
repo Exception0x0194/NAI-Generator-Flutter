@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'editable_list_tile.dart'; // 确保引入了我们前面定义的EditableListTile
+
+import '../generated/l10n.dart';
+import 'editable_list_tile.dart';
 import '../models/param_config.dart';
 
 class ParamConfigWidget extends StatefulWidget {
@@ -20,13 +22,13 @@ class ParamConfigWidgetState extends State<ParamConfigWidget> {
         Padding(
             padding: const EdgeInsets.only(left: 20),
             child: ExpansionTile(
-                title: const Text('Custom Size'),
+                title: Text(S.of(context).custom_size),
                 leading: const Icon(Icons.back_hand),
                 dense: true,
                 children: [
                   EditableListTile(
                     leading: const Icon(Icons.swap_horiz),
-                    title: "Width",
+                    title: S.of(context).width,
                     currentValue: widget.config.width.toString(),
                     onEditComplete: (value) => setState(() => widget.config
                         .width = int.tryParse(value) ?? widget.config.width),
@@ -34,7 +36,7 @@ class ParamConfigWidgetState extends State<ParamConfigWidget> {
                   ),
                   EditableListTile(
                     leading: const Icon(Icons.swap_vert),
-                    title: "Height",
+                    title: S.of(context).height,
                     currentValue: widget.config.height.toString(),
                     onEditComplete: (value) => setState(() => widget.config
                         .height = int.tryParse(value) ?? widget.config.height),
@@ -43,7 +45,7 @@ class ParamConfigWidgetState extends State<ParamConfigWidget> {
                 ])),
         EditableListTile(
           leading: const Icon(Icons.numbers),
-          title: "Scale",
+          title: S.of(context).scale,
           currentValue: widget.config.scale.toString(),
           onEditComplete: (value) => setState(() => widget.config.scale =
               double.tryParse(value) ?? widget.config.scale),
@@ -51,7 +53,7 @@ class ParamConfigWidgetState extends State<ParamConfigWidget> {
         ),
         EditableListTile(
           leading: const Icon(Icons.numbers),
-          title: "CFG Rescale",
+          title: S.of(context).cfg_rescale,
           currentValue: widget.config.cfgRescale.toString(),
           onEditComplete: (value) => setState(() => widget.config.cfgRescale =
               double.tryParse(value) ?? widget.config.cfgRescale),
@@ -59,7 +61,7 @@ class ParamConfigWidgetState extends State<ParamConfigWidget> {
         ),
         SelectableListTile(
             leading: const Icon(Icons.search),
-            title: 'Sampler',
+            title: S.of(context).sampler,
             currentValue: widget.config.sampler,
             options: const [
               'k_euler',
@@ -72,16 +74,16 @@ class ParamConfigWidgetState extends State<ParamConfigWidget> {
                     widget.config.sampler = value;
                   })
                 }),
-        _buildSwitchTile("SM", widget.config.sm, (newValue) {
+        _buildSwitchTile(S.of(context).sm, widget.config.sm, (newValue) {
           setState(() => widget.config.sm = newValue);
         }, const Icon(Icons.keyboard_double_arrow_right)),
-        _buildSwitchTile("SM Dyn", widget.config.smDyn, (newValue) {
+        _buildSwitchTile(S.of(context).sm_dyn, widget.config.smDyn, (newValue) {
           setState(() => widget.config.smDyn = newValue);
         }, const Icon(Icons.keyboard_double_arrow_right)),
         _buildRandomSeedTile(),
         EditableListTile(
           leading: const Icon(Icons.do_not_disturb),
-          title: "UC",
+          title: S.of(context).uc,
           currentValue: widget.config.negativePrompt,
           onEditComplete: (value) =>
               setState(() => widget.config.negativePrompt = value),
@@ -98,13 +100,14 @@ class ParamConfigWidgetState extends State<ParamConfigWidget> {
       title: Text(title),
       value: currentValue,
       onChanged: onChanged,
-      subtitle: Text(currentValue ? "Enabled" : "Disabled"),
+      subtitle:
+          Text(currentValue ? S.of(context).enabled : S.of(context).disabled),
     );
   }
 
   Widget _buildSizeSelector() {
     return SelectableListTile(
-      title: 'Image Size',
+      title: S.of(context).image_size,
       currentValue: _getSizeString(),
       options: const ['832 x 1216', '1024 x 1024', '1216 x 832'],
       onSelectComplete: (value) => {_setSize(value)},
@@ -134,7 +137,7 @@ class ParamConfigWidgetState extends State<ParamConfigWidget> {
     return Column(
       children: [
         _buildSwitchTile(
-          "Use Random Seed",
+          S.of(context).use_random_seed,
           widget.config.randomSeed,
           (newValue) {
             setState(() {
@@ -147,7 +150,7 @@ class ParamConfigWidgetState extends State<ParamConfigWidget> {
           Padding(
               padding: const EdgeInsets.only(left: 20),
               child: (EditableListTile(
-                  title: 'Seed',
+                  title: S.of(context).random_seed,
                   currentValue: widget.config.seed.toString(),
                   onEditComplete: (value) => {
                         setState(() {

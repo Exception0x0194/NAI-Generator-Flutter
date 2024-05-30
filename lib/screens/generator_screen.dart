@@ -26,7 +26,7 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
         leading: InfoManager().isRequesting
             ? const BlinkingIcon()
             : const Icon(Icons.cloud_upload, color: Colors.grey),
-        title: Text(S.of(context).generationScreenTitle),
+        title: Text(S.of(context).generation),
       ),
       body: Column(children: [
         Expanded(
@@ -40,13 +40,13 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           FloatingActionButton(
-            tooltip: 'Generation settings',
+            tooltip: S.of(context).generation_settings,
             onPressed: _showGenerationSettingsDialog,
             child: const Icon(Icons.construction),
           ),
           const SizedBox(height: 20),
           FloatingActionButton(
-            tooltip: 'Toggle generation',
+            tooltip: S.of(context).toggle_generation,
             onPressed: _toggleGeneration,
             child: Icon(
                 InfoManager().isGenerating ? Icons.stop : Icons.play_arrow),
@@ -130,14 +130,14 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
     }
   }
 
-  void _setRequestsNum() {
+  void _setRequestsNum(Function onComplete) {
     final controller =
         TextEditingController(text: InfoManager().remainingRequests.toString());
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Set Number of Requests - 0 for looping'),
+          title: Text(S.of(context).edit_image_number_to_generate),
           content: TextField(
             controller: controller,
             keyboardType: TextInputType.number,
@@ -151,15 +151,19 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
                 if (ok) {
                   var n = InfoManager().remainingRequests;
                   if (n == 0) {
-                    showInfoBar(context, 'Set looping generation.');
+                    showInfoBar(
+                        context, S.of(context).info_set_looping_genration);
                   } else {
-                    showInfoBar(context, 'Set $n requests.');
+                    showInfoBar(
+                        context, S.of(context).info_set_genration_number(n));
                   }
                 } else {
-                  showErrorBar(context, 'Error setting number of requests!');
+                  showErrorBar(
+                      context, S.of(context).info_set_genration_number_failed);
                 }
+                onComplete();
               },
-              child: const Text('Set'),
+              child: Text(S.of(context).confirm),
             ),
           ],
         );
@@ -185,11 +189,11 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setDialogState) {
             return SimpleDialog(
-              title: const Text('Generation Settings'),
+              title: Text(S.of(context).generation_settings),
               children: [
                 ListTile(
                     leading: const Icon(Icons.search),
-                    title: const Text('Info tile height'),
+                    title: Text(S.of(context).info_tile_height),
                     subtitle: Slider(
                       min: 0.3,
                       max: 1.0,
@@ -207,7 +211,7 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
                   secondary: GlobalSettings().showInfoForImg
                       ? const Icon(Icons.visibility_off)
                       : const Icon(Icons.visibility),
-                  title: const Text('Toggle info display aside images'),
+                  title: Text(S.of(context).toggle_display_info_aside_img),
                   value: GlobalSettings().showInfoForImg,
                   onChanged: (value) {
                     setState(() => GlobalSettings().showInfoForImg = value);
@@ -216,13 +220,10 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
                 ),
                 SwitchListTile(
                   secondary: const Icon(Icons.shuffle),
-                  title: const Text('Use random seed'),
-                  subtitle: Text(InfoManager().paramConfig.randomSeed
-                      ? 'Enabled'
-                      : 'Disabled'),
+                  title: Text(S.of(context).use_random_seed),
                   value: InfoManager().paramConfig.randomSeed,
                   onChanged: (value) {
-                    setDialogState(
+                    setState(
                         () => InfoManager().paramConfig.randomSeed = value);
                     setDialogState(() {});
                   },
@@ -231,7 +232,7 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
                   Padding(
                       padding: const EdgeInsets.only(left: 20),
                       child: EditableListTile(
-                          title: 'Seed',
+                          title: S.of(context).random_seed,
                           currentValue:
                               InfoManager().paramConfig.seed.toString(),
                           onEditComplete: (value) => {
@@ -243,18 +244,19 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
                               })),
                 ListTile(
                   leading: const Icon(Icons.alarm),
-                  title: const Text('Image numbers to generate'),
+                  title: Text(S.of(context).image_number_to_generate),
                   subtitle: Text(InfoManager().remainingRequests == 0
                       ? '∞'
                       : InfoManager().remainingRequests.toString()),
                   onTap: () {
-                    _setRequestsNum();
-                    setDialogState(() {});
+                    _setRequestsNum(() {
+                      setDialogState(() {});
+                    });
                   },
                 ),
                 ListTile(
                   leading: const Icon(Icons.info_outline),
-                  title: const Text('Generate one prompt'),
+                  title: Text(S.of(context).generate_one_prompt),
                   onTap: _generatePrompt,
                 ),
               ],

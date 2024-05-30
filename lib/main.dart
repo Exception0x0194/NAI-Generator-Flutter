@@ -72,7 +72,7 @@ class MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: _initializationFuture, // 使用预先初始化的Future
+      future: _initializationFuture,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           return Scaffold(
@@ -90,18 +90,18 @@ class MyHomePageState extends State<MyHomePage> {
               ],
             ),
             bottomNavigationBar: BottomNavigationBar(
-              items: const <BottomNavigationBarItem>[
+              items: <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.create),
-                  label: 'Generation',
+                  icon: const Icon(Icons.create),
+                  label: S.of(context).generation,
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.visibility),
-                  label: 'Prompt Config',
+                  icon: const Icon(Icons.visibility),
+                  label: S.of(context).prompt_config,
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.settings),
-                  label: 'Settings',
+                  icon: const Icon(Icons.settings),
+                  label: S.of(context).settings,
                 )
               ],
               currentIndex: _selectedIndex,
@@ -109,7 +109,6 @@ class MyHomePageState extends State<MyHomePage> {
             ),
           );
         } else {
-          // 显示加载指示器
           return const Center(child: CircularProgressIndicator());
         }
       },
