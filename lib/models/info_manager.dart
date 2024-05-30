@@ -75,9 +75,10 @@ class InfoManager with ChangeNotifier {
 
   Map<String, dynamic> getRequestData() {
     var pickedPrompts = promptConfig.pickPromptsFromConfig();
+    var prompts = pickedPrompts['head']! + pickedPrompts['tail']!;
     return {
       "body": {
-        "input": pickedPrompts['prompt'],
+        "input": prompts,
         "model": "nai-diffusion-3",
         "action": "generate",
         "parameters": paramConfig.toJson(),
@@ -167,8 +168,10 @@ class InfoManager with ChangeNotifier {
   }
 
   void generatePrompt() {
-    var data = (getRequestData()['comment'] as String);
-    addLog(data);
+    var data = getRequestData();
+    addNewInfo(GenerationInfo(
+        info: {'log': data['comment'], 'prompt': data['body']['input']},
+        type: 'info'));
     notifyListeners();
   }
 

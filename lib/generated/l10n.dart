@@ -380,6 +380,26 @@ class S {
     );
   }
 
+  /// `Enter position - start from 0`
+  String get enter_position {
+    return Intl.message(
+      'Enter position - start from 0',
+      name: 'enter_position',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Position (leave blank for end)`
+  String get enter_position_placeholder {
+    return Intl.message(
+      'Position (leave blank for end)',
+      name: 'enter_position_placeholder',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Enable/Disable Config`
   String get toggle_config_enable {
     return Intl.message(

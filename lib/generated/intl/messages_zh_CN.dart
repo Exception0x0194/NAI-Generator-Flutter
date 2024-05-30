@@ -45,6 +45,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "edit_image_number_to_generate":
             MessageLookupByLibrary.simpleMessage("设置生成图片数量（设为0即不断生成）"),
         "enabled": MessageLookupByLibrary.simpleMessage("启用"),
+        "enter_position": MessageLookupByLibrary.simpleMessage("选择位置 - 从0开始"),
+        "enter_position_placeholder":
+            MessageLookupByLibrary.simpleMessage("操作位置（留空则选择末尾）"),
         "export_settings_to_file":
             MessageLookupByLibrary.simpleMessage("导出设置到文件"),
         "export_to_clipboard": MessageLookupByLibrary.simpleMessage("导出到剪切板"),

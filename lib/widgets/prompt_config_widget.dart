@@ -356,12 +356,12 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
       builder: (BuildContext context) {
         TextEditingController controller = TextEditingController();
         return AlertDialog(
-          title: const Text("Enter position - start from 0"),
+          title: Text(S.of(context).enter_position),
           content: TextField(
             controller: controller,
             keyboardType: TextInputType.number,
-            decoration: const InputDecoration(
-                hintText: "Position (leave blank for end)"),
+            decoration: InputDecoration(
+                hintText: S.of(context).enter_position_placeholder),
           ),
           actions: <Widget>[
             TextButton(

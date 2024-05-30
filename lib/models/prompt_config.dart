@@ -72,6 +72,9 @@ class PromptConfig {
   }
 
   String addBrackets(String s) {
+    if (randomBrackets == 0) {
+      return s;
+    }
     List<String> brackets =
         Random().nextDouble() > 0.5 ? ["[", "]"] : ["{", "}"];
     final n = Random().nextInt(randomBrackets + 1);
@@ -80,7 +83,7 @@ class PromptConfig {
   }
 
   Map<String, String> pickPromptsFromConfig() {
-    String prompt = '';
+    String head = '', tail = '';
     String comment = '';
 
     List<dynamic> chosenPrompts = [];
@@ -114,6 +117,7 @@ class PromptConfig {
       case 'single_sequential':
         chosenPrompts = [toChoosePrompts[sequentialIdx]];
         sequentialIdx = (sequentialIdx + 1) % toChoosePrompts.length;
+        break;
       default:
         chosenPrompts = List.from(toChoosePrompts);
     }
@@ -124,23 +128,32 @@ class PromptConfig {
 
     for (var p in chosenPrompts) {
       if (type == 'str') {
-        if (randomBrackets > 0) {
-          p = addBrackets(p);
+        if (p.contains('|||')) {
+          var parts = p.split('|||');
+          head = '${addBrackets(parts[0])}, $head';
+          tail = '$tail${addBrackets(parts[1])}, ';
+        } else {
+          tail = '$tail${addBrackets(p)}, ';
         }
-        prompt += '$p, ';
         comment += '$p, ';
       } else if (type == 'config') {
         var subPromptConfig = p as PromptConfig;
         var result = subPromptConfig.pickPromptsFromConfig();
-        prompt += result['prompt']!;
+        if (result['head']!.isNotEmpty) {
+          head = '${result['head']}$head';
+        }
+        if (result['tail']!.isNotEmpty) {
+          tail = '$tail${result['tail']}';
+        }
         comment += result['comment']!;
       }
     }
 
-    if (prompt.isNotEmpty) {
-      comment = '${'--' * depth}${this.comment}: $comment\n';
+    if (head.isNotEmpty || tail.isNotEmpty) {
+      comment =
+          '${'--' * depth}${this.comment}:${type == 'config' ? '\n' : ' '}$comment${type == 'config' ? '' : '\n'}';
     }
 
-    return {'prompt': prompt, 'comment': comment};
+    return {'head': head, 'tail': tail, 'comment': comment};
   }
 }

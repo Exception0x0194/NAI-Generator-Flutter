@@ -32,6 +32,8 @@
     "add_new_config": "Add New Config",
     "import_config_from_clipboard": "Import Config from Clipboard",
     "delete_config": "Delete Config",
+    "enter_position": "Enter position - start from 0",
+    "enter_position_placeholder": "Position (leave blank for end)",
     "toggle_config_enable": "Enable/Disable Config",
     "toggle_compact_view": "Toggle Compact View",
     "NAI_API_key": "NAI API Key",

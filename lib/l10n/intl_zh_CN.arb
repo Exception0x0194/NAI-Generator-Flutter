@@ -32,6 +32,8 @@
     "add_new_config": "插入新Config",
     "import_config_from_clipboard": "从剪切板导入Config",
     "delete_config": "删除Config",
+    "enter_position": "选择位置 - 从0开始",
+    "enter_position_placeholder": "操作位置（留空则选择末尾）",
     "toggle_config_enable": "启用/禁用Config",
     "toggle_compact_view": "切换紧凑视图",
     "NAI_API_key": "NAI API key",

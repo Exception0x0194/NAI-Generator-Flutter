@@ -51,6 +51,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "edit_image_number_to_generate": MessageLookupByLibrary.simpleMessage(
             "Set Number of Images to Generate (Set to 0 for continuous generation)"),
         "enabled": MessageLookupByLibrary.simpleMessage("Enabled"),
+        "enter_position": MessageLookupByLibrary.simpleMessage(
+            "Enter position - start from 0"),
+        "enter_position_placeholder": MessageLookupByLibrary.simpleMessage(
+            "Position (leave blank for end)"),
         "export_settings_to_file":
             MessageLookupByLibrary.simpleMessage("Export Settings to File"),
         "export_to_clipboard":
