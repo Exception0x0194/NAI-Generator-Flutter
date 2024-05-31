@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../generated/l10n.dart';
 import '../models/info_manager.dart';
-import '../models/global_settings.dart';
 import '../widgets/prompt_config_widget.dart';
 
 class PromptConfigScreen extends StatefulWidget {
@@ -13,6 +12,8 @@ class PromptConfigScreen extends StatefulWidget {
 }
 
 class PromptConfigScreenState extends State<PromptConfigScreen> {
+  bool _showCompactView = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,19 +24,18 @@ class PromptConfigScreenState extends State<PromptConfigScreen> {
           child: Padding(
         padding: const EdgeInsets.only(right: 0),
         child: PromptConfigWidget(
-          config: InfoManager().promptConfig, // 使用全局配置
-          indentLevel: 0,
-        ),
+            config: InfoManager().promptConfig,
+            indentLevel: 0,
+            showCompactView: _showCompactView),
       )),
       floatingActionButton: FloatingActionButton(
         tooltip: S.of(context).toggle_compact_view,
         onPressed: () => {
           setState(() {
-            GlobalSettings().showCompactPromptView =
-                !GlobalSettings().showCompactPromptView;
+            _showCompactView = !_showCompactView;
           })
         },
-        child: GlobalSettings().showCompactPromptView
+        child: _showCompactView
             ? const Icon(Icons.visibility_off)
             : const Icon(Icons.visibility),
       ),

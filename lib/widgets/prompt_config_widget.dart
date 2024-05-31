@@ -1,7 +1,5 @@
 import 'dart:convert';
-import 'dart:isolate';
 
-import '../models/global_settings.dart';
 import '../models/utils.dart';
 import '../models/prompt_config.dart';
 import '../generated/l10n.dart';
@@ -13,11 +11,13 @@ import 'package:flutter/services.dart';
 class PromptConfigWidget extends StatefulWidget {
   final PromptConfig config;
   final int indentLevel;
+  final bool showCompactView;
 
   const PromptConfigWidget({
     super.key,
     required this.config,
     required this.indentLevel,
+    required this.showCompactView,
   });
 
   @override
@@ -30,7 +30,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
     return Padding(
       padding: const EdgeInsets.only(left: 10.0),
       child: ExpansionTile(
-        leading: GlobalSettings().showCompactPromptView
+        leading: widget.showCompactView
             ? IconButton(
                 onPressed: () => setState(() {
                       if (widget.config.type == 'str') {
@@ -72,7 +72,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
             tooltip: S.of(context).export_to_clipboard,
           ),
         ]),
-        children: GlobalSettings().showCompactPromptView
+        children: widget.showCompactView
             ? _buildCompactChildList()
             : [
                 Padding(
@@ -207,6 +207,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
               ...widget.config.prompts.map((config) => PromptConfigWidget(
                     config: config,
                     indentLevel: widget.indentLevel + 1,
+                    showCompactView: widget.showCompactView,
                   )),
               ListTile(
                   title: Row(
@@ -473,9 +474,9 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
     } else {
       return [
         ...widget.config.prompts.map((config) => PromptConfigWidget(
-              config: config,
-              indentLevel: widget.indentLevel + 1,
-            )),
+            config: config,
+            indentLevel: widget.indentLevel + 1,
+            showCompactView: widget.showCompactView)),
         ListTile(
             title: Row(
           children: [
