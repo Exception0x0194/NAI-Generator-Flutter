@@ -36,6 +36,7 @@ class InfoManager with ChangeNotifier {
 
   // Request status
   bool isRequesting = false;
+  int presetRequests = 0;
   int remainingRequests = 0;
   bool isGenerating = false;
 
@@ -90,6 +91,7 @@ class InfoManager with ChangeNotifier {
   void startGeneration() {
     generationTimestamp = DateTime.now();
     generationIdx = 0;
+    remainingRequests = presetRequests;
     generateImage();
   }
 

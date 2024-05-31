@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:nai_casrand/models/utils.dart';
 
 import '../models/generation_info.dart';
-import '../models/global_settings.dart';
 
 class GenerationInfoWidget extends StatelessWidget {
   final GenerationInfo info;
+  final bool showInfoForImg;
 
-  const GenerationInfoWidget({super.key, required this.info});
+  const GenerationInfoWidget(
+      {super.key, required this.info, required this.showInfoForImg});
 
   @override
   Widget build(BuildContext context) {
@@ -61,11 +62,10 @@ class GenerationInfoWidget extends StatelessWidget {
                   child: ListTile(title: Text(info.info['filename']!)),
                 );
               })),
-              if (!GlobalSettings().showInfoForImg) _buildButtons(context)
+              if (!showInfoForImg) _buildButtons(context)
             ],
           ),
-          if (GlobalSettings().showInfoForImg)
-            _buildInfoWidget(context, margined: false)
+          if (showInfoForImg) _buildInfoWidget(context, margined: false)
         ]));
   }
 

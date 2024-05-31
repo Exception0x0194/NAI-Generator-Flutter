@@ -19,6 +19,7 @@ class ParamConfigWidgetState extends State<ParamConfigWidget> {
     return Column(
       children: [
         _buildSizeSelector(),
+        // Manual Size
         Padding(
             padding: const EdgeInsets.only(left: 20),
             child: ExpansionTile(
@@ -30,6 +31,7 @@ class ParamConfigWidgetState extends State<ParamConfigWidget> {
                     leading: const Icon(Icons.swap_horiz),
                     title: S.of(context).width,
                     currentValue: widget.config.width.toString(),
+                    confirmOnSubmit: true,
                     onEditComplete: (value) => setState(() => widget.config
                         .width = int.tryParse(value) ?? widget.config.width),
                     keyboardType: TextInputType.number,
@@ -38,15 +40,18 @@ class ParamConfigWidgetState extends State<ParamConfigWidget> {
                     leading: const Icon(Icons.swap_vert),
                     title: S.of(context).height,
                     currentValue: widget.config.height.toString(),
+                    confirmOnSubmit: true,
                     onEditComplete: (value) => setState(() => widget.config
                         .height = int.tryParse(value) ?? widget.config.height),
                     keyboardType: TextInputType.number,
                   ),
                 ])),
+        // CFG
         EditableListTile(
           leading: const Icon(Icons.numbers),
           title: S.of(context).scale,
           currentValue: widget.config.scale.toString(),
+          confirmOnSubmit: true,
           onEditComplete: (value) => setState(() => widget.config.scale =
               double.tryParse(value) ?? widget.config.scale),
           keyboardType: TextInputType.number,
@@ -55,10 +60,12 @@ class ParamConfigWidgetState extends State<ParamConfigWidget> {
           leading: const Icon(Icons.numbers),
           title: S.of(context).cfg_rescale,
           currentValue: widget.config.cfgRescale.toString(),
+          confirmOnSubmit: true,
           onEditComplete: (value) => setState(() => widget.config.cfgRescale =
               double.tryParse(value) ?? widget.config.cfgRescale),
           keyboardType: TextInputType.number,
         ),
+        // Sampler
         SelectableListTile(
             leading: const Icon(Icons.search),
             title: S.of(context).sampler,
@@ -74,17 +81,21 @@ class ParamConfigWidgetState extends State<ParamConfigWidget> {
                     widget.config.sampler = value;
                   })
                 }),
+        // SMEA
         _buildSwitchTile(S.of(context).sm, widget.config.sm, (newValue) {
           setState(() => widget.config.sm = newValue);
         }, const Icon(Icons.keyboard_double_arrow_right)),
         _buildSwitchTile(S.of(context).sm_dyn, widget.config.smDyn, (newValue) {
           setState(() => widget.config.smDyn = newValue);
         }, const Icon(Icons.keyboard_double_arrow_right)),
+        // Seed
         _buildRandomSeedTile(),
+        // UC
         EditableListTile(
           leading: const Icon(Icons.do_not_disturb),
           title: S.of(context).uc,
           currentValue: widget.config.negativePrompt,
+          confirmOnSubmit: true,
           onEditComplete: (value) =>
               setState(() => widget.config.negativePrompt = value),
           keyboardType: TextInputType.text,
@@ -152,6 +163,7 @@ class ParamConfigWidgetState extends State<ParamConfigWidget> {
               child: (EditableListTile(
                   title: S.of(context).random_seed,
                   currentValue: widget.config.seed.toString(),
+                  confirmOnSubmit: true,
                   onEditComplete: (value) => {
                         setState(() {
                           widget.config.seed =

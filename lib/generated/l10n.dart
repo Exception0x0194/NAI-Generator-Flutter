@@ -140,16 +140,6 @@ class S {
     );
   }
 
-  /// `Set looping generation`
-  String get info_set_looping_genration {
-    return Intl.message(
-      'Set looping generation',
-      name: 'info_set_looping_genration',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Set {num} generations`
   String info_set_genration_number(Object num) {
     return Intl.message(
@@ -167,6 +157,16 @@ class S {
       name: 'info_set_genration_number_failed',
       desc: '',
       args: [],
+    );
+  }
+
+  /// `Started generation for {num} images`
+  String info_start_generation(Object num) {
+    return Intl.message(
+      'Started generation for $num images',
+      name: 'info_start_generation',
+      desc: '',
+      args: [num],
     );
   }
 
@@ -380,20 +380,30 @@ class S {
     );
   }
 
-  /// `Enter position - start from 0`
+  /// `Enter position`
   String get enter_position {
     return Intl.message(
-      'Enter position - start from 0',
+      'Enter position',
       name: 'enter_position',
       desc: '',
       args: [],
     );
   }
 
-  /// `Position (leave blank for end)`
+  /// `0 → head; blank → tail`
+  String get notice_enter_positon {
+    return Intl.message(
+      '0 → head; blank → tail',
+      name: 'notice_enter_positon',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Position`
   String get enter_position_placeholder {
     return Intl.message(
-      'Position (leave blank for end)',
+      'Position',
       name: 'enter_position_placeholder',
       desc: '',
       args: [],

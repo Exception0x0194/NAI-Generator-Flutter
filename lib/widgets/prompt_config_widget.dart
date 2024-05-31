@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:isolate';
 
 import '../models/global_settings.dart';
 import '../models/utils.dart';
@@ -137,9 +138,14 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
             leading: const Icon(Icons.question_mark),
             title: S.of(context).selection_prob,
             currentValue: widget.config.prob.toString(),
-            onEditComplete: (value) => setState(() => widget.config.prob =
-                double.tryParse(value) ?? widget.config.prob),
+            onEditComplete: (value) => setState(() {
+              var n = double.tryParse(value);
+              if (n != null && 0 <= n && n <= 1) {
+                widget.config.prob = n;
+              }
+            }),
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
+            confirmOnSubmit: true,
           )
         : const SizedBox.shrink();
   }
@@ -150,9 +156,14 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
             leading: const Icon(Icons.question_mark),
             title: S.of(context).selection_num,
             currentValue: widget.config.num.toString(),
-            onEditComplete: (value) => setState(() =>
-                widget.config.num = int.tryParse(value) ?? widget.config.num),
+            onEditComplete: (value) => setState(() {
+              var n = int.tryParse(value);
+              if (n != null && 0 <= n) {
+                widget.config.num = n;
+              }
+            }),
             keyboardType: TextInputType.number,
+            confirmOnSubmit: true,
           )
         : const SizedBox.shrink();
   }
@@ -241,9 +252,14 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
       leading: const Icon(Icons.code),
       title: S.of(context).random_brackets,
       currentValue: widget.config.randomBrackets.toString(),
-      onEditComplete: (value) => setState(() => widget.config.randomBrackets =
-          int.tryParse(value) ?? widget.config.randomBrackets),
+      onEditComplete: (value) => setState(() {
+        var n = int.tryParse(value);
+        if (n != null && n >= 0) {
+          widget.config.randomBrackets = n;
+        }
+      }),
       keyboardType: TextInputType.number,
+      confirmOnSubmit: true,
     );
   }
 
@@ -259,6 +275,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
             controller: controller,
             keyboardType: TextInputType.multiline,
             maxLines: null, // 允许无限行
+            autofocus: true,
           ),
           actions: [
             TextButton(
@@ -357,12 +374,21 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
         TextEditingController controller = TextEditingController();
         return AlertDialog(
           title: Text(S.of(context).enter_position),
-          content: TextField(
-            controller: controller,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(
-                hintText: S.of(context).enter_position_placeholder),
-          ),
+          content: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(S.of(context).notice_enter_positon),
+                TextField(
+                  controller: controller,
+                  keyboardType: TextInputType.number,
+                  onSubmitted: (_) {
+                    final position = int.tryParse(controller.text);
+                    Navigator.of(context).pop(position ?? -1);
+                  },
+                  autofocus: true,
+                )
+              ]),
           actions: <Widget>[
             TextButton(
               child: Text(S.of(context).cancel),
@@ -395,6 +421,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
 
   void _showEditCommentDialog(BuildContext context) {
     final controller = TextEditingController(text: widget.config.comment);
+
     showDialog(
       context: context,
       builder: (context) {
@@ -404,6 +431,13 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
             controller: controller,
             keyboardType: TextInputType.text,
             maxLines: null,
+            onSubmitted: (_) {
+              Navigator.of(context).pop();
+              setState(() {
+                widget.config.comment = controller.text;
+              });
+            },
+            autofocus: true,
           ),
           actions: <Widget>[
             TextButton(
@@ -412,10 +446,10 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
             ),
             TextButton(
               onPressed: () {
+                Navigator.of(context).pop();
                 setState(() {
                   widget.config.comment = controller.text;
                 });
-                Navigator.of(context).pop();
               },
               child: Text(S.of(context).confirm),
             ),

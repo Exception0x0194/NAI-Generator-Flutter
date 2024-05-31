@@ -8,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../generated/l10n.dart';
 import '../models/info_manager.dart';
 import '../widgets/param_config_widget.dart';
+import '../widgets/editable_list_tile.dart';
 import '../models/utils.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -36,14 +37,16 @@ class SettingsScreenState extends State<SettingsScreen> {
       ),
       body: ListView(
         children: [
-          ListTile(
-            leading: const Icon(Icons.key),
-            title: Text(S.of(context).NAI_API_key),
-            subtitle: Text(InfoManager().apiKey),
-            onTap: () {
-              _editApiKey();
-            },
-          ),
+          EditableListTile(
+              leading: const Icon(Icons.key),
+              title: S.of(context).NAI_API_key,
+              currentValue: InfoManager().apiKey,
+              confirmOnSubmit: true,
+              onEditComplete: (value) {
+                setState(() {
+                  InfoManager().apiKey = value;
+                });
+              }),
           Padding(
               padding: const EdgeInsets.only(left: 20, right: 80),
               child: ParamConfigWidget(config: InfoManager().paramConfig)),
@@ -71,38 +74,6 @@ class SettingsScreenState extends State<SettingsScreen> {
           ),
         ],
       ),
-    );
-  }
-
-  void _editApiKey() {
-    TextEditingController controller =
-        TextEditingController(text: InfoManager().apiKey);
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('${S.of(context).edit}${S.of(context).NAI_API_key}'),
-          content: TextField(
-            controller: controller,
-            maxLines: null,
-          ),
-          actions: [
-            TextButton(
-              child: Text(S.of(context).cancel),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-            TextButton(
-              child: Text(S.of(context).confirm),
-              onPressed: () {
-                setState(() {
-                  InfoManager().apiKey = controller.text;
-                  Navigator.of(context).pop();
-                });
-              },
-            ),
-          ],
-        );
-      },
     );
   }
 

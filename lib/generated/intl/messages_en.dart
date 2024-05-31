@@ -22,6 +22,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m0(num) => "Set ${num} generations";
 
+  static String m1(num) => "Started generation for ${num} images";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "NAI_API_key": MessageLookupByLibrary.simpleMessage("NAI API Key"),
@@ -51,10 +53,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "edit_image_number_to_generate": MessageLookupByLibrary.simpleMessage(
             "Set Number of Images to Generate (Set to 0 for continuous generation)"),
         "enabled": MessageLookupByLibrary.simpleMessage("Enabled"),
-        "enter_position": MessageLookupByLibrary.simpleMessage(
-            "Enter position - start from 0"),
-        "enter_position_placeholder": MessageLookupByLibrary.simpleMessage(
-            "Position (leave blank for end)"),
+        "enter_position":
+            MessageLookupByLibrary.simpleMessage("Enter position"),
+        "enter_position_placeholder":
+            MessageLookupByLibrary.simpleMessage("Position"),
         "export_settings_to_file":
             MessageLookupByLibrary.simpleMessage("Export Settings to File"),
         "export_to_clipboard":
@@ -86,10 +88,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "info_set_genration_number": m0,
         "info_set_genration_number_failed":
             MessageLookupByLibrary.simpleMessage("Set genration number failed"),
-        "info_set_looping_genration":
-            MessageLookupByLibrary.simpleMessage("Set looping generation"),
+        "info_start_generation": m1,
         "info_tile_height":
             MessageLookupByLibrary.simpleMessage("Image Tile Height"),
+        "notice_enter_positon":
+            MessageLookupByLibrary.simpleMessage("0 → head; blank → tail"),
         "prompt_config":
             MessageLookupByLibrary.simpleMessage("Prompt Settings"),
         "random_brackets":

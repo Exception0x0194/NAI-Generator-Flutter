@@ -9,16 +9,21 @@ class EditableListTile extends StatelessWidget {
   final TextInputType keyboardType;
   final Icon? leading;
   final bool? dense;
+  final bool? confirmOnSubmit;
+  final String? editValue;
+  final String? notice;
 
-  const EditableListTile({
-    super.key,
-    required this.title,
-    required this.currentValue,
-    required this.onEditComplete,
-    this.keyboardType = TextInputType.text, // 默认为文本输入
-    this.leading,
-    this.dense,
-  });
+  const EditableListTile(
+      {super.key,
+      required this.title,
+      required this.currentValue,
+      required this.onEditComplete,
+      this.keyboardType = TextInputType.text, // 默认为文本输入
+      this.leading,
+      this.dense,
+      this.confirmOnSubmit,
+      this.editValue,
+      this.notice});
 
   @override
   Widget build(BuildContext context) {
@@ -32,17 +37,31 @@ class EditableListTile extends StatelessWidget {
   }
 
   void _showEditDialog(BuildContext context) {
-    final controller = TextEditingController(text: currentValue);
+    final controller = TextEditingController(text: editValue ?? currentValue);
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
           title: Text('${S.of(context).edit}$title'),
-          content: TextField(
-            controller: controller,
-            keyboardType: keyboardType,
-            maxLines: null,
-          ),
+          content: Flexible(
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                notice == null ? const SizedBox.shrink() : Text(notice!),
+                TextField(
+                  controller: controller,
+                  keyboardType: keyboardType,
+                  maxLines: null,
+                  onSubmitted: (confirmOnSubmit != null && confirmOnSubmit!)
+                      ? (_) {
+                          Navigator.of(context).pop();
+                          onEditComplete(controller.text);
+                        }
+                      : null,
+                  autofocus: true,
+                ),
+              ])),
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
@@ -50,8 +69,8 @@ class EditableListTile extends StatelessWidget {
             ),
             TextButton(
               onPressed: () {
-                onEditComplete(controller.text);
                 Navigator.of(context).pop();
+                onEditComplete(controller.text);
               },
               child: Text(S.of(context).confirm),
             ),

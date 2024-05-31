@@ -22,6 +22,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m0(num) => "设置生成${num}幅图片";
 
+  static String m1(num) => "开始生成${num}幅图片";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "NAI_API_key": MessageLookupByLibrary.simpleMessage("NAI API key"),
@@ -45,9 +47,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "edit_image_number_to_generate":
             MessageLookupByLibrary.simpleMessage("设置生成图片数量（设为0即不断生成）"),
         "enabled": MessageLookupByLibrary.simpleMessage("启用"),
-        "enter_position": MessageLookupByLibrary.simpleMessage("选择位置 - 从0开始"),
-        "enter_position_placeholder":
-            MessageLookupByLibrary.simpleMessage("操作位置（留空则选择末尾）"),
+        "enter_position": MessageLookupByLibrary.simpleMessage("选择位置"),
         "export_settings_to_file":
             MessageLookupByLibrary.simpleMessage("导出设置到文件"),
         "export_to_clipboard": MessageLookupByLibrary.simpleMessage("导出到剪切板"),
@@ -74,9 +74,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "info_set_genration_number": m0,
         "info_set_genration_number_failed":
             MessageLookupByLibrary.simpleMessage("设置中出现错误"),
-        "info_set_looping_genration":
-            MessageLookupByLibrary.simpleMessage("设置为不断生成"),
+        "info_start_generation": m1,
         "info_tile_height": MessageLookupByLibrary.simpleMessage("图片磁贴高度"),
+        "notice_enter_positon":
+            MessageLookupByLibrary.simpleMessage("0 → 开头；留空 → 末尾"),
         "prompt_config": MessageLookupByLibrary.simpleMessage("Prompt设置"),
         "random_brackets": MessageLookupByLibrary.simpleMessage("随机括号数量"),
         "random_seed": MessageLookupByLibrary.simpleMessage("随机种子"),

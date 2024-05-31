@@ -2,7 +2,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import '../generated/l10n.dart';
-import '../models/global_settings.dart';
 import '../models/info_manager.dart';
 import '../models/utils.dart';
 import '../widgets/editable_list_tile.dart';
@@ -18,6 +17,9 @@ class PromptGenerationScreen extends StatefulWidget {
 
 class PromptGenerationScreenState extends State<PromptGenerationScreen> {
   final ScrollController _scrollController = ScrollController();
+
+  bool _showInfoForImg = true;
+  double _infoTileHeight = 1.0;
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +59,7 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
   }
 
   Widget _buildGenerationInfoList() {
-    var itemsPerCol = (1 / GlobalSettings().infoHeight).floor();
+    var itemsPerCol = (1 / _infoTileHeight).floor();
     return Padding(
       padding: const EdgeInsets.only(bottom: 20),
       child: LayoutBuilder(builder: (context, constraints) {
@@ -81,7 +83,7 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
               itemCount:
                   (InfoManager().generationInfos.length / itemsPerCol).ceil(),
               itemBuilder: (context, index) {
-                return _buildColumn(index);
+                return _buildGenerationInfoColumn(index);
               },
             ),
           ),
@@ -90,8 +92,8 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
     );
   }
 
-  Widget _buildColumn(int index) {
-    var columnItems = (1 / GlobalSettings().infoHeight).floor();
+  Widget _buildGenerationInfoColumn(int index) {
+    var columnItems = (1 / _infoTileHeight).floor();
     int startIndex = index * columnItems;
     int endIndex = startIndex + columnItems;
     if (endIndex > InfoManager().generationInfos.length) {
@@ -104,8 +106,10 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
         columnChildren.add(Align(
           alignment: Alignment.topRight,
           child: SizedBox(
-            height: GlobalSettings().infoHeight * constraints.maxHeight,
-            child: GenerationInfoWidget(info: InfoManager().generationInfos[j]),
+            height: _infoTileHeight * constraints.maxHeight,
+            child: GenerationInfoWidget(
+                info: InfoManager().generationInfos[j],
+                showInfoForImg: _showInfoForImg),
           ),
         ));
       }
@@ -127,59 +131,10 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
     });
     if (InfoManager().isGenerating) {
       InfoManager().startGeneration();
+      var n = InfoManager().presetRequests;
+      showInfoBar(context,
+          S.of(context).info_start_generation(n == 0 ? '∞' : n.toString()));
     }
-  }
-
-  void _setRequestsNum(Function onComplete) {
-    final controller =
-        TextEditingController(text: InfoManager().remainingRequests.toString());
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text(S.of(context).edit_image_number_to_generate),
-          content: TextField(
-            controller: controller,
-            keyboardType: TextInputType.number,
-            maxLines: null,
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                var ok = _onSetRequestsComplete(controller.text);
-                Navigator.of(context).pop();
-                if (ok) {
-                  var n = InfoManager().remainingRequests;
-                  if (n == 0) {
-                    showInfoBar(
-                        context, S.of(context).info_set_looping_genration);
-                  } else {
-                    showInfoBar(
-                        context, S.of(context).info_set_genration_number(n));
-                  }
-                } else {
-                  showErrorBar(
-                      context, S.of(context).info_set_genration_number_failed);
-                }
-                onComplete();
-              },
-              child: Text(S.of(context).confirm),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  bool _onSetRequestsComplete(String text) {
-    var parseResult = int.tryParse(text);
-    if (parseResult == null) {
-      return false;
-    }
-    setState(() {
-      InfoManager().remainingRequests = parseResult;
-    });
-    return true;
   }
 
   void _showGenerationSettingsDialog() {
@@ -198,23 +153,23 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
                       min: 0.3,
                       max: 1.0,
                       divisions: 7,
-                      label: GlobalSettings().infoHeight.toStringAsFixed(1),
-                      value: GlobalSettings().infoHeight,
+                      label: _infoTileHeight.toStringAsFixed(1),
+                      value: _infoTileHeight,
                       onChanged: (newHeight) {
                         setState(() {
-                          GlobalSettings().infoHeight = newHeight;
+                          _infoTileHeight = newHeight;
                         });
                         setDialogState(() {});
                       },
                     )),
                 SwitchListTile(
-                  secondary: GlobalSettings().showInfoForImg
+                  secondary: _showInfoForImg
                       ? const Icon(Icons.visibility_off)
                       : const Icon(Icons.visibility),
                   title: Text(S.of(context).toggle_display_info_aside_img),
-                  value: GlobalSettings().showInfoForImg,
+                  value: _showInfoForImg,
                   onChanged: (value) {
-                    setState(() => GlobalSettings().showInfoForImg = value);
+                    setState(() => _showInfoForImg = value);
                     setDialogState(() {});
                   },
                 ),
@@ -223,9 +178,9 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
                   title: Text(S.of(context).use_random_seed),
                   value: InfoManager().paramConfig.randomSeed,
                   onChanged: (value) {
-                    setState(
-                        () => InfoManager().paramConfig.randomSeed = value);
-                    setDialogState(() {});
+                    setDialogState(() {
+                      InfoManager().paramConfig.randomSeed = value;
+                    });
                   },
                 ),
                 if (!InfoManager().paramConfig.randomSeed)
@@ -235,6 +190,7 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
                           title: S.of(context).random_seed,
                           currentValue:
                               InfoManager().paramConfig.seed.toString(),
+                          confirmOnSubmit: true,
                           onEditComplete: (value) => {
                                 setDialogState(() {
                                   InfoManager().paramConfig.seed =
@@ -242,17 +198,20 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
                                           InfoManager().paramConfig.seed;
                                 })
                               })),
-                ListTile(
+                EditableListTile(
                   leading: const Icon(Icons.alarm),
-                  title: Text(S.of(context).image_number_to_generate),
-                  subtitle: Text(InfoManager().remainingRequests == 0
+                  title: S.of(context).image_number_to_generate,
+                  currentValue: InfoManager().presetRequests == 0
                       ? '∞'
-                      : InfoManager().remainingRequests.toString()),
-                  onTap: () {
-                    _setRequestsNum(() {
-                      setDialogState(() {});
-                    });
+                      : InfoManager().presetRequests.toString(),
+                  editValue: InfoManager().presetRequests.toString(),
+                  notice: '0 → ∞',
+                  onEditComplete: (value) {
+                    _setPresetRequestNum(value);
+                    setDialogState(() {});
                   },
+                  keyboardType: TextInputType.number,
+                  confirmOnSubmit: true,
                 ),
                 ListTile(
                   leading: const Icon(Icons.info_outline),
@@ -265,5 +224,18 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
         );
       },
     );
+  }
+
+  void _setPresetRequestNum(value) {
+    var parseResult = int.tryParse(value);
+    if (parseResult == null || parseResult < 0) {
+      showErrorBar(context, S.of(context).info_set_genration_number_failed);
+      return;
+    }
+    InfoManager().presetRequests = parseResult;
+    showInfoBar(
+        context,
+        S.of(context).info_set_genration_number(
+            parseResult == 0 ? '∞' : parseResult.toString()));
   }
 }
