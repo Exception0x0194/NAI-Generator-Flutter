@@ -28,7 +28,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 10.0),
+      padding: EdgeInsets.only(left: widget.indentLevel == 0 ? 0 : 10.0),
       child: ExpansionTile(
         leading: widget.showCompactView
             ? IconButton(

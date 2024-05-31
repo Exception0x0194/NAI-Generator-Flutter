@@ -43,25 +43,25 @@ class EditableListTile extends StatelessWidget {
       builder: (context) {
         return AlertDialog(
           title: Text('${S.of(context).edit}$title'),
-          content: Flexible(
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                notice == null ? const SizedBox.shrink() : Text(notice!),
-                TextField(
-                  controller: controller,
-                  keyboardType: keyboardType,
-                  maxLines: null,
-                  onSubmitted: (confirmOnSubmit != null && confirmOnSubmit!)
-                      ? (_) {
-                          Navigator.of(context).pop();
-                          onEditComplete(controller.text);
-                        }
-                      : null,
-                  autofocus: true,
-                ),
-              ])),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              notice == null ? const SizedBox.shrink() : Text(notice!),
+              TextField(
+                controller: controller,
+                keyboardType: keyboardType,
+                maxLines: null,
+                onSubmitted: (confirmOnSubmit != null && confirmOnSubmit!)
+                    ? (_) {
+                        Navigator.of(context).pop();
+                        onEditComplete(controller.text);
+                      }
+                    : null,
+                autofocus: true,
+              ),
+            ],
+          ),
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
