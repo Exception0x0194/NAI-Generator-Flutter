@@ -70,6 +70,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "github_repo":
             MessageLookupByLibrary.simpleMessage("GitHub Repository"),
         "height": MessageLookupByLibrary.simpleMessage("Height"),
+        "i2i_config": MessageLookupByLibrary.simpleMessage("Img2Img Settings"),
         "image_number_to_generate": MessageLookupByLibrary.simpleMessage(
             "Number of Images to Generate"),
         "image_size": MessageLookupByLibrary.simpleMessage("Image Size"),

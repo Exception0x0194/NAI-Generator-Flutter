@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'screens/generator_screen.dart';
 import 'screens/settings_screen.dart';
 import 'screens/prompt_config_screen.dart';
+import 'screens/i2i_config_screen.dart';
 import 'models/info_manager.dart';
 import 'generated/l10n.dart';
 
@@ -25,7 +26,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.pink.shade700),
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.pinkAccent),
           useMaterial3: true),
       localizationsDelegates: const [
         S.delegate,
@@ -85,6 +86,8 @@ class MyHomePageState extends State<MyHomePage> {
                 // ignore: prefer_const_constructors
                 PromptConfigScreen(),
                 // ignore: prefer_const_constructors
+                I2IConfigScreen(),
+                // ignore: prefer_const_constructors
                 SettingsScreen(),
               ],
             ),
@@ -99,11 +102,16 @@ class MyHomePageState extends State<MyHomePage> {
                   label: S.of(context).prompt_config,
                 ),
                 BottomNavigationBarItem(
+                  icon: const Icon(Icons.screen_rotation),
+                  label: S.of(context).i2i_config,
+                ),
+                BottomNavigationBarItem(
                   icon: const Icon(Icons.settings),
                   label: S.of(context).settings,
                 )
               ],
               currentIndex: _selectedIndex,
+              type: BottomNavigationBarType.fixed,
               onTap: _onItemTapped,
             ),
           );

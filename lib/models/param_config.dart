@@ -67,6 +67,9 @@ class ParamConfig {
       'cfg_rescale': cfgRescale,
       'noise_schedule': noiseSchedule,
       'negative_prompt': negativePrompt,
+      'reference_image_multiple': [],
+      'reference_information_extracted_multiple': [],
+      'reference_strength_multiple': []
     };
   }
 

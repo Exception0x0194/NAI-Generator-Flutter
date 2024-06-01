@@ -58,6 +58,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "generation_settings": MessageLookupByLibrary.simpleMessage("设置"),
         "github_repo": MessageLookupByLibrary.simpleMessage("项目地址"),
         "height": MessageLookupByLibrary.simpleMessage("高度"),
+        "i2i_config": MessageLookupByLibrary.simpleMessage("图生图设置"),
         "image_number_to_generate":
             MessageLookupByLibrary.simpleMessage("生成图片数量"),
         "image_size": MessageLookupByLibrary.simpleMessage("图像尺寸"),

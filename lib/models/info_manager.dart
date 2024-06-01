@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'prompt_config.dart';
 import 'param_config.dart';
 import 'generation_info.dart';
+import 'vibe_config.dart';
 import 'utils.dart';
 
 import 'package:archive/archive.dart';
@@ -21,6 +22,9 @@ class InfoManager with ChangeNotifier {
   String apiKey = 'pst-abcd';
   late PromptConfig promptConfig = PromptConfig();
   ParamConfig paramConfig = ParamConfig();
+
+  // Vibe Config
+  List<VibeConfig> vibeConfig = [];
 
   // Generated info
   final List<GenerationInfo> _generationInfos = [];
@@ -71,18 +75,28 @@ class InfoManager with ChangeNotifier {
         "authorization": "Bearer $apiKey",
         "referer": "https://novelai.net",
         "user-agent":
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36"
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:126.0) Gecko/20100101 Firefox/126.0"
       };
 
   Map<String, dynamic> getRequestData() {
     var pickedPrompts = promptConfig.pickPromptsFromConfig();
     var prompts = pickedPrompts['head']! + pickedPrompts['tail']!;
+
+    var parameters = paramConfig.toJson();
+    // Add vibe configs
+    for (var config in vibeConfig) {
+      parameters['reference_image_multiple'].add(config.imageB64);
+      parameters['reference_information_extracted_multiple']
+          .add(config.infoExtracted);
+      parameters['reference_strength_multiple'].add(config.referenceStrength);
+    }
+
     return {
       "body": {
         "input": prompts,
         "model": "nai-diffusion-3",
         "action": "generate",
-        "parameters": paramConfig.toJson(),
+        "parameters": parameters,
       },
       "comment": pickedPrompts['comment']
     };

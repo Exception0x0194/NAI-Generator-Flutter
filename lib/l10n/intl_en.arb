@@ -1,6 +1,7 @@
 {
     "generation": "Image Generation",
     "prompt_config": "Prompt Settings",
+    "i2i_config": "Img2Img Settings",
     "settings": "Settings",
     "toggle_generation": "Start/Stop Generation",
     "generation_settings": "Genration Settings",

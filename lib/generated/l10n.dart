@@ -70,6 +70,16 @@ class S {
     );
   }
 
+  /// `Img2Img Settings`
+  String get i2i_config {
+    return Intl.message(
+      'Img2Img Settings',
+      name: 'i2i_config',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Settings`
   String get settings {
     return Intl.message(
