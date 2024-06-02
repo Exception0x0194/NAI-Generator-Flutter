@@ -120,7 +120,7 @@
                 "prompts": []
             },
             {
-                "selectionMethod": "single",
+                "selectionMethod": "all",
                 "shuffled": false,
                 "prob": 0,
                 "num": 1,
