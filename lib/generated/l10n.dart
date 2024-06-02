@@ -290,11 +290,31 @@ class S {
     );
   }
 
-  /// `Shuffle Order`
+  /// `Shuffle`
   String get shuffled {
     return Intl.message(
-      'Shuffle Order',
+      'Shuffle',
       name: 'shuffled',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Shuffled`
+  String get is_shuffled {
+    return Intl.message(
+      'Shuffled',
+      name: 'is_shuffled',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ordered`
+  String get is_ordered {
+    return Intl.message(
+      'Ordered',
+      name: 'is_ordered',
       desc: '',
       args: [],
     );
@@ -375,6 +395,16 @@ class S {
     return Intl.message(
       'Import Config from Clipboard',
       name: 'import_config_from_clipboard',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reorder...`
+  String get reorder_config {
+    return Intl.message(
+      'Reorder...',
+      name: 'reorder_config',
       desc: '',
       args: [],
     );
@@ -630,6 +660,16 @@ class S {
     );
   }
 
+  /// `... not necessarily between 0 and 1`
+  String get notNecessarily0to1 {
+    return Intl.message(
+      '... not necessarily between 0 and 1',
+      name: 'notNecessarily0to1',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Clipboard import `
   String get info_import_from_clipboard {
     return Intl.message(
@@ -645,6 +685,16 @@ class S {
     return Intl.message(
       'Clipboard export ',
       name: 'info_export_to_clipboard',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vibe image export `
+  String get vibe_export {
+    return Intl.message(
+      'Vibe image export ',
+      name: 'vibe_export',
       desc: '',
       args: [],
     );

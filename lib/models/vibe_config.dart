@@ -28,14 +28,14 @@ class VibeConfig {
 
     if (aspectRatio > 1) {
       width = 448;
-      height = (448 / aspectRatio).round();
+      height = (448 / aspectRatio).floor();
     } else {
       height = 448;
-      width = (448 * aspectRatio).round();
+      width = (448 * aspectRatio).floor();
     }
 
-    img.Image resizedImage =
-        img.copyResize(originalImage, width: width, height: height);
+    img.Image resizedImage = img.copyResize(originalImage,
+        width: width, height: height, interpolation: img.Interpolation.average);
     resizedImage =
         img.copyExpandCanvas(resizedImage, newWidth: 448, newHeight: 448);
 

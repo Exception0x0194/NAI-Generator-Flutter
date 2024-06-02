@@ -92,6 +92,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "info_start_generation": m1,
         "info_tile_height":
             MessageLookupByLibrary.simpleMessage("Image Tile Height"),
+        "is_ordered": MessageLookupByLibrary.simpleMessage("Ordered"),
+        "is_shuffled": MessageLookupByLibrary.simpleMessage("Shuffled"),
+        "notNecessarily0to1": MessageLookupByLibrary.simpleMessage(
+            "... not necessarily between 0 and 1"),
         "notice_enter_positon":
             MessageLookupByLibrary.simpleMessage("0 → head; blank → tail"),
         "prompt_config":
@@ -99,6 +103,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "random_brackets":
             MessageLookupByLibrary.simpleMessage("Random Number of Brackets"),
         "random_seed": MessageLookupByLibrary.simpleMessage("Random Seed"),
+        "reorder_config": MessageLookupByLibrary.simpleMessage("Reorder..."),
         "sampler": MessageLookupByLibrary.simpleMessage("Sampler"),
         "scale": MessageLookupByLibrary.simpleMessage("Prompt Guidance"),
         "select": MessageLookupByLibrary.simpleMessage("Select "),
@@ -118,7 +123,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "selection_prob":
             MessageLookupByLibrary.simpleMessage("Selection Probability"),
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),
-        "shuffled": MessageLookupByLibrary.simpleMessage("Shuffle Order"),
+        "shuffled": MessageLookupByLibrary.simpleMessage("Shuffle"),
         "sm": MessageLookupByLibrary.simpleMessage("SMEA"),
         "sm_dyn": MessageLookupByLibrary.simpleMessage("DYN"),
         "succeed": MessageLookupByLibrary.simpleMessage("succeed"),
@@ -133,6 +138,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "uc": MessageLookupByLibrary.simpleMessage("Inverse Prompt Token"),
         "use_random_seed":
             MessageLookupByLibrary.simpleMessage("Use Random Seed"),
+        "vibe_export":
+            MessageLookupByLibrary.simpleMessage("Vibe image export "),
         "width": MessageLookupByLibrary.simpleMessage("Width")
       };
 }

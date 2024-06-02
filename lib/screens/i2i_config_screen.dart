@@ -52,28 +52,24 @@ class I2IConfigScreenState extends State<I2IConfigScreen> {
                     )
                   : const SizedBox.shrink(),
               title: const Text('Vibe Transfer')),
-          ...InfoManager()
-              .vibeConfig
-              .asMap()
-              .map((idx, config) {
-                return MapEntry(
-                    idx,
-                    Padding(
-                        padding: const EdgeInsets.only(left: 20),
-                        child: ExpansionTile(
-                          trailing: IconButton(
-                            icon: const Icon(Icons.delete),
-                            onPressed: () {
-                              _removeVibeConfig(idx);
-                            },
-                          ),
-                          controlAffinity: ListTileControlAffinity.leading,
-                          title: Text('Config #$idx'),
-                          children: [VibeConfigWidget(config: config)],
-                        )));
-              })
-              .values
-              ,
+          ...InfoManager().vibeConfig.asMap().map((idx, config) {
+            return MapEntry(
+                idx,
+                Padding(
+                    padding: const EdgeInsets.only(left: 20),
+                    child: ExpansionTile(
+                      trailing: IconButton(
+                        icon: const Icon(Icons.delete_outline),
+                        onPressed: () {
+                          _removeVibeConfig(idx);
+                        },
+                      ),
+                      initiallyExpanded: true,
+                      controlAffinity: ListTileControlAffinity.leading,
+                      title: Text('Config #$idx'),
+                      children: [VibeConfigWidget(config: config)],
+                    )));
+          }).values,
         ],
       ),
     );

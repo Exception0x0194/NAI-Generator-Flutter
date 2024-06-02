@@ -77,11 +77,16 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("设置中出现错误"),
         "info_start_generation": m1,
         "info_tile_height": MessageLookupByLibrary.simpleMessage("图片磁贴高度"),
+        "is_ordered": MessageLookupByLibrary.simpleMessage("顺序"),
+        "is_shuffled": MessageLookupByLibrary.simpleMessage("乱序"),
+        "notNecessarily0to1":
+            MessageLookupByLibrary.simpleMessage("……不一定在 0 到 1 之间"),
         "notice_enter_positon":
             MessageLookupByLibrary.simpleMessage("0 → 开头；留空 → 末尾"),
         "prompt_config": MessageLookupByLibrary.simpleMessage("Prompt设置"),
         "random_brackets": MessageLookupByLibrary.simpleMessage("随机括号数量"),
         "random_seed": MessageLookupByLibrary.simpleMessage("随机种子"),
+        "reorder_config": MessageLookupByLibrary.simpleMessage("重新排序..."),
         "sampler": MessageLookupByLibrary.simpleMessage("采样器"),
         "scale": MessageLookupByLibrary.simpleMessage("Prompt Guidance"),
         "select": MessageLookupByLibrary.simpleMessage("选择"),
@@ -110,6 +115,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "toggle_generation": MessageLookupByLibrary.simpleMessage("开始/停止生成"),
         "uc": MessageLookupByLibrary.simpleMessage("反向提示词"),
         "use_random_seed": MessageLookupByLibrary.simpleMessage("使用随机种子"),
+        "vibe_export": MessageLookupByLibrary.simpleMessage("导出 Vibe 图片"),
         "width": MessageLookupByLibrary.simpleMessage("宽度")
       };
 }

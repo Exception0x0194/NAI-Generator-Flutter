@@ -30,31 +30,23 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
     return Padding(
       padding: EdgeInsets.only(left: widget.indentLevel == 0 ? 0 : 10.0),
       child: ExpansionTile(
-        leading: widget.showCompactView
-            ? IconButton(
-                onPressed: () => setState(() {
-                      if (widget.config.type == 'str') {
-                        widget.config.type = 'config';
-                      } else {
-                        widget.config.type = 'str';
-                      }
-                    }),
-                icon: const Icon(Icons.cached))
-            : const Icon(Icons.arrow_forward),
+        controlAffinity: ListTileControlAffinity.leading,
         initiallyExpanded: widget.indentLevel == 0,
         title: Row(children: [
-          Expanded(
-              child: Row(children: [
-            Text(widget.config.comment,
-                style: TextStyle(
-                  decoration: widget.config.enabled
-                      ? TextDecoration.none
-                      : TextDecoration.lineThrough,
-                )),
-            IconButton(
-                onPressed: () => _showEditCommentDialog(context),
-                icon: const Icon(Icons.edit))
-          ])),
+          Text(widget.config.comment,
+              style: TextStyle(
+                decoration: widget.config.enabled
+                    ? TextDecoration.none
+                    : TextDecoration.lineThrough,
+              )),
+          IconButton(
+              onPressed: () => _showEditCommentDialog(context),
+              icon: const Icon(Icons.edit))
+        ]),
+        // subtitle: widget.showCompactView
+        //     ? Text(_getConfigDescrption())
+        //     : const SizedBox.shrink(),
+        trailing: Row(mainAxisSize: MainAxisSize.min, children: [
           Switch(
               value: widget.config.enabled,
               onChanged: (value) => {
@@ -70,7 +62,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
                   '${S.of(context).info_export_to_clipboard}${S.of(context).succeed}');
             },
             tooltip: S.of(context).export_to_clipboard,
-          ),
+          )
         ]),
         children: widget.showCompactView
             ? _buildCompactChildList()
@@ -209,40 +201,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
                     indentLevel: widget.indentLevel + 1,
                     showCompactView: widget.showCompactView,
                   )),
-              ListTile(
-                  title: Row(
-                children: [
-                  Expanded(
-                    child: Tooltip(
-                      message: S.of(context).add_new_config,
-                      child: IconButton(
-                        icon: const Icon(Icons.add),
-                        onPressed: () => _addNewConfig(),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Tooltip(
-                      message: S.of(context).import_config_from_clipboard,
-                      child: IconButton(
-                        icon: const Icon(Icons.paste),
-                        onPressed: () async {
-                          await _importConfigFromClipboard();
-                        },
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Tooltip(
-                      message: S.of(context).delete_config,
-                      child: IconButton(
-                        icon: const Icon(Icons.remove),
-                        onPressed: () => _removeConfig(),
-                      ),
-                    ),
-                  ),
-                ],
-              ))
+              _buildButtonsRow()
             ],
           )
         : const SizedBox.shrink();
@@ -302,46 +261,16 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
   }
 
   void _addNewConfig() async {
-    int? position = await _getInsertPosition();
-    if (position == null) {
-      return;
-    }
     var newConfig = PromptConfig(comment: 'New config');
 
     setState(() {
-      if (position >= 0 && position <= widget.config.prompts.length) {
-        widget.config.prompts.insert(position, newConfig);
-      } else {
-        if (widget.config.prompts.isEmpty) {
-          widget.config.prompts = [newConfig];
-        } else {
-          widget.config.prompts.add(newConfig); // 如果位置无效，添加到末尾
-        }
-      }
-    });
-  }
-
-  void _removeConfig() async {
-    int? position = await _getInsertPosition();
-    if (position == null) {
-      return;
-    }
-
-    setState(() {
-      if (position >= 0 && position < widget.config.prompts.length) {
-        widget.config.prompts.removeAt(position);
-      } else {
-        widget.config.prompts.removeLast();
+      if (widget.config.prompts.isNotEmpty) {
+        widget.config.prompts.add(newConfig);
       }
     });
   }
 
   Future<void> _importConfigFromClipboard() async {
-    int? position = await _getInsertPosition();
-    if (position == null) {
-      return;
-    }
-
     ClipboardData? data = await Clipboard.getData(Clipboard.kTextPlain);
     if (!mounted) return;
 
@@ -351,14 +280,10 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
         final newConfig = PromptConfig.fromJson(jsonConfig, 0);
 
         setState(() {
-          if (position >= 0 && position <= widget.config.prompts.length) {
-            widget.config.prompts.insert(position, newConfig);
+          if (widget.config.prompts.isEmpty) {
+            widget.config.prompts = [newConfig];
           } else {
-            if (widget.config.prompts.isEmpty) {
-              widget.config.prompts = [newConfig];
-            } else {
-              widget.config.prompts.add(newConfig); // 如果位置无效，添加到末尾
-            }
+            widget.config.prompts.add(newConfig); // 如果位置无效，添加到末尾
           }
         });
       } catch (e) {
@@ -477,41 +402,173 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
             config: config,
             indentLevel: widget.indentLevel + 1,
             showCompactView: widget.showCompactView)),
-        ListTile(
-            title: Row(
-          children: [
-            Expanded(
-              child: Tooltip(
-                message: S.of(context).add_new_config,
-                child: IconButton(
-                  icon: const Icon(Icons.add),
-                  onPressed: () => _addNewConfig(),
-                ),
-              ),
-            ),
-            Expanded(
-              child: Tooltip(
-                message: S.of(context).import_config_from_clipboard,
-                child: IconButton(
-                  icon: const Icon(Icons.paste),
-                  onPressed: () async {
-                    await _importConfigFromClipboard();
-                  },
-                ),
-              ),
-            ),
-            Expanded(
-              child: Tooltip(
-                message: S.of(context).delete_config,
-                child: IconButton(
-                  icon: const Icon(Icons.remove),
-                  onPressed: () => _removeConfig(),
-                ),
-              ),
-            ),
-          ],
-        )),
+        _buildButtonsRow()
       ];
     }
+  }
+
+  Widget _buildButtonsRow() {
+    return ListTile(
+        title: Row(
+      children: [
+        Expanded(
+          child: Tooltip(
+            message: S.of(context).add_new_config,
+            child: IconButton(
+              icon: const Icon(Icons.add),
+              onPressed: () => _addNewConfig(),
+            ),
+          ),
+        ),
+        Expanded(
+          child: Tooltip(
+            message: S.of(context).import_config_from_clipboard,
+            child: IconButton(
+              icon: const Icon(Icons.paste),
+              onPressed: () async {
+                await _importConfigFromClipboard();
+              },
+            ),
+          ),
+        ),
+        Expanded(
+          child: Tooltip(
+            message: S.of(context).reorder_config,
+            child: IconButton(
+              icon: const Icon(Icons.cached),
+              onPressed: () => _showReorderDialog(),
+            ),
+          ),
+        ),
+        Expanded(
+          child: Tooltip(
+            message: S.of(context).delete_config,
+            child: IconButton(
+              icon: const Icon(Icons.remove),
+              onPressed: () => _showDeleteDialog(),
+            ),
+          ),
+        ),
+        SizedBox(width: 40),
+      ],
+    ));
+  }
+
+  String _getConfigDescrption() {
+    String ret = '';
+    switch (widget.config.selectionMethod) {
+      case 'all':
+        ret += '${S.of(context).selection_method_all} / ';
+        break;
+      case 'single':
+        ret += '${S.of(context).selection_method_single} / ';
+        break;
+      case 'single_sequential':
+        ret += '${S.of(context).selection_method_single_sequential} / ';
+        break;
+      case 'multiple_num':
+        ret +=
+            '${S.of(context).selection_method_multiple_num}: ${widget.config.num} / ';
+        break;
+      case 'multiple_prob':
+        ret +=
+            '${S.of(context).selection_method_multiple_prob}: ${widget.config.prob} / ';
+    }
+    if (widget.config.selectionMethod == 'all' ||
+        widget.config.selectionMethod == 'multiple_prob') {
+      ret +=
+          '${widget.config.shuffled ? S.of(context).is_shuffled : S.of(context).is_ordered} / ';
+    }
+    if (widget.config.type == 'str') {
+      ret += S.of(context).cascaded_config_type_str;
+    } else {
+      ret += S.of(context).cascaded_config_type_config;
+    }
+    return ret;
+  }
+
+  void _showReorderDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(S.of(context).reorder_config),
+          content: SizedBox(
+            width: double.maxFinite,
+            height: 600,
+            child: StatefulBuilder(
+              builder: (context, setDialogState) {
+                return ReorderableListView(
+                  onReorder: (int oldIndex, int newIndex) {
+                    setState(() {
+                      if (newIndex > oldIndex) {
+                        newIndex -= 1;
+                      }
+                      var item = widget.config.prompts.removeAt(oldIndex);
+                      widget.config.prompts.insert(newIndex, item);
+                    });
+                    setDialogState(() {});
+                  },
+                  children:
+                      List.generate(widget.config.prompts.length, (index) {
+                    return ListTile(
+                      key: ValueKey(widget.config.prompts[index]),
+                      title: Text(widget.config.prompts[index].comment),
+                      trailing: Icon(Icons.drag_handle),
+                    );
+                  }),
+                );
+              },
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text(S.of(context).confirm),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showDeleteDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(S.of(context).delete_config),
+          content: SizedBox(
+              width: double.maxFinite,
+              height: 600,
+              child: StatefulBuilder(builder: (context, setDialogState) {
+                return ListView.builder(
+                    itemCount: widget.config.prompts.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                          title: Text(widget.config.prompts[index].comment),
+                          trailing: IconButton(
+                              icon: const Icon(Icons.delete_outline),
+                              onPressed: () {
+                                setState(() {
+                                  widget.config.prompts.removeAt(index);
+                                });
+                                setDialogState(() {});
+                              }));
+                    });
+              })),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text(S.of(context).confirm),
+            ),
+          ],
+        );
+      },
+    );
   }
 }
