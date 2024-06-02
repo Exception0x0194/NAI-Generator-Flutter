@@ -266,6 +266,8 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
     setState(() {
       if (widget.config.prompts.isNotEmpty) {
         widget.config.prompts.add(newConfig);
+      } else {
+        widget.config.prompts = [newConfig];
       }
     });
   }
@@ -449,7 +451,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
             ),
           ),
         ),
-        SizedBox(width: 40),
+        const SizedBox(width: 40),
       ],
     ));
   }
@@ -514,7 +516,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
                     return ListTile(
                       key: ValueKey(widget.config.prompts[index]),
                       title: Text(widget.config.prompts[index].comment),
-                      trailing: Icon(Icons.drag_handle),
+                      trailing: const Icon(Icons.drag_handle),
                     );
                   }),
                 );

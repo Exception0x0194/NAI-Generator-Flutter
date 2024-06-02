@@ -76,7 +76,7 @@ class VibeConfigWidgetState extends State<VibeConfigWidget> {
                   )),
                   IconButton(
                       onPressed: _showEditInfoExtractedDialog,
-                      icon: Icon(Icons.construction))
+                      icon: const Icon(Icons.construction))
                 ])),
             // Reference Strength
             ListTile(
@@ -104,7 +104,7 @@ class VibeConfigWidgetState extends State<VibeConfigWidget> {
                   )),
                   IconButton(
                       onPressed: _showEditReferenceStrengthDialog,
-                      icon: Icon(Icons.construction))
+                      icon: const Icon(Icons.construction))
                 ])),
           ],
         ))
