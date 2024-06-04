@@ -470,11 +470,21 @@ class S {
     );
   }
 
-  /// `NAI API Key`
+  /// `NAI API Token`
   String get NAI_API_key {
     return Intl.message(
-      'NAI API Key',
+      'NAI API Token',
       name: 'NAI_API_key',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Available at: Home Page → Settings → Account → Get Persistent API Token`
+  String get NAI_API_key_hint {
+    return Intl.message(
+      'Available at: Home Page → Settings → Account → Get Persistent API Token',
+      name: 'NAI_API_key_hint',
       desc: '',
       args: [],
     );

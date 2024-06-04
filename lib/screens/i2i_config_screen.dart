@@ -4,6 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import '../generated/l10n.dart';
 import '../models/info_manager.dart';
 import '../models/vibe_config.dart';
+import '../widgets/i2i_config_widget.dart';
 import '../widgets/vibe_config_widget.dart';
 
 class I2IConfigScreen extends StatefulWidget {
@@ -44,6 +45,11 @@ class I2IConfigScreenState extends State<I2IConfigScreen> {
       ),
       body: ListView(
         children: [
+          ListTile(title: Text('Image to Image')),
+          Padding(
+            padding: EdgeInsets.only(left: 20),
+            child: I2IConfigWidget(config: InfoManager().i2iConfig),
+          ),
           ListTile(
               trailing: InfoManager().vibeConfig.length < 5
                   ? IconButton(

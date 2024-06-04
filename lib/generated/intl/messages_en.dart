@@ -26,7 +26,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "NAI_API_key": MessageLookupByLibrary.simpleMessage("NAI API Key"),
+        "NAI_API_key": MessageLookupByLibrary.simpleMessage("NAI API Token"),
+        "NAI_API_key_hint": MessageLookupByLibrary.simpleMessage(
+            "Available at: Home Page → Settings → Account → Get Persistent API Token"),
         "add_new_config":
             MessageLookupByLibrary.simpleMessage("Add New Config"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),

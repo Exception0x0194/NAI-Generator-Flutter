@@ -4,6 +4,7 @@ import 'prompt_config.dart';
 import 'param_config.dart';
 import 'generation_info.dart';
 import 'vibe_config.dart';
+import 'i2i_config.dart';
 import 'utils.dart';
 
 import 'package:archive/archive.dart';
@@ -25,6 +26,9 @@ class InfoManager with ChangeNotifier {
 
   // Vibe Config
   List<VibeConfig> vibeConfig = [];
+
+  // I2I / Enhance Config
+  I2IConfig i2iConfig = I2IConfig();
 
   // Generated info
   final List<GenerationInfo> _generationInfos = [];

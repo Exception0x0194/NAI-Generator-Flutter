@@ -26,7 +26,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "NAI_API_key": MessageLookupByLibrary.simpleMessage("NAI API key"),
+        "NAI_API_key": MessageLookupByLibrary.simpleMessage("NAI API Token"),
+        "NAI_API_key_hint": MessageLookupByLibrary.simpleMessage(
+            "可以从主页 → 设置 → Account → Get Persistent API Token 获取"),
         "add_new_config": MessageLookupByLibrary.simpleMessage("插入新Config"),
         "cancel": MessageLookupByLibrary.simpleMessage("取消"),
         "cascaded_config_type": MessageLookupByLibrary.simpleMessage("下属设置类型"),
