@@ -41,12 +41,12 @@ class InfoManager with ChangeNotifier {
   // Request status
   bool isRequesting = false;
   int presetRequests = 0;
-  int remainingRequests = 0;
+  int _remainingRequests = 0;
   bool isGenerating = false;
 
   // Output indexing
-  DateTime generationTimestamp = DateTime.now();
-  int generationIdx = 0;
+  DateTime _generationTimestamp = DateTime.now();
+  int _generationIdx = 0;
 
   Map<String, dynamic> toJson() {
     return {
@@ -78,7 +78,7 @@ class InfoManager with ChangeNotifier {
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:126.0) Gecko/20100101 Firefox/126.0"
       };
 
-  Map<String, dynamic> getRequestData() {
+  Map<String, dynamic> getPayload() {
     var pickedPrompts = promptConfig.pickPromptsFromConfig();
     var prompts = pickedPrompts['head']! + pickedPrompts['tail']!;
 
@@ -103,88 +103,100 @@ class InfoManager with ChangeNotifier {
   }
 
   void startGeneration() {
-    generationTimestamp = DateTime.now();
-    generationIdx = 0;
-    remainingRequests = presetRequests;
+    _generationTimestamp = DateTime.now();
+    _generationIdx = 0;
+    _remainingRequests = presetRequests;
     generateImage();
   }
 
   Future<void> generateImage() async {
+    // Add new info entry
     if (isRequesting) {
       return;
     }
-
-    String log = remainingRequests == 0
+    String log = _remainingRequests == 0
         ? 'Looping - '
-        : '${remainingRequests.toString()} request${remainingRequests > 1 ? 's' : ''} remaining - ';
+        : '${_remainingRequests.toString()} request${_remainingRequests > 1 ? 's' : ''} remaining - ';
     var infoIdx = addNewInfo(
         GenerationInfo(type: 'info', info: {'log': '${log}Requesting...'}));
-
-    isRequesting = true;
     notifyListeners();
 
+    // Prepare head & payload
     var url = Uri.parse('https://image.novelai.net/ai/generate-image');
-    var data = getRequestData();
+    var data = getPayload();
 
+    // Send request
+    var bytes = Uint8List(0);
     try {
+      isRequesting = true;
       var response = await http.post(url,
           headers: headers, body: json.encode(data['body']));
-      var bytes = response.bodyBytes;
-      var archive = ZipDecoder().decodeBytes(bytes);
-      bool success = false;
-      for (var file in archive) {
-        if (file.name == "image_0.png") {
-          var filename =
-              'nai-generated-${getTimestampDigits(generationTimestamp)}-${generationIdx.toString().padLeft(4, '0')}-${generateRandomFileName()}.png';
-          var imageBytes = file.content as Uint8List;
-          await saveBlob(imageBytes, filename);
-          var img = Image.memory(
-            imageBytes,
-            fit: BoxFit.fitHeight,
-          );
-          generationIdx++;
-
-          _generationInfos[infoIdx] = GenerationInfo(
-              img: img,
-              info: {
-                'filename': filename,
-                'idx': infoIdx,
-                'log': (data['comment'] as String),
-                'prompt': data['body']['input'],
-                'seed': data['body']['parameters']['seed'],
-                'height': data['body']['parameters']['height'],
-                'width': data['body']['parameters']['width'],
-              },
-              type: 'img');
-          success = true;
-          if (remainingRequests > 0) {
-            remainingRequests--;
-            if (remainingRequests == 0) {
-              addLog('Requests completed!');
-              isGenerating = false;
-            }
-          }
-          break;
-        }
-      }
-      if (!success) {
-        _generationInfos[infoIdx].info['log'] =
-            'Error: Cannot find image in HTTP response';
-      }
+      bytes = response.bodyBytes;
     } catch (e) {
-      _generationInfos[infoIdx].info['log'] = 'Error: ${e.toString()}';
+      _generationInfos[infoIdx].info['log'] =
+          'Error orrurred in HTTP request: ${e.toString()}';
+      notifyListeners();
+      if (isGenerating) generateImage();
+      return;
     } finally {
       isRequesting = false;
     }
-    notifyListeners();
 
-    if (isGenerating) {
-      generateImage();
+    // Unpack & read response
+    try {
+      var archive = ZipDecoder().decodeBytes(bytes);
+      bool success = false;
+      for (var file in archive) {
+        // Find "image_0.png"
+        if (file.name != "image_0.png") continue;
+        var filename =
+            'nai-generated-${getTimestampDigits(_generationTimestamp)}-${_generationIdx.toString().padLeft(4, '0')}-${generateRandomFileName()}.png';
+        var imageBytes = file.content as Uint8List;
+        await saveBlob(imageBytes, filename);
+        var img = Image.memory(
+          imageBytes,
+          fit: BoxFit.fitHeight,
+        );
+
+        _generationInfos[infoIdx] = GenerationInfo(
+            img: img,
+            info: {
+              'filename': filename,
+              'idx': infoIdx,
+              'log': (data['comment'] as String),
+              'prompt': data['body']['input'],
+              'seed': data['body']['parameters']['seed'],
+              'height': data['body']['parameters']['height'],
+              'width': data['body']['parameters']['width'],
+            },
+            type: 'img');
+        success = true;
+        _generationIdx++;
+        if (_remainingRequests > 0) {
+          _remainingRequests--;
+          if (_remainingRequests == 0) {
+            addLog('Requests completed!');
+            isGenerating = false;
+          }
+        }
+        break;
+      }
+      if (!success) {
+        _generationInfos[infoIdx].info['log'] =
+            'Error: Cannot find image_0.png in ZIP response';
+      }
+    } catch (e) {
+      _generationInfos[infoIdx].info['log'] =
+          'Error unpacking response: ${e.toString()};\nResponse data: ${utf8.decode(bytes)}';
     }
+
+    // Start new generation
+    notifyListeners();
+    if (isGenerating) generateImage();
   }
 
   void generatePrompt() {
-    var data = getRequestData();
+    var data = getPayload();
     addNewInfo(GenerationInfo(
         info: {'log': data['comment'], 'prompt': data['body']['input']},
         type: 'info'));
