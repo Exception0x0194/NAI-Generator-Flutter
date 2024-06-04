@@ -135,7 +135,6 @@ class PromptConfig {
         } else {
           tail = '$tail${addBrackets(p)}, ';
         }
-        comment += '$p, ';
       } else if (type == 'config') {
         var subPromptConfig = p as PromptConfig;
         var result = subPromptConfig.pickPromptsFromConfig();
@@ -148,6 +147,7 @@ class PromptConfig {
         comment += result['comment']!;
       }
     }
+    if (type == 'str') comment += '$head$tail';
 
     if (head.isNotEmpty || tail.isNotEmpty) {
       comment =
