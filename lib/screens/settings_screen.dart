@@ -38,8 +38,9 @@ class SettingsScreenState extends State<SettingsScreen> {
       body: ListView(
         children: [
           EditableListTile(
-              leading: const Icon(Icons.key),
+              leading: const Icon(Icons.token_outlined),
               title: S.of(context).NAI_API_key,
+              notice: S.of(context).NAI_API_key_hint,
               currentValue: InfoManager().apiKey,
               confirmOnSubmit: true,
               onEditComplete: (value) {
