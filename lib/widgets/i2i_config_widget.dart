@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 import 'package:nai_casrand/widgets/editable_list_tile.dart';
@@ -19,25 +20,12 @@ class I2IConfigWidget extends StatefulWidget {
 }
 
 class I2IConfigWidgetState extends State<I2IConfigWidget> {
-  late double _strength;
-  late double _noise;
   late Widget _widgetImage;
 
   @override
   void initState() {
     super.initState();
-    _strength = widget.config.strength;
-    _noise = widget.config.noise;
-    _widgetImage = widget.config.inputImage != null
-        ? SizedBox(
-            width: widget.imageSize,
-            height: widget.imageSize,
-            child: Image.memory(img.encodePng(widget.config.inputImage!)))
-        : Icon(
-            Icons.image_outlined,
-            size: widget.imageSize,
-            color: Colors.grey,
-          );
+    _loadImage();
   }
 
   @override
@@ -62,7 +50,7 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
               child: SelectableListTile(
                   title: 'Enhance Presets',
                   currentValue:
-                      'Strength: ${_strength.toString()}; Noise: ${_noise.toString()}',
+                      'Strength: ${widget.config.strength.toString()}; Noise: ${widget.config.noise.toString()}',
                   options: const [
                     'Strength: 0.2; Noise: 0',
                     'Strength: 0.4; Noise: 0',
@@ -74,40 +62,41 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
           Expanded(
               child: SelectableListTile(
                   title: 'Scale',
-                  currentValue: '1x',
-                  options: const ['1x', '1.5x'],
+                  currentValue: widget.config.scale != null
+                      ? '${widget.config.scale.toString()}x'
+                      : 'None',
+                  options: const ['None', '1x', '1.5x'],
                   onSelectComplete: (value) => _setI2IScale(value)))
         ]),
 
         // Strength
         ListTile(
-            title: Text('Strength: ${_strength.toStringAsFixed(2)}'),
+            title:
+                Text('Strength: ${widget.config.strength.toStringAsFixed(2)}'),
             subtitle: Slider(
-              value: _strength,
+              value: widget.config.strength,
               min: 0.0,
               max: 1.0,
               divisions: 100,
-              label: _strength.toStringAsFixed(2),
+              label: widget.config.strength.toStringAsFixed(2),
               onChanged: (value) {
                 setState(() {
-                  _strength = value;
-                  widget.config.strength = value; // Update the config
+                  widget.config.strength = value;
                 });
               },
             )),
         // Noise
         ListTile(
-            title: Text('Noise: ${_noise.toStringAsFixed(2)}'),
+            title: Text('Noise: ${widget.config.noise.toStringAsFixed(2)}'),
             subtitle: Slider(
-              value: _noise,
+              value: widget.config.noise,
               min: 0.0,
               max: 1.0,
               divisions: 100,
-              label: _noise.toStringAsFixed(2),
+              label: widget.config.noise.toStringAsFixed(2),
               onChanged: (value) {
                 setState(() {
-                  _noise = value;
-                  widget.config.noise = value; // Update the config
+                  widget.config.noise = value;
                 });
               },
             )),
@@ -146,24 +135,18 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
     var pickedFile = await picker.pickImage(source: ImageSource.gallery);
     if (pickedFile == null) return;
     var bytes = await pickedFile.readAsBytes();
-    setState(() {
-      widget.config.inputImage = img.decodeImage(bytes);
-      _widgetImage = SizedBox(
-          width: widget.imageSize,
-          height: widget.imageSize,
-          child: Image.memory(bytes));
-    });
+    var decodedImage =
+        img.decodeImage(bytes); // Assuming img is the correct image library
+
+    if (decodedImage != null) {
+      widget.config.inputImage = decodedImage;
+      _loadImage();
+    }
   }
 
   void _removeI2IImage() {
-    setState(() {
-      widget.config.inputImage = null;
-      _widgetImage = Icon(
-        Icons.image_outlined,
-        size: widget.imageSize,
-        color: Colors.grey,
-      );
-    });
+    widget.config.inputImage = null;
+    _loadImage;
   }
 
   _setI2IPreset(String value) {
@@ -173,10 +156,32 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
           double.parse(parts[0].substring('Strength: '.length - 1));
       widget.config.noise =
           double.parse(parts[1].substring('Noise: '.length - 1));
-      _strength = widget.config.strength;
-      _noise = widget.config.noise;
     });
   }
 
-  _setI2IScale(String value) {}
+  _setI2IScale(String value) {
+    setState(() {
+      if (value == 'None') {
+        widget.config.scale = null;
+      } else {
+        widget.config.scale = double.parse(value.split('x')[0]);
+      }
+    });
+  }
+
+  void _loadImage() async {
+    if (widget.config.inputImage == null) {
+      setState(() {
+        _widgetImage = Icon(Icons.image_outlined,
+            size: widget.imageSize, color: Colors.grey);
+      });
+    } else {
+      var imageBytes = img.encodePng(widget.config.inputImage!);
+      var image = Image.memory(imageBytes);
+      setState(() {
+        _widgetImage = SizedBox(
+            width: widget.imageSize, height: widget.imageSize, child: image);
+      });
+    }
+  }
 }

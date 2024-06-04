@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'prompt_config.dart';
 import 'param_config.dart';
@@ -82,11 +83,13 @@ class InfoManager with ChangeNotifier {
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:126.0) Gecko/20100101 Firefox/126.0"
       };
 
-  Map<String, dynamic> getPayload() {
+  Future<Map<String, dynamic>> getPayload() async {
     var pickedPrompts = promptConfig.pickPromptsFromConfig();
     var prompts = pickedPrompts['head']! + pickedPrompts['tail']!;
 
     var parameters = paramConfig.toJson();
+    var action = 'generate';
+
     // Add vibe configs
     for (var config in vibeConfig) {
       parameters['reference_image_multiple'].add(config.imageB64);
@@ -95,11 +98,31 @@ class InfoManager with ChangeNotifier {
       parameters['reference_strength_multiple'].add(config.referenceStrength);
     }
 
+    // Add I2I configs
+    if (i2iConfig.inputImage != null) {
+      // Apply scale factor
+      if (i2iConfig.scale != null) {
+        var newWidth =
+            (i2iConfig.inputImage!.width * i2iConfig.scale! / 64.0).ceil() * 64;
+        var newHeight =
+            (i2iConfig.inputImage!.height * i2iConfig.scale! / 64.0).ceil() *
+                64;
+        parameters['width'] = newWidth;
+        parameters['height'] = newHeight;
+      }
+      action = 'img2img';
+      parameters['strength'] = i2iConfig.strength;
+      parameters['noise'] = i2iConfig.noise;
+      parameters['image'] =
+          i2iConfig.getInputB64(parameters['width'], parameters['height']);
+      parameters['extra_noise_seed'] = Random().nextInt(1 << 32 - 1);
+    }
+
     return {
       "body": {
         "input": prompts,
         "model": "nai-diffusion-3",
-        "action": "generate",
+        "action": action,
         "parameters": parameters,
       },
       "comment": pickedPrompts['comment']
@@ -127,7 +150,7 @@ class InfoManager with ChangeNotifier {
 
     // Prepare head & payload
     var url = Uri.parse('https://image.novelai.net/ai/generate-image');
-    var data = getPayload();
+    var data = await getPayload();
 
     // Send request
     var bytes = Uint8List(0);
@@ -199,8 +222,8 @@ class InfoManager with ChangeNotifier {
     if (isGenerating) generateImage();
   }
 
-  void generatePrompt() {
-    var data = getPayload();
+  void generatePrompt() async {
+    var data = await getPayload();
     addNewInfo(GenerationInfo(
         info: {'log': data['comment'], 'prompt': data['body']['input']},
         type: 'info'));
