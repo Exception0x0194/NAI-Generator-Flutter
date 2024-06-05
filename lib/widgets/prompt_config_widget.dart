@@ -208,19 +208,74 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
   }
 
   _buildRandomBrackets() {
-    return EditableListTile(
+    return ListTile(
       leading: const Icon(Icons.code),
-      title: S.of(context).random_brackets,
-      currentValue: widget.config.randomBrackets.toString(),
-      onEditComplete: (value) => setState(() {
-        var n = int.tryParse(value);
-        if (n != null && n >= 0) {
-          widget.config.randomBrackets = n;
-        }
-      }),
-      keyboardType: TextInputType.number,
-      confirmOnSubmit: true,
+      title: Text(S.of(context).random_brackets),
+      subtitle: Text(
+          '${widget.config.randomBracketsLower.toString()} ~ ${widget.config.randomBracketsUpper.toString()}'),
+      onTap: _showEditBracketsDialog,
     );
+  }
+
+  void _showEditBracketsDialog() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(S.of(context).select + S.of(context).random_brackets),
+            content: StatefulBuilder(
+              builder: (context, setDialogState) {
+                return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(S.of(context).select_bracket_hint),
+                      RangeSlider(
+                          values: RangeValues(
+                              widget.config.randomBracketsLower.toDouble(),
+                              widget.config.randomBracketsUpper.toDouble()),
+                          labels: RangeLabels(
+                              widget.config.randomBracketsLower
+                                  .toInt()
+                                  .toString(),
+                              widget.config.randomBracketsUpper
+                                  .toInt()
+                                  .toString()),
+                          min: -10,
+                          max: 10,
+                          divisions: 20,
+                          onChanged: (range) {
+                            setState(() {
+                              widget.config.randomBracketsLower =
+                                  range.start.toInt();
+                              widget.config.randomBracketsUpper =
+                                  range.end.toInt();
+                            });
+                            setDialogState(() {});
+                          }),
+                      IconButton(
+                        icon: const Icon(Icons.refresh),
+                        onPressed: () {
+                          setState(() {
+                            widget.config.randomBracketsUpper = 0;
+                            widget.config.randomBracketsLower = 0;
+                          });
+                          setDialogState(() {});
+                        },
+                      )
+                    ]);
+              },
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text(S.of(context).confirm),
+              ),
+            ],
+          );
+        });
   }
 
   void _editStrList() {

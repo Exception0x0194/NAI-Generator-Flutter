@@ -27,6 +27,7 @@
     "is_shuffled": "乱序",
     "is_ordered": "顺序",
     "random_brackets": "随机括号数量",
+    "select_bracket_hint": "负数 → 降权；正数 → 加权",
     "cascaded_config_type": "下属设置类型",
     "cascaded_config_type_config": "嵌套Config",
     "cascaded_config_type_str": "字符串",
@@ -70,5 +71,6 @@
     "edit": "编辑",
     "select": "选择",
     "confirm": "确认",
-    "cancel": "取消"
+    "cancel": "取消",
+    "reset": "重置"
 }

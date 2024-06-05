@@ -27,6 +27,7 @@
     "is_shuffled": "Shuffled",
     "is_ordered": "Ordered",
     "random_brackets": "Random Number of Brackets",
+    "select_bracket_hint": "Negative → decreased weight; Positive → increased weight",
     "cascaded_config_type": "Nested Config Type",
     "cascaded_config_type_config": "Nested Config",
     "cascaded_config_type_str": "String",
@@ -71,5 +72,6 @@
     "edit": "Edit ",
     "select": "Select ",
     "confirm": "Confirm",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "reset": "Reset"
 }

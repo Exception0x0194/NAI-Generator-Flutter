@@ -87,9 +87,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "random_brackets": MessageLookupByLibrary.simpleMessage("随机括号数量"),
         "random_seed": MessageLookupByLibrary.simpleMessage("随机种子"),
         "reorder_config": MessageLookupByLibrary.simpleMessage("重新排序..."),
+        "reset": MessageLookupByLibrary.simpleMessage("重置"),
         "sampler": MessageLookupByLibrary.simpleMessage("采样器"),
         "scale": MessageLookupByLibrary.simpleMessage("Prompt Guidance"),
         "select": MessageLookupByLibrary.simpleMessage("选择"),
+        "select_bracket_hint":
+            MessageLookupByLibrary.simpleMessage("负数 → 降权；正数 → 加权"),
         "selection_method": MessageLookupByLibrary.simpleMessage("选取方法"),
         "selection_method_all": MessageLookupByLibrary.simpleMessage("全部"),
         "selection_method_multiple_num":
