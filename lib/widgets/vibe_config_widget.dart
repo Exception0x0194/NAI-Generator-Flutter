@@ -1,8 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:image/image.dart' as img;
 
 import '../models/vibe_config.dart';
-import '../models/utils.dart';
 import '../generated/l10n.dart';
 
 class VibeConfigWidget extends StatefulWidget {
@@ -24,21 +24,12 @@ class VibeConfigWidgetState extends State<VibeConfigWidget> {
     super.initState();
     _infoExtracted = widget.config.infoExtracted;
     _referenceStrength = widget.config.referenceStrength;
+    _widgetImage = Image.memory(base64Decode(widget.config.imageB64));
     _widgetImage = SizedBox(
-        width: 200,
-        height: 200,
-        child: Stack(children: [
-          Image.memory(
-            img.encodePng(widget.config.inputImage),
-          ),
-          Align(
-            alignment: Alignment.topRight,
-            child: IconButton(
-              icon: const Icon(Icons.download),
-              onPressed: _downloadVibeImage,
-            ),
-          )
-        ]));
+      width: 200,
+      height: 200,
+      child: _widgetImage,
+    );
   }
 
   @override
@@ -112,12 +103,12 @@ class VibeConfigWidgetState extends State<VibeConfigWidget> {
     );
   }
 
-  void _downloadVibeImage() {
-    saveBlob(img.encodePng(widget.config.inputImage),
-        'nai-generator-vibe-${generateRandomFileName()}.png');
-    showInfoBar(
-        context, '${S.of(context).vibe_export}${S.of(context).succeed}');
-  }
+  // void _downloadVibeImage() {
+  //   saveBlob(img.encodePng(widget.config.inputImage),
+  //       'nai-generator-vibe-${generateRandomFileName()}.png');
+  //   showInfoBar(
+  //       context, '${S.of(context).vibe_export}${S.of(context).succeed}');
+  // }
 
   void _showEditReferenceStrengthDialog() {
     final controller =

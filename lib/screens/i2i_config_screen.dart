@@ -19,16 +19,13 @@ class I2IConfigScreenState extends State<I2IConfigScreen> {
 
   Future<void> _addNewVibeConfig() async {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-    if (image != null) {
-      final bytes = await image.readAsBytes();
-      var newConfig = VibeConfig.createWithFile(bytes, 1.0, 0.3);
-      if (newConfig == null) {
-        return;
-      }
-      setState(() {
-        InfoManager().vibeConfig.add(newConfig);
-      });
-    }
+    if (image == null) return;
+    final bytes = await image.readAsBytes();
+    var newConfig = VibeConfig.createWithFile(bytes, 1.0, 0.3);
+    var img = Image.memory(bytes);
+    setState(() {
+      InfoManager().vibeConfig.add(newConfig);
+    });
   }
 
   void _removeVibeConfig(int index) {
