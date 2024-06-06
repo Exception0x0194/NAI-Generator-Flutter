@@ -330,6 +330,16 @@ class S {
     );
   }
 
+  /// `Negative → decreased weight; Positive → increased weight`
+  String get select_bracket_hint {
+    return Intl.message(
+      'Negative → decreased weight; Positive → increased weight',
+      name: 'select_bracket_hint',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Nested Config Type`
   String get cascaded_config_type {
     return Intl.message(
@@ -785,6 +795,16 @@ class S {
     return Intl.message(
       'Cancel',
       name: 'cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reset`
+  String get reset {
+    return Intl.message(
+      'Reset',
+      name: 'reset',
       desc: '',
       args: [],
     );

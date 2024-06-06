@@ -5,7 +5,8 @@ class PromptConfig {
   bool shuffled;
   double prob;
   int num;
-  int randomBrackets;
+  int randomBracketsUpper;
+  int randomBracketsLower;
   String type;
   String comment;
   String filter;
@@ -21,7 +22,8 @@ class PromptConfig {
     this.shuffled = true,
     this.prob = 0.0,
     this.num = 1,
-    this.randomBrackets = 0,
+    this.randomBracketsUpper = 0,
+    this.randomBracketsLower = 0,
     this.type = 'str',
     this.comment = 'Unnamed config',
     this.filter = '',
@@ -32,13 +34,23 @@ class PromptConfig {
   });
 
   factory PromptConfig.fromJson(Map<String, dynamic> json, int depth) {
+    int upper, lower;
+    if (json['randomBrackets'] != null) {
+      upper = json['randomBrackets'];
+      lower = -json['randomBrackets'];
+    } else {
+      upper = json['randomBracketsUpper'];
+      lower = json['randomBracketsLower'];
+    }
+
     return PromptConfig(
       selectionMethod: json['selectionMethod'],
       shuffled: json['shuffled'],
       prob:
           json['prob'] is int ? (json['prob'] as int).toDouble() : json['prob'],
       num: json['num'],
-      randomBrackets: json['randomBrackets'],
+      randomBracketsUpper: upper.toInt(),
+      randomBracketsLower: lower.toInt(),
       type: json['type'],
       comment: json['comment'],
       filter: json['filter'],
@@ -60,7 +72,8 @@ class PromptConfig {
       'shuffled': shuffled,
       'prob': prob,
       'num': num,
-      'randomBrackets': randomBrackets,
+      'randomBracketsUpper': randomBracketsUpper,
+      'randomBracketsLower': randomBracketsLower,
       'type': type,
       'comment': comment,
       'filter': filter,
@@ -71,13 +84,18 @@ class PromptConfig {
     };
   }
 
-  String addBrackets(String s) {
-    if (randomBrackets == 0) {
-      return s;
+  String addRandomBrackets(String s) {
+    int n = randomBracketsLower +
+        Random().nextInt(randomBracketsUpper - randomBracketsLower + 1);
+    List<String> brackets;
+
+    if (n < 0) {
+      brackets = ["[", "]"];
+      n = -n;
+    } else {
+      brackets = ["{", "}"];
     }
-    List<String> brackets =
-        Random().nextDouble() > 0.5 ? ["[", "]"] : ["{", "}"];
-    final n = Random().nextInt(randomBrackets + 1);
+
     final bracketString = List.from(brackets.map((b) => b * n));
     return bracketString[0] + s + bracketString[1];
   }
@@ -130,10 +148,10 @@ class PromptConfig {
       if (type == 'str') {
         if (p.contains('|||')) {
           var parts = p.split('|||');
-          head = '${addBrackets(parts[0])}, $head';
-          tail = '$tail${addBrackets(parts[1])}, ';
+          head = '${addRandomBrackets(parts[0])}, $head';
+          tail = '$tail${addRandomBrackets(parts[1])}, ';
         } else {
-          tail = '$tail${addBrackets(p)}, ';
+          tail = '$tail${addRandomBrackets(p)}, ';
         }
       } else if (type == 'config') {
         var subPromptConfig = p as PromptConfig;

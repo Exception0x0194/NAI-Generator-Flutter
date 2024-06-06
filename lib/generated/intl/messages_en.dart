@@ -106,9 +106,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Random Number of Brackets"),
         "random_seed": MessageLookupByLibrary.simpleMessage("Random Seed"),
         "reorder_config": MessageLookupByLibrary.simpleMessage("Reorder..."),
+        "reset": MessageLookupByLibrary.simpleMessage("Reset"),
         "sampler": MessageLookupByLibrary.simpleMessage("Sampler"),
         "scale": MessageLookupByLibrary.simpleMessage("Prompt Guidance"),
         "select": MessageLookupByLibrary.simpleMessage("Select "),
+        "select_bracket_hint": MessageLookupByLibrary.simpleMessage(
+            "Negative → decreased weight; Positive → increased weight"),
         "selection_method":
             MessageLookupByLibrary.simpleMessage("Selection Method"),
         "selection_method_all": MessageLookupByLibrary.simpleMessage("All"),
