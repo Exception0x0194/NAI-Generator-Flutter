@@ -57,8 +57,8 @@ class ParamConfig {
       'ucPreset': ucPreset,
       'qualityToggle': qualityToggle,
       'sm': sm,
-      'sm_dyn': smDyn, // 转换camelCase为snake_case
-      'seed': randomSeed ? Random().nextInt(999999999) : seed,
+      'sm_dyn': smDyn,
+      'seed': randomSeed ? Random().nextInt(1 << 32 - 1) : seed,
       'dynamic_thresholding': dynamicThresholding,
       'controlnet_strength': controlNetStrength,
       'legacy': legacy,
@@ -84,7 +84,7 @@ class ParamConfig {
       ucPreset: json['ucPreset'],
       qualityToggle: json['qualityToggle'],
       sm: json['sm'],
-      smDyn: json['sm_dyn'], // 注意名字已转换为snake_case
+      smDyn: json['sm_dyn'],
       dynamicThresholding: json['dynamic_thresholding'],
       controlNetStrength: json['controlnet_strength'] is int
           ? (json['controlnet_strength'] as int).toDouble()
@@ -98,8 +98,7 @@ class ParamConfig {
           ? (json['cfg_rescale'] as int).toDouble()
           : json['cfg_rescale'],
       noiseSchedule: json['noise_schedule'],
-      negativePrompt:
-          json['negative_prompt'], // Assuming this field is a String
+      negativePrompt: json['negative_prompt'],
     );
   }
 }

@@ -42,37 +42,46 @@ class I2IConfigScreenState extends State<I2IConfigScreen> {
       ),
       body: ListView(
         children: [
-          ListTile(title: Text('Image to Image')),
-          Padding(
-            padding: EdgeInsets.only(left: 20),
-            child: I2IConfigWidget(config: InfoManager().i2iConfig),
-          ),
-          ListTile(
-              trailing: InfoManager().vibeConfig.length < 5
-                  ? IconButton(
-                      icon: const Icon(Icons.add),
+          ExpansionTile(
+              title: Text('Image to Image'),
+              leading: Icon(Icons.screen_rotation),
+              initiallyExpanded: true,
+              children: [I2IConfigWidget(config: InfoManager().i2iConfig)]),
+          ExpansionTile(
+            title: const Text('Vibe Transfer'),
+            leading: Icon(Icons.photo_library_outlined),
+            initiallyExpanded: true,
+            children: [
+              ...InfoManager().vibeConfig.asMap().map((idx, config) {
+                return MapEntry(
+                    idx,
+                    Padding(
+                        padding: const EdgeInsets.only(left: 20),
+                        child: ExpansionTile(
+                          trailing: IconButton(
+                            icon: const Icon(Icons.delete_outline),
+                            onPressed: () {
+                              _removeVibeConfig(idx);
+                            },
+                          ),
+                          initiallyExpanded: true,
+                          controlAffinity: ListTileControlAffinity.leading,
+                          title: Text('Config #$idx'),
+                          children: [VibeConfigWidget(config: config)],
+                        )));
+              }).values,
+              if (InfoManager().vibeConfig.length < 5)
+                Row(
+                  children: [
+                    Expanded(
+                        child: IconButton(
                       onPressed: _addNewVibeConfig,
-                    )
-                  : const SizedBox.shrink(),
-              title: const Text('Vibe Transfer')),
-          ...InfoManager().vibeConfig.asMap().map((idx, config) {
-            return MapEntry(
-                idx,
-                Padding(
-                    padding: const EdgeInsets.only(left: 20),
-                    child: ExpansionTile(
-                      trailing: IconButton(
-                        icon: const Icon(Icons.delete_outline),
-                        onPressed: () {
-                          _removeVibeConfig(idx);
-                        },
-                      ),
-                      initiallyExpanded: true,
-                      controlAffinity: ListTileControlAffinity.leading,
-                      title: Text('Config #$idx'),
-                      children: [VibeConfigWidget(config: config)],
-                    )));
-          }).values,
+                      icon: Icon(Icons.add_photo_alternate_outlined),
+                    ))
+                  ],
+                )
+            ],
+          ),
         ],
       ),
     );

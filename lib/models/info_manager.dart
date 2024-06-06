@@ -99,22 +99,21 @@ class InfoManager with ChangeNotifier {
     }
 
     // Add I2I configs
-    if (i2iConfig.inputImage != null) {
+    if (i2iConfig.imgB64 != null) {
       // Apply scale factor
-      if (i2iConfig.scale != null) {
-        var newWidth =
-            (i2iConfig.inputImage!.width * i2iConfig.scale! / 64.0).ceil() * 64;
-        var newHeight =
-            (i2iConfig.inputImage!.height * i2iConfig.scale! / 64.0).ceil() *
-                64;
-        parameters['width'] = newWidth;
-        parameters['height'] = newHeight;
-      }
+      // if (i2iConfig.scale != null) {
+      //   var newWidth =
+      //       (i2iConfig.inputImage!.width * i2iConfig.scale! / 64.0).ceil() * 64;
+      //   var newHeight =
+      //       (i2iConfig.inputImage!.height * i2iConfig.scale! / 64.0).ceil() *
+      //           64;
+      //   parameters['width'] = newWidth;
+      //   parameters['height'] = newHeight;
+      // }
       action = 'img2img';
       parameters['strength'] = i2iConfig.strength;
       parameters['noise'] = i2iConfig.noise;
-      parameters['image'] =
-          i2iConfig.getInputB64(parameters['width'], parameters['height']);
+      parameters['image'] = i2iConfig.imgB64;
       parameters['extra_noise_seed'] = Random().nextInt(1 << 32 - 1);
     }
 
