@@ -1,9 +1,11 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hive/hive.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'screens/generator_screen.dart';
@@ -61,6 +63,7 @@ class MyHomePageState extends State<MyHomePage> {
   @override
   void dispose() {
     // Closes all Hive boxes
+    InfoManager().saveConfig();
     Hive.close();
     super.dispose();
   }
@@ -76,6 +79,10 @@ class MyHomePageState extends State<MyHomePage> {
   }
 
   Future _loadInitialInfo() async {
+    if (!kIsWeb) {
+      final dir = await getApplicationCacheDirectory();
+      Hive.init(dir.path);
+    }
     InfoManager().saveBox = await Hive.openBox('savedBox');
     var jsonData = InfoManager().saveBox.get('savedConfig');
     jsonData = jsonData ?? await rootBundle.loadString('json/example.json');
