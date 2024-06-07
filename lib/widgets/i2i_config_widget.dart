@@ -117,7 +117,7 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
             )),
         // Prompt overwrite settings
         SwitchListTile(
-            title: const Text('Overwrite Prompts'),
+            title: const Text('Override Prompts'),
             value: widget.config.isOverwritten,
             onChanged: (value) {
               setState(() {
@@ -126,7 +126,7 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
             }),
         widget.config.isOverwritten
             ? EditableListTile(
-                title: 'Overwritten Prompts',
+                title: '',
                 currentValue: widget.config.overwrittenPrompt,
                 onEditComplete: (value) {
                   setState(() {
@@ -166,16 +166,6 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
           double.parse(parts[0].substring('Strength: '.length - 1));
       widget.config.noise =
           double.parse(parts[1].substring('Noise: '.length - 1));
-    });
-  }
-
-  _setI2IScale(String value) {
-    setState(() {
-      if (value == 'None') {
-        widget.config.scale = null;
-      } else {
-        widget.config.scale = double.parse(value.split('x')[0]);
-      }
     });
   }
 

@@ -32,7 +32,7 @@ class InfoManager with ChangeNotifier {
   // I2I / Enhance Config
   I2IConfig i2iConfig = I2IConfig();
 
-  // Generated info
+  // Info of generated images
   final List<GenerationInfo> _generationInfos = [];
   int _generationInfoCurrentIdx = 0;
   int _generationCount = 0;
@@ -53,6 +53,9 @@ class InfoManager with ChangeNotifier {
   // Output indexing
   DateTime _generationTimestamp = DateTime.now();
   int _generationIdx = 0;
+
+  // Cached payload
+  Map<String, dynamic>? cachedPayload;
 
   // Persistent saved data
   late Box saveBox;
@@ -103,21 +106,15 @@ class InfoManager with ChangeNotifier {
     }
 
     // Add I2I configs
-    if (i2iConfig.imgB64 != null) {
-      // Apply scale factor
-      // if (i2iConfig.scale != null) {
-      //   var newWidth =
-      //       (i2iConfig.inputImage!.width * i2iConfig.scale! / 64.0).ceil() * 64;
-      //   var newHeight =
-      //       (i2iConfig.inputImage!.height * i2iConfig.scale! / 64.0).ceil() *
-      //           64;
-      //   parameters['width'] = newWidth;
-      //   parameters['height'] = newHeight;
-      // }
+    var i2iPayload = i2iConfig.payload;
+    if (i2iPayload['image'] != null) {
       action = 'img2img';
-      parameters['strength'] = i2iConfig.strength;
-      parameters['noise'] = i2iConfig.noise;
-      parameters['image'] = i2iConfig.imgB64;
+      prompts = i2iPayload['prompt'] ?? prompts;
+      parameters['strength'] = i2iPayload['strength'];
+      parameters['noise'] = i2iPayload['noise'];
+      parameters['image'] = i2iPayload['image'];
+      parameters['width'] = i2iPayload['width'] ?? parameters['width'];
+      parameters['height'] = i2iPayload['height'] ?? parameters['height'];
       parameters['extra_noise_seed'] = Random().nextInt(1 << 32 - 1);
     }
 
@@ -140,89 +137,88 @@ class InfoManager with ChangeNotifier {
   }
 
   Future<void> generateImage() async {
-    // Add new info entry
-    if (isRequesting) {
-      return;
-    }
-    String log = _remainingRequests == 0
-        ? 'Looping - '
-        : '${_remainingRequests.toString()} request${_remainingRequests > 1 ? 's' : ''} remaining - ';
-    var infoIdx = addNewInfo(
-        GenerationInfo(type: 'info', info: {'log': '${log}Requesting...'}));
-    notifyListeners();
+    if (isRequesting) return;
+    var infoIdx = logRequestStart();
 
     // Prepare head & payload
     var url = Uri.parse('https://image.novelai.net/ai/generate-image');
-    var data = await getPayload();
+    cachedPayload ??= await getPayload();
 
-    // Send request
-    var bytes = Uint8List(0);
+    // Send request and handle response
     try {
       isRequesting = true;
-      var response = await http.post(url,
-          headers: headers, body: json.encode(data['body']));
-      bytes = response.bodyBytes;
+      var bytes = await sendRequest(url, cachedPayload!['body']);
+      handleResponse(bytes, cachedPayload!, infoIdx);
+      cachedPayload = null;
     } catch (e) {
-      _generationInfos[infoIdx].info['log'] =
-          'Error orrurred in HTTP request: ${e.toString()}';
-      notifyListeners();
-      if (isGenerating) generateImage();
-      return;
+      setLog(infoIdx, 'Error occurred in HTTP response: ${e.toString()}');
     } finally {
       isRequesting = false;
+      notifyListeners();
+      if (isGenerating) generateImage();
     }
+  }
 
-    // Unpack & read response
+  Future<Uint8List> sendRequest(Uri url, Map<String, dynamic> data) async {
+    var response =
+        await http.post(url, headers: headers, body: json.encode(data));
+    return response.bodyBytes;
+  }
+
+  void handleResponse(Uint8List bytes, Map<String, dynamic> data, int infoIdx) {
     try {
       var archive = ZipDecoder().decodeBytes(bytes);
-      bool success = false;
-      for (var file in archive) {
-        // Find "image_0.png"
-        if (file.name != "image_0.png") continue;
-        var filename =
-            'nai-generated-${getTimestampDigits(_generationTimestamp)}-${_generationIdx.toString().padLeft(4, '0')}-${generateRandomFileName()}.png';
-        var imageBytes = file.content as Uint8List;
-        await saveBlob(imageBytes, filename);
-        var img = Image.memory(
-          imageBytes,
-          fit: BoxFit.fitHeight,
-        );
-
-        _generationInfos[infoIdx] = GenerationInfo(
-            img: img,
-            info: {
-              'filename': filename,
-              'idx': infoIdx,
-              'log': (data['comment'] as String),
-              'prompt': data['body']['input'],
-              'seed': data['body']['parameters']['seed'],
-              'height': data['body']['parameters']['height'],
-              'width': data['body']['parameters']['width'],
-            },
-            type: 'img');
-        success = true;
-        _generationIdx++;
-        if (_remainingRequests > 0) {
-          _remainingRequests--;
-          if (_remainingRequests == 0) {
-            addLog('Requests completed!');
-            isGenerating = false;
-          }
-        }
-        break;
-      }
-      if (!success) {
-        _generationInfos[infoIdx].info['log'] =
-            'Error: Cannot find image_0.png in ZIP response';
+      if (!processArchive(archive, data, infoIdx)) {
+        setLog(infoIdx, 'Error: Cannot find image_0.png in ZIP response.');
       }
     } catch (e) {
-      _generationInfos[infoIdx].info['log'] =
-          'Error unpacking response: ${e.toString()};\nResponse data: ${utf8.decode(bytes)}';
+      setLog(infoIdx,
+          'Error unpacking response: ${e.toString()};\nResponse data: ${bytes.length < 1000 ? utf8.decode(bytes) : 'TOO LONG!'}');
     }
+  }
 
-    // Start new generation
-    notifyListeners();
-    if (isGenerating) generateImage();
+  bool processArchive(Archive archive, Map<String, dynamic> data, int infoIdx) {
+    bool success = false;
+    for (var file in archive) {
+      if (file.name == "image_0.png") {
+        saveImage(file, data, infoIdx);
+        success = true;
+        break;
+      }
+    }
+    return success;
+  }
+
+  void saveImage(ArchiveFile file, Map<String, dynamic> data, int infoIdx) {
+    var imageBytes = file.content as Uint8List;
+    var filename =
+        'nai-generated-${getTimestampDigits(_generationTimestamp)}-${_generationIdx.toString().padLeft(4, '0')}-${generateRandomFileName()}.png';
+    saveBlob(imageBytes, filename);
+    _generationInfos[infoIdx] = GenerationInfo(
+        img: Image.memory(imageBytes, fit: BoxFit.fitHeight),
+        info: {
+          'filename': filename,
+          'idx': infoIdx,
+          'log': (data['comment'] as String),
+          'prompt': data['body']['input'],
+          'seed': data['body']['parameters']['seed'],
+          'bytes': imageBytes,
+          'height': data['body']['parameters']['height'],
+          'width': data['body']['parameters']['width'],
+        },
+        type: 'img');
+    _generationIdx++;
+    decrementRequests();
+  }
+
+  void decrementRequests() {
+    if (_remainingRequests > 0) {
+      _remainingRequests--;
+      if (_remainingRequests == 0) {
+        addLog('Requests completed!');
+        isGenerating = false;
+      }
+    }
   }
 
   void generatePrompt() async {
@@ -233,8 +229,20 @@ class InfoManager with ChangeNotifier {
     notifyListeners();
   }
 
-  void addLog(String content) {
-    addNewInfo(GenerationInfo(img: null, info: {'log': content}, type: 'info'));
+  void addLog(String message) {
+    addNewInfo(GenerationInfo(img: null, info: {'log': message}, type: 'info'));
+  }
+
+  int logRequestStart() {
+    String log = _remainingRequests == 0
+        ? 'Looping - '
+        : '${_remainingRequests.toString()} request${_remainingRequests > 1 ? 's' : ''} remaining - ';
+    return addNewInfo(
+        GenerationInfo(type: 'info', info: {'log': '${log}Requesting...'}));
+  }
+
+  void setLog(int infoIdx, String message) {
+    _generationInfos[infoIdx].info['log'] = message;
   }
 
   int addNewInfo(GenerationInfo newInfo) {

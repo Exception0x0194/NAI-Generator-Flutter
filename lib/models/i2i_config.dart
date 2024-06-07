@@ -2,24 +2,55 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 class I2IConfig {
-  String? imgB64;
+  // Basic settings
+  String? _imgB64;
   double strength;
   double noise;
-  bool isOverwritten;
-  String overwrittenPrompt;
-  double? scale;
+
   int? width;
   int? height;
 
+  // Prompt overrides
+  bool isOverwritten;
+  String overwrittenPrompt;
+
+  // Single-time I2I Request overrides
+  String? singleTimeImgB64;
+
+  Map<String, dynamic> get payload {
+    Map<String, dynamic> ret = {
+      'width': width,
+      'height': height,
+      'strength': strength,
+      'noise': noise
+    };
+    if (isOverwritten) {
+      ret['prompt'] = overwrittenPrompt;
+    }
+    if (singleTimeImgB64 == null) {
+      ret['image'] = imgB64;
+    } else {
+      ret['image'] = singleTimeImgB64;
+      singleTimeImgB64 = null;
+    }
+    return ret;
+  }
+
+  String? get imgB64 {
+    return singleTimeImgB64 ?? _imgB64;
+  }
+
+  set imgB64(String? input) {
+    _imgB64 = input;
+  }
+
   I2IConfig({
-    this.imgB64,
+    String? image,
     this.strength = 0.5,
     this.noise = 0,
     this.isOverwritten = false,
     this.overwrittenPrompt = '',
-  });
-
-  static createWithFile(Uint8List bytes) {
-    return I2IConfig(imgB64: base64Encode(bytes));
+  }) {
+    _imgB64 = image;
   }
 }

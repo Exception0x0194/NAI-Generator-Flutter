@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:nai_casrand/models/info_manager.dart';
 import 'package:nai_casrand/models/utils.dart';
 
 import '../models/generation_info.dart';
@@ -74,6 +77,11 @@ class GenerationInfoWidget extends StatelessWidget {
         right: 0,
         top: 0,
         child: Row(mainAxisSize: MainAxisSize.min, children: [
+          if (info.type == 'img')
+            IconButton(
+              icon: const Icon(Icons.brush),
+              onPressed: () => {_showI2IConfigDialog(context)},
+            ),
           IconButton(
             icon: const Icon(Icons.info_outline),
             onPressed: () => {_showInfoDialog(context, info.info)},
@@ -126,5 +134,77 @@ class GenerationInfoWidget extends StatelessWidget {
         );
       },
     );
+  }
+
+  void _showI2IConfigDialog(BuildContext context) {
+    bool once = true;
+    bool ovverridePrompt = true;
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(builder: (context, setDialogState) {
+          return AlertDialog(
+            title: const Text('Info Details'),
+            content: SingleChildScrollView(
+              child: ListBody(children: [
+                ListTile(
+                  title: Text('1.0x'),
+                  onTap: () {
+                    _setI2IConfig(1.0, once, ovverridePrompt);
+                    Navigator.of(context).pop();
+                  },
+                ),
+                ListTile(
+                  title: Text('1.5x'),
+                  onTap: () {
+                    _setI2IConfig(1.5, once, ovverridePrompt);
+                    Navigator.of(context).pop();
+                  },
+                ),
+                ListTile(
+                  title: Text('Only once'),
+                  trailing: Checkbox(
+                      value: once,
+                      onChanged: (value) {
+                        setDialogState(() {
+                          once = value!;
+                        });
+                      }),
+                  dense: true,
+                ),
+                ListTile(
+                  title: Text('Override prompts'),
+                  trailing: Checkbox(
+                      value: ovverridePrompt,
+                      onChanged: (value) {
+                        setDialogState(() {
+                          ovverridePrompt = value!;
+                        });
+                      }),
+                  dense: true,
+                ),
+              ]),
+            ),
+          );
+        });
+      },
+    );
+  }
+
+  void _setI2IConfig(double scale, bool once, bool overridePrompt) {
+    if (overridePrompt) {
+      InfoManager().i2iConfig.isOverwritten = true;
+      InfoManager().i2iConfig.overwrittenPrompt = info.info['prompt'];
+    }
+    int targetWidth = (scale * info.info['width'] / 64).ceil() * 64;
+    int targetHeight = (scale * info.info['height'] / 64).ceil() * 64;
+    InfoManager().i2iConfig.width = targetWidth;
+    InfoManager().i2iConfig.height = targetHeight;
+    if (once) {
+      InfoManager().i2iConfig.singleTimeImgB64 =
+          base64Encode(info.info['bytes']);
+    } else {
+      InfoManager().i2iConfig.imgB64 = base64Encode(info.info['bytes']);
+    }
   }
 }

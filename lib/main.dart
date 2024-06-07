@@ -69,10 +69,7 @@ class MyHomePageState extends State<MyHomePage> {
   }
 
   void _onItemTapped(int index) {
-    // Save config when leaving prompt/settings page
-    if (_selectedIndex == 1 || _selectedIndex == 3) {
-      InfoManager().saveConfig();
-    }
+    InfoManager().saveConfig();
     setState(() {
       _selectedIndex = index;
     });
