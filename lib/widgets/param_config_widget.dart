@@ -120,7 +120,14 @@ class ParamConfigWidgetState extends State<ParamConfigWidget> {
     return SelectableListTile(
       title: S.of(context).image_size,
       currentValue: _getSizeString(),
-      options: const ['832 x 1216', '1024 x 1024', '1216 x 832'],
+      options: const [
+        '832 x 1216',
+        '1024 x 1024',
+        '1216 x 832',
+        '1024 x 1536',
+        '1472 x 1472',
+        '1536 x 1024',
+      ],
       onSelectComplete: (value) => {_setSize(value)},
       leading: const Icon(Icons.photo_size_select_large),
     );

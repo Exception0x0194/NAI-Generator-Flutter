@@ -1,8 +1,11 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:hive/hive.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'screens/generator_screen.dart';
@@ -57,16 +60,33 @@ class MyHomePageState extends State<MyHomePage> {
     _initializationFuture = _loadInitialInfo();
   }
 
+  @override
+  void dispose() {
+    // Closes all Hive boxes
+    InfoManager().saveConfig();
+    Hive.close();
+    super.dispose();
+  }
+
   void _onItemTapped(int index) {
+    // Save config when leaving prompt/settings page
+    if (_selectedIndex == 1 || _selectedIndex == 3) {
+      InfoManager().saveConfig();
+    }
     setState(() {
       _selectedIndex = index;
     });
   }
 
   Future _loadInitialInfo() async {
-    var jsonData =
-        json.decode(await rootBundle.loadString('json/example.json'));
-    InfoManager().fromJson(jsonData);
+    if (!kIsWeb) {
+      final dir = await getApplicationCacheDirectory();
+      Hive.init(dir.path);
+    }
+    InfoManager().saveBox = await Hive.openBox('savedBox');
+    var jsonData = InfoManager().saveBox.get('savedConfig');
+    jsonData = jsonData ?? await rootBundle.loadString('json/example.json');
+    InfoManager().fromJson(json.decode(jsonData));
   }
 
   @override

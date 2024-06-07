@@ -12,6 +12,7 @@ import 'package:archive/archive.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:hive/hive.dart';
 
 class InfoManager with ChangeNotifier {
   static final InfoManager _instance = InfoManager._internal();
@@ -53,6 +54,9 @@ class InfoManager with ChangeNotifier {
   DateTime _generationTimestamp = DateTime.now();
   int _generationIdx = 0;
 
+  // Persistent saved data
+  late Box saveBox;
+
   Map<String, dynamic> toJson() {
     return {
       "api_key": apiKey,
@@ -67,12 +71,12 @@ class InfoManager with ChangeNotifier {
           PromptConfig.fromJson(jsonConfig['prompt_config'], 0);
       ParamConfig tryParamConfig =
           ParamConfig.fromJson(jsonConfig['param_config']);
+      apiKey = jsonConfig['api_key'];
       promptConfig = tryPromptConfig;
       paramConfig = tryParamConfig;
     } catch (e) {
       return false;
     }
-    apiKey = jsonConfig['api_key'];
     return true;
   }
 
@@ -246,5 +250,9 @@ class InfoManager with ChangeNotifier {
           (_generationInfoCurrentIdx + 1) % _generationInfosMaxLength;
       return addedIndex;
     }
+  }
+
+  void saveConfig() {
+    saveBox.put('savedConfig', json.encode(toJson()));
   }
 }
