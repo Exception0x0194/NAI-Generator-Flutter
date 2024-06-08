@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:math';
 
 import 'prompt_config.dart';
 import 'param_config.dart';
@@ -106,16 +105,11 @@ class InfoManager with ChangeNotifier {
     }
 
     // Add I2I configs
-    var i2iPayload = i2iConfig.payload;
-    if (i2iPayload['image'] != null) {
-      action = 'img2img';
-      prompts = i2iPayload['prompt'] ?? prompts;
-      parameters['strength'] = i2iPayload['strength'];
-      parameters['noise'] = i2iPayload['noise'];
-      parameters['image'] = i2iPayload['image'];
-      parameters['width'] = i2iPayload['width'] ?? parameters['width'];
-      parameters['height'] = i2iPayload['height'] ?? parameters['height'];
-      parameters['extra_noise_seed'] = Random().nextInt(1 << 32 - 1);
+    var i2iPayload = i2iConfig.toJson();
+    if (i2iPayload != null) {
+      action = i2iPayload['action'];
+      prompts = i2iPayload['input'] ?? prompts;
+      parameters.addAll(i2iPayload['parameters']);
     }
 
     return {

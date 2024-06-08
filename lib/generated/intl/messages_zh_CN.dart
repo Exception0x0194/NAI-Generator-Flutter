@@ -49,6 +49,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "edit_image_number_to_generate":
             MessageLookupByLibrary.simpleMessage("设置生成图片数量（设为0即不断生成）"),
         "enabled": MessageLookupByLibrary.simpleMessage("启用"),
+        "enhance_only_once":
+            MessageLookupByLibrary.simpleMessage("只 enhance 一次"),
+        "enhance_override_prompts":
+            MessageLookupByLibrary.simpleMessage("以图片 prompt 覆盖随机 prompt"),
+        "enhance_override_smea":
+            MessageLookupByLibrary.simpleMessage("强行使用设置中的 SMEA 参数"),
+        "enhance_presets": MessageLookupByLibrary.simpleMessage("Enhance 预设参数"),
+        "enhance_scale": MessageLookupByLibrary.simpleMessage("缩放系数"),
         "enter_position": MessageLookupByLibrary.simpleMessage("选择位置"),
         "export_settings_to_file":
             MessageLookupByLibrary.simpleMessage("导出设置到文件"),
@@ -61,6 +69,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "github_repo": MessageLookupByLibrary.simpleMessage("项目地址"),
         "height": MessageLookupByLibrary.simpleMessage("高度"),
         "i2i_config": MessageLookupByLibrary.simpleMessage("图生图设置"),
+        "i2i_conifgs_set": MessageLookupByLibrary.simpleMessage("已设置图生图参数"),
         "image_number_to_generate":
             MessageLookupByLibrary.simpleMessage("生成图片数量"),
         "image_size": MessageLookupByLibrary.simpleMessage("图像尺寸"),
@@ -85,6 +94,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("……不一定在 0 到 1 之间"),
         "notice_enter_positon":
             MessageLookupByLibrary.simpleMessage("0 → 开头；留空 → 末尾"),
+        "override_prompt": MessageLookupByLibrary.simpleMessage("覆盖 prompt"),
+        "override_random_prompts":
+            MessageLookupByLibrary.simpleMessage("覆盖随机 prompts"),
         "prompt_config": MessageLookupByLibrary.simpleMessage("Prompt设置"),
         "random_brackets": MessageLookupByLibrary.simpleMessage("随机括号数量"),
         "random_seed": MessageLookupByLibrary.simpleMessage("随机种子"),
@@ -107,6 +119,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("单个 - 顺序遍历"),
         "selection_num": MessageLookupByLibrary.simpleMessage("选中数量"),
         "selection_prob": MessageLookupByLibrary.simpleMessage("选中概率"),
+        "set_enhancement_parameters":
+            MessageLookupByLibrary.simpleMessage("设置 enhance 参数"),
         "settings": MessageLookupByLibrary.simpleMessage("参数设置"),
         "shuffled": MessageLookupByLibrary.simpleMessage("打乱次序"),
         "sm": MessageLookupByLibrary.simpleMessage("SMEA"),

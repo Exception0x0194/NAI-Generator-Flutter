@@ -5,6 +5,7 @@ import 'package:nai_casrand/models/info_manager.dart';
 import 'package:nai_casrand/models/utils.dart';
 
 import '../models/generation_info.dart';
+import '../generated/l10n.dart';
 
 class GenerationInfoWidget extends StatelessWidget {
   final GenerationInfo info;
@@ -59,13 +60,19 @@ class GenerationInfoWidget extends StatelessWidget {
               info.img!,
               LayoutBuilder(builder: ((context, constraints) {
                 var aspect = info.info['width']! / info.info['height']!;
-                var width = aspect * constraints.maxHeight - 80;
+                var width = aspect * constraints.maxHeight;
                 return SizedBox(
-                  width: width,
-                  child: ListTile(title: Text(info.info['filename']!)),
-                );
+                    width: width,
+                    child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                              child: ListTile(
+                                  title: Text(info.info['filename']!),
+                                  dense: true)),
+                          if (!showInfoForImg) _buildButtons(context)
+                        ]));
               })),
-              if (!showInfoForImg) _buildButtons(context)
             ],
           ),
           if (showInfoForImg) _buildInfoWidget(context, margined: false)
@@ -76,24 +83,28 @@ class GenerationInfoWidget extends StatelessWidget {
     return Positioned(
         right: 0,
         top: 0,
-        child: Row(mainAxisSize: MainAxisSize.min, children: [
-          if (info.type == 'img')
-            IconButton(
-              icon: const Icon(Icons.brush),
-              onPressed: () => {_showI2IConfigDialog(context)},
-            ),
-          IconButton(
-            icon: const Icon(Icons.info_outline),
-            onPressed: () => {_showInfoDialog(context, info.info)},
-          ),
-          IconButton(
-            icon: const Icon(Icons.copy),
-            onPressed: () {
-              copyToClipboard(info.info['log'] ?? '');
-              showInfoBar(context, 'Copied info.');
-            },
-          ),
-        ]));
+        child: Container(
+            decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.2),
+                shape: BoxShape.rectangle),
+            child: Row(mainAxisSize: MainAxisSize.min, children: [
+              if (info.type == 'img')
+                IconButton(
+                  icon: const Icon(Icons.brush),
+                  onPressed: () => {_showI2IConfigDialog(context)},
+                ),
+              IconButton(
+                icon: const Icon(Icons.info_outline),
+                onPressed: () => {_showInfoDialog(context, info.info)},
+              ),
+              IconButton(
+                icon: const Icon(Icons.copy),
+                onPressed: () {
+                  copyToClipboard(info.info['log'] ?? '');
+                  showInfoBar(context, 'Copied info.');
+                },
+              ),
+            ])));
   }
 
   void _showInfoDialog(BuildContext context, Map<String, dynamic> info) {
@@ -139,50 +150,61 @@ class GenerationInfoWidget extends StatelessWidget {
   void _showI2IConfigDialog(BuildContext context) {
     bool once = true;
     bool ovverridePrompt = true;
+    bool overrideSmea = false;
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return StatefulBuilder(builder: (context, setDialogState) {
           return AlertDialog(
-            title: const Text('Info Details'),
+            title: Text(S.of(context).set_enhancement_parameters),
             content: SingleChildScrollView(
               child: ListBody(children: [
-                ListTile(
-                  title: Text('1.0x'),
-                  onTap: () {
-                    _setI2IConfig(1.0, once, ovverridePrompt);
-                    Navigator.of(context).pop();
-                  },
-                ),
-                ListTile(
-                  title: Text('1.5x'),
-                  onTap: () {
-                    _setI2IConfig(1.5, once, ovverridePrompt);
-                    Navigator.of(context).pop();
-                  },
-                ),
-                ListTile(
-                  title: Text('Only once'),
-                  trailing: Checkbox(
-                      value: once,
-                      onChanged: (value) {
-                        setDialogState(() {
-                          once = value!;
-                        });
-                      }),
-                  dense: true,
-                ),
-                ListTile(
-                  title: Text('Override prompts'),
-                  trailing: Checkbox(
-                      value: ovverridePrompt,
-                      onChanged: (value) {
-                        setDialogState(() {
-                          ovverridePrompt = value!;
-                        });
-                      }),
-                  dense: true,
-                ),
+                ExpansionTile(
+                    title: Text(S.of(context).enhance_scale),
+                    initiallyExpanded: true,
+                    children: [
+                      Padding(
+                          padding: const EdgeInsets.only(left: 20),
+                          child: Column(children: [
+                            ListTile(
+                              title: const Text('1.0x'),
+                              onTap: () {
+                                Navigator.of(context).pop();
+                                _setI2IConfig(
+                                    context, 1.0, once, ovverridePrompt);
+                              },
+                            ),
+                            ListTile(
+                              title: const Text('1.5x'),
+                              onTap: () {
+                                Navigator.of(context).pop();
+                                _setI2IConfig(
+                                    context, 1.5, once, ovverridePrompt);
+                              },
+                            )
+                          ]))
+                    ]),
+                // SwitchListTile(
+                //     title: Text(S.of(context).enhance_only_once),
+                //     dense: true,
+                //     value: once,
+                //     onChanged: (value) {
+                //       setDialogState(() => once = value);
+                //     }),
+                SwitchListTile(
+                    title: Text(S.of(context).enhance_override_prompts),
+                    dense: true,
+                    value: ovverridePrompt,
+                    onChanged: (value) {
+                      setDialogState(() => ovverridePrompt = value);
+                    }),
+                SwitchListTile(
+                    title: Text(S.of(context).enhance_override_smea),
+                    dense: true,
+                    value: overrideSmea,
+                    onChanged: (value) {
+                      setDialogState(() => overrideSmea = value);
+                    }),
               ]),
             ),
           );
@@ -191,20 +213,20 @@ class GenerationInfoWidget extends StatelessWidget {
     );
   }
 
-  void _setI2IConfig(double scale, bool once, bool overridePrompt) {
+  void _setI2IConfig(
+      BuildContext context, double scale, bool once, bool overridePrompt) {
     if (overridePrompt) {
-      InfoManager().i2iConfig.isOverwritten = true;
-      InfoManager().i2iConfig.overwrittenPrompt = info.info['prompt'];
+      InfoManager().i2iConfig.overridePromptEnabled = true;
+      InfoManager().i2iConfig.overridePrompt = info.info['prompt'];
     }
     int targetWidth = (scale * info.info['width'] / 64).ceil() * 64;
     int targetHeight = (scale * info.info['height'] / 64).ceil() * 64;
-    InfoManager().i2iConfig.width = targetWidth;
-    InfoManager().i2iConfig.height = targetHeight;
-    if (once) {
-      InfoManager().i2iConfig.singleTimeImgB64 =
-          base64Encode(info.info['bytes']);
-    } else {
-      InfoManager().i2iConfig.imgB64 = base64Encode(info.info['bytes']);
-    }
+    // InfoManager().i2iConfig.width = targetWidth;
+    // InfoManager().i2iConfig.height = targetHeight;
+    InfoManager().paramConfig.width = targetWidth;
+    InfoManager().paramConfig.height = targetHeight;
+    InfoManager().i2iConfig.imgB64 = base64Encode(info.info['bytes']);
+
+    showInfoBar(context, S.of(context).i2i_conifgs_set);
   }
 }

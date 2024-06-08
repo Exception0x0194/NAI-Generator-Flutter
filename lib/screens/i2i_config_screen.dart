@@ -43,13 +43,13 @@ class I2IConfigScreenState extends State<I2IConfigScreen> {
       body: ListView(
         children: [
           ExpansionTile(
-              title: Text('Image to Image'),
-              leading: Icon(Icons.screen_rotation),
+              title: const Text('Image to Image'),
+              leading: const Icon(Icons.screen_rotation),
               initiallyExpanded: true,
               children: [I2IConfigWidget(config: InfoManager().i2iConfig)]),
           ExpansionTile(
             title: const Text('Vibe Transfer'),
-            leading: Icon(Icons.photo_library_outlined),
+            leading: const Icon(Icons.photo_library_outlined),
             initiallyExpanded: true,
             children: [
               ...InfoManager().vibeConfig.asMap().map((idx, config) {
@@ -76,7 +76,7 @@ class I2IConfigScreenState extends State<I2IConfigScreen> {
                     Expanded(
                         child: IconButton(
                       onPressed: _addNewVibeConfig,
-                      icon: Icon(Icons.add_photo_alternate_outlined),
+                      icon: const Icon(Icons.add_photo_alternate_outlined),
                     ))
                   ],
                 )

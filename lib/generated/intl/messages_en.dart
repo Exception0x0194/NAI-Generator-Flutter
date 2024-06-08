@@ -55,6 +55,15 @@ class MessageLookup extends MessageLookupByLibrary {
         "edit_image_number_to_generate": MessageLookupByLibrary.simpleMessage(
             "Set Number of Images to Generate (Set to 0 for continuous generation)"),
         "enabled": MessageLookupByLibrary.simpleMessage("Enabled"),
+        "enhance_only_once":
+            MessageLookupByLibrary.simpleMessage("Enhance only once"),
+        "enhance_override_prompts":
+            MessageLookupByLibrary.simpleMessage("Overwrite random prompts"),
+        "enhance_override_smea":
+            MessageLookupByLibrary.simpleMessage("Forcely use SMEA settings"),
+        "enhance_presets":
+            MessageLookupByLibrary.simpleMessage("Enhance parameter presets"),
+        "enhance_scale": MessageLookupByLibrary.simpleMessage("Scale factor"),
         "enter_position":
             MessageLookupByLibrary.simpleMessage("Enter position"),
         "enter_position_placeholder":
@@ -73,6 +82,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("GitHub Repository"),
         "height": MessageLookupByLibrary.simpleMessage("Height"),
         "i2i_config": MessageLookupByLibrary.simpleMessage("Img2Img Settings"),
+        "i2i_conifgs_set":
+            MessageLookupByLibrary.simpleMessage("Image to image configs set."),
         "image_number_to_generate": MessageLookupByLibrary.simpleMessage(
             "Number of Images to Generate"),
         "image_size": MessageLookupByLibrary.simpleMessage("Image Size"),
@@ -100,6 +111,10 @@ class MessageLookup extends MessageLookupByLibrary {
             "... not necessarily between 0 and 1"),
         "notice_enter_positon":
             MessageLookupByLibrary.simpleMessage("0 → head; blank → tail"),
+        "override_prompt":
+            MessageLookupByLibrary.simpleMessage("Override prompts"),
+        "override_random_prompts":
+            MessageLookupByLibrary.simpleMessage("Override random prompts"),
         "prompt_config":
             MessageLookupByLibrary.simpleMessage("Prompt Settings"),
         "random_brackets":
@@ -127,6 +142,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Selection Count"),
         "selection_prob":
             MessageLookupByLibrary.simpleMessage("Selection Probability"),
+        "set_enhancement_parameters":
+            MessageLookupByLibrary.simpleMessage("Set enhancement parameters"),
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),
         "shuffled": MessageLookupByLibrary.simpleMessage("Shuffle"),
         "sm": MessageLookupByLibrary.simpleMessage("SMEA"),

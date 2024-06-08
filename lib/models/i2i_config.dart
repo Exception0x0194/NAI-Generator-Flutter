@@ -1,56 +1,62 @@
-import 'dart:convert';
-import 'dart:typed_data';
+import 'dart:math';
 
-class I2IConfig {
+import 'package:flutter/foundation.dart';
+
+class I2IConfig with ChangeNotifier {
   // Basic settings
   String? _imgB64;
   double strength;
   double noise;
 
-  int? width;
-  int? height;
-
   // Prompt overrides
-  bool isOverwritten;
-  String overwrittenPrompt;
+  bool overridePromptEnabled;
+  String overridePrompt;
 
-  // Single-time I2I Request overrides
-  String? singleTimeImgB64;
+  // SMEA overrides
+  bool overrideSmea;
 
-  Map<String, dynamic> get payload {
-    Map<String, dynamic> ret = {
-      'width': width,
-      'height': height,
+  // Only-once settings
+  bool once;
+
+  Map<String, dynamic>? toJson() {
+    if (_imgB64 == null) return null;
+    Map<String, dynamic> parameters = {
+      'image': _imgB64,
       'strength': strength,
-      'noise': noise
+      'noise': noise,
+      'extra_noise_seed': Random().nextInt(1 << 32 - 1)
     };
-    if (isOverwritten) {
-      ret['prompt'] = overwrittenPrompt;
+    if (!overrideSmea) {
+      parameters['sm'] = false;
+      parameters['sm_dyn'] = false;
     }
-    if (singleTimeImgB64 == null) {
-      ret['image'] = imgB64;
-    } else {
-      ret['image'] = singleTimeImgB64;
-      singleTimeImgB64 = null;
+    if (once) {
+      _imgB64 = null;
+      notifyListeners();
     }
-    return ret;
-  }
-
-  String? get imgB64 {
-    return singleTimeImgB64 ?? _imgB64;
-  }
-
-  set imgB64(String? input) {
-    _imgB64 = input;
+    return {
+      'action': 'img2img',
+      'input': overridePromptEnabled ? overridePrompt : null,
+      'parameters': parameters
+    };
   }
 
   I2IConfig({
-    String? image,
+    String? imgB64,
     this.strength = 0.5,
     this.noise = 0,
-    this.isOverwritten = false,
-    this.overwrittenPrompt = '',
+    this.overridePromptEnabled = false,
+    this.once = false,
+    this.overridePrompt = '',
+    this.overrideSmea = false,
   }) {
-    _imgB64 = image;
+    _imgB64 = imgB64;
   }
+
+  set imgB64(String? newValue) {
+    _imgB64 = newValue;
+    notifyListeners();
+  }
+
+  String? get imgB64 => _imgB64;
 }

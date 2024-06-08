@@ -720,6 +720,96 @@ class S {
     );
   }
 
+  /// `Enhance parameter presets`
+  String get enhance_presets {
+    return Intl.message(
+      'Enhance parameter presets',
+      name: 'enhance_presets',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Override random prompts`
+  String get override_random_prompts {
+    return Intl.message(
+      'Override random prompts',
+      name: 'override_random_prompts',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Override prompts`
+  String get override_prompt {
+    return Intl.message(
+      'Override prompts',
+      name: 'override_prompt',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Set enhancement parameters`
+  String get set_enhancement_parameters {
+    return Intl.message(
+      'Set enhancement parameters',
+      name: 'set_enhancement_parameters',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Scale factor`
+  String get enhance_scale {
+    return Intl.message(
+      'Scale factor',
+      name: 'enhance_scale',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enhance only once`
+  String get enhance_only_once {
+    return Intl.message(
+      'Enhance only once',
+      name: 'enhance_only_once',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Overwrite random prompts`
+  String get enhance_override_prompts {
+    return Intl.message(
+      'Overwrite random prompts',
+      name: 'enhance_override_prompts',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Forcely use SMEA settings`
+  String get enhance_override_smea {
+    return Intl.message(
+      'Forcely use SMEA settings',
+      name: 'enhance_override_smea',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Image to image configs set.`
+  String get i2i_conifgs_set {
+    return Intl.message(
+      'Image to image configs set.',
+      name: 'i2i_conifgs_set',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `succeed`
   String get succeed {
     return Intl.message(
