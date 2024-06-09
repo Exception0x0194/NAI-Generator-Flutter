@@ -43,7 +43,7 @@ class GenerationInfoWidget extends StatelessWidget {
             subtitle: Text(info.info['log'] ?? ''),
           )
         ]),
-        _buildButtons(context),
+        Align(alignment: Alignment.topRight, child: _buildButtons(context)),
       ]),
     );
   }
@@ -80,31 +80,27 @@ class GenerationInfoWidget extends StatelessWidget {
   }
 
   Widget _buildButtons(BuildContext context) {
-    return Positioned(
-        right: 0,
-        top: 0,
-        child: Container(
-            decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
-                shape: BoxShape.rectangle),
-            child: Row(mainAxisSize: MainAxisSize.min, children: [
-              if (info.type == 'img')
-                IconButton(
-                  icon: const Icon(Icons.brush),
-                  onPressed: () => {_showI2IConfigDialog(context)},
-                ),
-              IconButton(
-                icon: const Icon(Icons.info_outline),
-                onPressed: () => {_showInfoDialog(context, info.info)},
-              ),
-              IconButton(
-                icon: const Icon(Icons.copy),
-                onPressed: () {
-                  copyToClipboard(info.info['log'] ?? '');
-                  showInfoBar(context, 'Copied info.');
-                },
-              ),
-            ])));
+    return Container(
+        decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.2), shape: BoxShape.rectangle),
+        child: Row(mainAxisSize: MainAxisSize.min, children: [
+          if (info.type == 'img')
+            IconButton(
+              icon: const Icon(Icons.brush),
+              onPressed: () => {_showI2IConfigDialog(context)},
+            ),
+          IconButton(
+            icon: const Icon(Icons.info_outline),
+            onPressed: () => {_showInfoDialog(context, info.info)},
+          ),
+          IconButton(
+            icon: const Icon(Icons.copy),
+            onPressed: () {
+              copyToClipboard(info.info['log'] ?? '');
+              showInfoBar(context, 'Copied info.');
+            },
+          ),
+        ]));
   }
 
   void _showInfoDialog(BuildContext context, Map<String, dynamic> info) {

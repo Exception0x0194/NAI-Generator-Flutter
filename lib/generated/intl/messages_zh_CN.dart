@@ -20,9 +20,12 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'zh_CN';
 
-  static String m0(num) => "设置生成${num}幅图片";
+  static String m0(current_size, i2i_size) =>
+      "生成尺寸：${current_size}\n输入尺寸：${i2i_size}";
 
-  static String m1(num) => "开始生成${num}幅图片";
+  static String m1(num) => "设置生成${num}幅图片";
+
+  static String m2(num) => "开始生成${num}幅图片";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -30,6 +33,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "NAI_API_key_hint": MessageLookupByLibrary.simpleMessage(
             "可以从主页 → 设置 → Account → Get Persistent API Token 获取"),
         "add_new_config": MessageLookupByLibrary.simpleMessage("插入新Config"),
+        "available_in_settings":
+            MessageLookupByLibrary.simpleMessage("也可在设置页面调整"),
         "cancel": MessageLookupByLibrary.simpleMessage("取消"),
         "cascaded_config_type": MessageLookupByLibrary.simpleMessage("下属设置类型"),
         "cascaded_config_type_config":
@@ -70,6 +75,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "height": MessageLookupByLibrary.simpleMessage("高度"),
         "i2i_config": MessageLookupByLibrary.simpleMessage("图生图设置"),
         "i2i_conifgs_set": MessageLookupByLibrary.simpleMessage("已设置图生图参数"),
+        "i2i_image_size": m0,
         "image_number_to_generate":
             MessageLookupByLibrary.simpleMessage("生成图片数量"),
         "image_size": MessageLookupByLibrary.simpleMessage("图像尺寸"),
@@ -83,10 +89,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "info_import_file": MessageLookupByLibrary.simpleMessage("导入文件"),
         "info_import_from_clipboard":
             MessageLookupByLibrary.simpleMessage("从剪切板导入"),
-        "info_set_genration_number": m0,
+        "info_set_genration_number": m1,
         "info_set_genration_number_failed":
             MessageLookupByLibrary.simpleMessage("设置中出现错误"),
-        "info_start_generation": m1,
+        "info_start_generation": m2,
         "info_tile_height": MessageLookupByLibrary.simpleMessage("图片磁贴高度"),
         "is_ordered": MessageLookupByLibrary.simpleMessage("顺序"),
         "is_shuffled": MessageLookupByLibrary.simpleMessage("乱序"),

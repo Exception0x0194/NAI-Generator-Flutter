@@ -48,6 +48,8 @@
     "custom_size": "Custom Size",
     "height": "Height",
     "width": "Width",
+    "i2i_image_size": "Generation size: {current_size}\nInput size: {i2i_size}",
+    "available_in_settings": "Also available in settings page",
     "scale": "Prompt Guidance",
     "cfg_rescale": "Prompt Guidance Rescale",
     "sm": "SMEA",

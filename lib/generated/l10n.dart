@@ -540,6 +540,26 @@ class S {
     );
   }
 
+  /// `Generation size: {current_size}\nInput size: {i2i_size}`
+  String i2i_image_size(Object current_size, Object i2i_size) {
+    return Intl.message(
+      'Generation size: $current_size\nInput size: $i2i_size',
+      name: 'i2i_image_size',
+      desc: '',
+      args: [current_size, i2i_size],
+    );
+  }
+
+  /// `Also available in settings page`
+  String get available_in_settings {
+    return Intl.message(
+      'Also available in settings page',
+      name: 'available_in_settings',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Prompt Guidance`
   String get scale {
     return Intl.message(

@@ -47,6 +47,8 @@
     "custom_size": "手动调整尺寸",
     "height": "高度",
     "width": "宽度",
+    "i2i_image_size": "生成尺寸：{current_size}\n输入尺寸：{i2i_size}",
+    "available_in_settings": "也可在设置页面调整",
     "scale": "Prompt Guidance",
     "cfg_rescale": "Prompt Guidance Rescale",
     "sm": "SMEA",

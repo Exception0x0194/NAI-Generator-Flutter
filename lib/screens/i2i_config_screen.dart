@@ -22,7 +22,6 @@ class I2IConfigScreenState extends State<I2IConfigScreen> {
     if (image == null) return;
     final bytes = await image.readAsBytes();
     var newConfig = VibeConfig.createWithFile(bytes, 1.0, 0.3);
-    var img = Image.memory(bytes);
     setState(() {
       InfoManager().vibeConfig.add(newConfig);
     });
