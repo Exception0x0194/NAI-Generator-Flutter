@@ -35,7 +35,7 @@ class ParamConfigWidgetState extends State<ParamConfigWidget> {
                     onEditComplete: (value) => setState(() {
                       int? result = int.tryParse(value);
                       if (result == null) return;
-                      widget.config.width = (result / 64).ceil() * 64;
+                      widget.config.width = (result / 64).round() * 64;
                     }),
                     keyboardType: TextInputType.number,
                   ),
@@ -47,7 +47,7 @@ class ParamConfigWidgetState extends State<ParamConfigWidget> {
                     onEditComplete: (value) => setState(() {
                       int? result = int.tryParse(value);
                       if (result == null) return;
-                      widget.config.height = (result / 64).ceil() * 64;
+                      widget.config.height = (result / 64).round() * 64;
                     }),
                     keyboardType: TextInputType.number,
                   ),

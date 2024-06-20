@@ -259,9 +259,9 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
                       int? heightResult = int.tryParse(heightController.text);
                       if (widthResult == null || heightResult == null) return;
                       InfoManager().paramConfig.width =
-                          (widthResult / 64).ceil() * 64;
+                          (widthResult / 64).round() * 64;
                       InfoManager().paramConfig.height =
-                          (heightResult / 64).ceil() * 64;
+                          (heightResult / 64).round() * 64;
                     });
                   },
                   child: Text(S.of(context).confirm))
