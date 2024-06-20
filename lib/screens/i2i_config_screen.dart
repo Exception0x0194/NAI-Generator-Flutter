@@ -36,9 +36,6 @@ class I2IConfigScreenState extends State<I2IConfigScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(S.of(context).i2i_config),
-      ),
       body: ListView(
         children: [
           ExpansionTile(

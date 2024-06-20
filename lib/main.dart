@@ -12,6 +12,7 @@ import 'screens/generator_screen.dart';
 import 'screens/settings_screen.dart';
 import 'screens/prompt_config_screen.dart';
 import 'screens/i2i_config_screen.dart';
+import 'widgets/flashing_appbar.dart';
 import 'models/info_manager.dart';
 import 'generated/l10n.dart';
 
@@ -93,6 +94,8 @@ class MyHomePageState extends State<MyHomePage> {
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           return Scaffold(
+            // ignore: prefer_const_constructors
+            appBar: FlashingAppBar(),
             body: IndexedStack(
               index: _selectedIndex,
               children: [

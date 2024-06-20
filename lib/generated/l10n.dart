@@ -919,6 +919,36 @@ class S {
       args: [],
     );
   }
+
+  /// `NAI CasRand - Idle`
+  String get appbar_idle {
+    return Intl.message(
+      'NAI CasRand - Idle',
+      name: 'appbar_idle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Generating images...`
+  String get appbar_regular {
+    return Intl.message(
+      'Generating images...',
+      name: 'appbar_regular',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Generating images - Burning anlas!`
+  String get appbar_warning {
+    return Intl.message(
+      'Generating images - Burning anlas!',
+      name: 'appbar_warning',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

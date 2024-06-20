@@ -148,6 +148,8 @@ class InfoManager with ChangeNotifier {
     var url = Uri.parse('https://image.novelai.net/ai/generate-image');
     cachedPayload ??= await getPayload();
 
+    notifyListeners();
+
     // Send request and handle response
     try {
       isRequesting = true;

@@ -84,5 +84,8 @@
     "select": "选择",
     "confirm": "确认",
     "cancel": "取消",
-    "reset": "重置"
+    "reset": "重置",
+    "appbar_idle": "NAI CasRand - 就绪",
+    "appbar_regular": "正在生成图片……",
+    "appbar_warning": "正在生成图片——消耗代币！"
 }

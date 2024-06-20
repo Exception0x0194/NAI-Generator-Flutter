@@ -85,5 +85,8 @@
     "select": "Select ",
     "confirm": "Confirm",
     "cancel": "Cancel",
-    "reset": "Reset"
+    "reset": "Reset",
+    "appbar_idle": "NAI CasRand - Idle",
+    "appbar_regular": "Generating images...",
+    "appbar_warning": "Generating images - Burning anlas!"
 }

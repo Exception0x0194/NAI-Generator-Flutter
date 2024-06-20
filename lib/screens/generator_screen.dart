@@ -6,7 +6,6 @@ import '../models/info_manager.dart';
 import '../models/utils.dart';
 import '../widgets/editable_list_tile.dart';
 import '../widgets/generation_info_widget.dart';
-import '../widgets/blinking_icon.dart';
 
 class PromptGenerationScreen extends StatefulWidget {
   const PromptGenerationScreen({super.key});
@@ -21,12 +20,6 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: InfoManager().isRequesting
-            ? const BlinkingIcon()
-            : const Icon(Icons.cloud_upload, color: Colors.grey),
-        title: Text(S.of(context).generation),
-      ),
       body: Column(children: [
         Expanded(
             child: Align(

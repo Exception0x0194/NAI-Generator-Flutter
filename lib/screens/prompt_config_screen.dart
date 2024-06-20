@@ -17,9 +17,6 @@ class PromptConfigScreenState extends State<PromptConfigScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(S.of(context).prompt_config),
-      ),
       body: SingleChildScrollView(
           child: Padding(
         padding: const EdgeInsets.only(right: 0),

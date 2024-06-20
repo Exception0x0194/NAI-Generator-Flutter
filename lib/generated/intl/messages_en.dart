@@ -34,6 +34,12 @@ class MessageLookup extends MessageLookupByLibrary {
             "Available at: Home Page → Settings → Account → Get Persistent API Token"),
         "add_new_config":
             MessageLookupByLibrary.simpleMessage("Add New Config"),
+        "appbar_idle":
+            MessageLookupByLibrary.simpleMessage("NAI CasRand - Idle"),
+        "appbar_regular":
+            MessageLookupByLibrary.simpleMessage("Generating images..."),
+        "appbar_warning": MessageLookupByLibrary.simpleMessage(
+            "Generating images - Burning anlas!"),
         "available_in_settings": MessageLookupByLibrary.simpleMessage(
             "Also available in settings page"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
