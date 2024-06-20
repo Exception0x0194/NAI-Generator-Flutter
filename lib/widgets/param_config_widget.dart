@@ -32,8 +32,11 @@ class ParamConfigWidgetState extends State<ParamConfigWidget> {
                     title: S.of(context).width,
                     currentValue: widget.config.width.toString(),
                     confirmOnSubmit: true,
-                    onEditComplete: (value) => setState(() => widget.config
-                        .width = int.tryParse(value) ?? widget.config.width),
+                    onEditComplete: (value) => setState(() {
+                      int? result = int.tryParse(value);
+                      if (result == null) return;
+                      widget.config.width = (result / 64).ceil() * 64;
+                    }),
                     keyboardType: TextInputType.number,
                   ),
                   EditableListTile(
@@ -41,8 +44,11 @@ class ParamConfigWidgetState extends State<ParamConfigWidget> {
                     title: S.of(context).height,
                     currentValue: widget.config.height.toString(),
                     confirmOnSubmit: true,
-                    onEditComplete: (value) => setState(() => widget.config
-                        .height = int.tryParse(value) ?? widget.config.height),
+                    onEditComplete: (value) => setState(() {
+                      int? result = int.tryParse(value);
+                      if (result == null) return;
+                      widget.config.height = (result / 64).ceil() * 64;
+                    }),
                     keyboardType: TextInputType.number,
                   ),
                 ])),

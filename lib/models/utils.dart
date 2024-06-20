@@ -94,3 +94,19 @@ String getTimestampDigits(DateTime now) {
       '${now.minute.toString().padLeft(2, '0')}'
       '${now.second.toString().padLeft(2, '0')}';
 }
+
+List<double> getPossibleScaleFactors(int width, int height,
+    {double step = 0.25}) {
+  List<double> ret = [];
+  const maxPixels = 2048 * 1536;
+  for (double f = 1.0;; f += step) {
+    int w = (f * width / 64).ceil() * 64;
+    int h = (f * height / 64).ceil() * 64;
+    if (w * h <= maxPixels) {
+      ret.add(f);
+    } else {
+      break;
+    }
+  }
+  return ret;
+}

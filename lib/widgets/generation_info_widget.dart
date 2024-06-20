@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:nai_casrand/models/info_manager.dart';
-import 'package:nai_casrand/models/utils.dart';
 
+import '../models/info_manager.dart';
+import '../models/utils.dart';
 import '../models/generation_info.dart';
 import '../generated/l10n.dart';
 
@@ -161,24 +161,19 @@ class GenerationInfoWidget extends StatelessWidget {
                     children: [
                       Padding(
                           padding: const EdgeInsets.only(left: 20),
-                          child: Column(children: [
-                            ListTile(
-                              title: const Text('1.0x'),
+                          child: Column(
+                              children: getPossibleScaleFactors(
+                                      info.info['width'], info.info['height'])
+                                  .map((value) {
+                            return ListTile(
+                              title: Text('${value}x'),
                               onTap: () {
                                 Navigator.of(context).pop();
                                 _setI2IConfig(
-                                    context, 1.0, once, ovverridePrompt);
+                                    context, value, once, ovverridePrompt);
                               },
-                            ),
-                            ListTile(
-                              title: const Text('1.5x'),
-                              onTap: () {
-                                Navigator.of(context).pop();
-                                _setI2IConfig(
-                                    context, 1.5, once, ovverridePrompt);
-                              },
-                            )
-                          ]))
+                            );
+                          }).toList()))
                     ]),
                 // SwitchListTile(
                 //     title: Text(S.of(context).enhance_only_once),

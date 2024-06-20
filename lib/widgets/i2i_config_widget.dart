@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nai_casrand/models/info_manager.dart';
+import 'package:nai_casrand/models/utils.dart';
 import 'package:nai_casrand/widgets/editable_list_tile.dart';
 
 import '../models/i2i_config.dart';
@@ -206,22 +207,18 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
                     children: [
                       Padding(
                           padding: const EdgeInsets.only(left: 20),
-                          child: Column(children: [
-                            ListTile(
-                              title: const Text('1.0x'),
+                          child: Column(
+                              children: getPossibleScaleFactors(
+                                      _imageWidth, _imageHeight)
+                                  .map((value) {
+                            return ListTile(
+                              title: Text('${value}x'), // 显示倍率值
                               onTap: () {
                                 Navigator.of(context).pop();
-                                _setSizeByScale(context, 1.0);
+                                _setSizeByScale(context, value);
                               },
-                            ),
-                            ListTile(
-                              title: const Text('1.5x'),
-                              onTap: () {
-                                Navigator.of(context).pop();
-                                _setSizeByScale(context, 1.5);
-                              },
-                            )
-                          ]))
+                            );
+                          }).toList()))
                     ]),
                 ExpansionTile(
                     title: Text(S.of(context).custom_size),
@@ -258,10 +255,13 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
                   onPressed: () {
                     Navigator.of(context).pop();
                     setState(() {
+                      int? widthResult = int.tryParse(widthController.text);
+                      int? heightResult = int.tryParse(heightController.text);
+                      if (widthResult == null || heightResult == null) return;
                       InfoManager().paramConfig.width =
-                          int.parse(widthController.text);
+                          (widthResult / 64).ceil() * 64;
                       InfoManager().paramConfig.height =
-                          int.parse(heightController.text);
+                          (heightResult / 64).ceil() * 64;
                     });
                   },
                   child: Text(S.of(context).confirm))
