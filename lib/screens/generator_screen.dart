@@ -18,9 +18,6 @@ class PromptGenerationScreen extends StatefulWidget {
 class PromptGenerationScreenState extends State<PromptGenerationScreen> {
   final ScrollController _scrollController = ScrollController();
 
-  bool _showInfoForImg = true;
-  double _infoTileHeight = 1.0;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,7 +56,7 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
   }
 
   Widget _buildGenerationInfoList() {
-    var itemsPerCol = (1 / _infoTileHeight).floor();
+    var itemsPerCol = (1 / InfoManager().infoTileHeight).floor();
     return Padding(
       padding: const EdgeInsets.only(bottom: 20),
       child: LayoutBuilder(builder: (context, constraints) {
@@ -93,7 +90,7 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
   }
 
   Widget _buildGenerationInfoColumn(int index) {
-    var columnItems = (1 / _infoTileHeight).floor();
+    var columnItems = (1 / InfoManager().infoTileHeight).floor();
     int startIndex = index * columnItems;
     int endIndex = startIndex + columnItems;
     if (endIndex > InfoManager().generationInfos.length) {
@@ -106,10 +103,10 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
         columnChildren.add(Align(
           alignment: Alignment.topRight,
           child: SizedBox(
-            height: _infoTileHeight * constraints.maxHeight,
+            height: InfoManager().infoTileHeight * constraints.maxHeight,
             child: GenerationInfoWidget(
                 info: InfoManager().generationInfos[j],
-                showInfoForImg: _showInfoForImg),
+                showInfoForImg: InfoManager().showInfoForImg),
           ),
         ));
       }
@@ -153,23 +150,23 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
                       min: 0.3,
                       max: 1.0,
                       divisions: 7,
-                      label: _infoTileHeight.toStringAsFixed(1),
-                      value: _infoTileHeight,
+                      label: InfoManager().infoTileHeight.toStringAsFixed(1),
+                      value: InfoManager().infoTileHeight,
                       onChanged: (newHeight) {
                         setState(() {
-                          _infoTileHeight = newHeight;
+                          InfoManager().infoTileHeight = newHeight;
                         });
                         setDialogState(() {});
                       },
                     )),
                 SwitchListTile(
-                  secondary: _showInfoForImg
+                  secondary: InfoManager().showInfoForImg
                       ? const Icon(Icons.visibility_off)
                       : const Icon(Icons.visibility),
                   title: Text(S.of(context).toggle_display_info_aside_img),
-                  value: _showInfoForImg,
+                  value: InfoManager().showInfoForImg,
                   onChanged: (value) {
-                    setState(() => _showInfoForImg = value);
+                    setState(() => InfoManager().showInfoForImg = value);
                     setDialogState(() {});
                   },
                 ),

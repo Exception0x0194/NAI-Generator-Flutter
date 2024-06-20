@@ -56,12 +56,19 @@ class InfoManager with ChangeNotifier {
   // Cached payload
   Map<String, dynamic>? cachedPayload;
 
+  // Generation display config
+  bool showInfoForImg = true;
+  double infoTileHeight = 1.0;
+
   // Persistent saved data
   late Box saveBox;
 
   Map<String, dynamic> toJson() {
     return {
       "api_key": apiKey,
+      "preset_requests": presetRequests,
+      "show_info_for_img": showInfoForImg,
+      "info_tile_height": infoTileHeight,
       "prompt_config": promptConfig.toJson(),
       "param_config": paramConfig.toJson()
     };
@@ -74,6 +81,9 @@ class InfoManager with ChangeNotifier {
       ParamConfig tryParamConfig =
           ParamConfig.fromJson(jsonConfig['param_config']);
       apiKey = jsonConfig['api_key'];
+      presetRequests = jsonConfig['preset_requests'] ?? 0;
+      showInfoForImg = jsonConfig['show_info_for_img'] ?? true;
+      infoTileHeight = jsonConfig['info_tile_height'] ?? 1.0;
       promptConfig = tryPromptConfig;
       paramConfig = tryParamConfig;
     } catch (e) {
