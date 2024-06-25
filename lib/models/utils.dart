@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
@@ -6,9 +7,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:universal_html/html.dart' as html;
-import 'package:image_save/image_save.dart';
+import 'package:saver_gallery/saver_gallery.dart';
 import 'package:another_flushbar/flushbar.dart';
+
+Future<bool> requestAlbumPermission() async {
+  bool isGranted;
+  if (Platform.isAndroid) {
+    final deviceInfoPlugin = DeviceInfoPlugin();
+    final deviceInfo = await deviceInfoPlugin.androidInfo;
+    final sdkInt = deviceInfo.version.sdkInt;
+    isGranted =
+        sdkInt < 29 ? await Permission.storage.request().isGranted : true;
+  } else {
+    isGranted = await Permission.photosAddOnly.request().isGranted;
+  }
+  return isGranted;
+}
 
 Future<void> saveBlob(Uint8List bytes, String fileName) async {
   if (kIsWeb) {
@@ -19,7 +36,14 @@ Future<void> saveBlob(Uint8List bytes, String fileName) async {
       ..click();
     html.Url.revokeObjectUrl(url);
   } else {
-    ImageSave.saveImage(bytes, fileName, albumName: 'nai-generated');
+    final isGranted = await requestAlbumPermission();
+    final saveResult = await SaverGallery.saveImage(
+      bytes,
+      name: fileName,
+      androidRelativePath: "Pictures/nai-generated",
+      androidExistNotSave: false,
+    );
+    print('Permission: $isGranted, save result: $saveResult');
   }
 }
 
