@@ -144,23 +144,24 @@ class PromptConfig {
       chosenPrompts.shuffle();
     }
 
-    for (var p in chosenPrompts) {
+    for (var (idx, p) in chosenPrompts.indexed) {
+      final sep = idx == chosenPrompts.length - 1 ? '' : ', ';
       if (type == 'str') {
         if (p.contains('|||')) {
           var parts = p.split('|||');
-          head = '${addRandomBrackets(parts[0])}, $head';
-          tail = '$tail${addRandomBrackets(parts[1])}, ';
+          head = '${addRandomBrackets(parts[0])}$sep$head';
+          tail = '$tail${addRandomBrackets(parts[1])}$sep';
         } else {
-          tail = '$tail${addRandomBrackets(p)}, ';
+          tail = '$tail${addRandomBrackets(p)}$sep';
         }
       } else if (type == 'config') {
         var subPromptConfig = p as PromptConfig;
         var result = subPromptConfig.pickPromptsFromConfig();
-        if (result['head']!.isNotEmpty) {
-          head = '${result['head']}$head';
+        if (result['head'] != null && result['head']!.isNotEmpty) {
+          head = '${addRandomBrackets(result['head']!)}$sep$head';
         }
-        if (result['tail']!.isNotEmpty) {
-          tail = '$tail${result['tail']}';
+        if (result['tail'] != null && result['tail']!.isNotEmpty) {
+          tail = '$tail${addRandomBrackets(result['tail']!)}$sep';
         }
         comment += result['comment']!;
       }
