@@ -43,7 +43,7 @@ Future<void> saveBlob(Uint8List bytes, String fileName) async {
       androidRelativePath: "Pictures/nai-generated",
       androidExistNotSave: false,
     );
-    print('Permission: $isGranted, save result: $saveResult');
+    // print('Permission: $isGranted, save result: $saveResult');
   }
 }
 
