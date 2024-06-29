@@ -83,7 +83,7 @@ class InfoManager with ChangeNotifier {
       apiKey = jsonConfig['api_key'];
       presetRequests = jsonConfig['preset_requests'] ?? 0;
       showInfoForImg = jsonConfig['show_info_for_img'] ?? true;
-      infoTileHeight = jsonConfig['info_tile_height'] ?? 1.0;
+      infoTileHeight = (jsonConfig['info_tile_height']?.toDouble() ?? 1.0);
       promptConfig = tryPromptConfig;
       paramConfig = tryParamConfig;
     } catch (e) {
