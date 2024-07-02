@@ -316,7 +316,8 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
   }
 
   void _addNewConfig() async {
-    var newConfig = PromptConfig(comment: 'New config');
+    var newConfig =
+        PromptConfig(comment: 'New config', depth: widget.config.depth + 1);
 
     setState(() {
       if (widget.config.prompts.isNotEmpty) {

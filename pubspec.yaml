@@ -42,13 +42,15 @@ dependencies:
   provider: ^6.1.2
   http: ^1.2.1
   universal_html: ^2.2.4
-  image_save: ^5.0.0
   another_flushbar: ^1.12.30
   intl: ^0.19.0
   flutter_localizations:
     sdk: flutter
   image_picker: ^1.1.2
   hive: ^2.2.3
+  saver_gallery: ^3.0.5
+  permission_handler: ^11.3.1
+  device_info_plus: ^10.1.0
 
 dev_dependencies:
   flutter_test:
@@ -59,7 +61,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^3.0.0
+  flutter_lints: ^4.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
