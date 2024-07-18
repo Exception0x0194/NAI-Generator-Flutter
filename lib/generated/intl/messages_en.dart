@@ -20,12 +20,15 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en';
 
-  static String m0(current_size, i2i_size) =>
+  static String m0(batch_size, interval) =>
+      "Requests per batch: ${batch_size}, interval between batches: ${interval}s";
+
+  static String m1(current_size, i2i_size) =>
       "Generation size: ${current_size}\nInput size: ${i2i_size}";
 
-  static String m1(num) => "Set ${num} generations";
+  static String m2(num) => "Set ${num} generations";
 
-  static String m2(num) => "Started generation for ${num} images";
+  static String m3(num) => "Started generation for ${num} images";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -35,7 +38,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "add_new_config":
             MessageLookupByLibrary.simpleMessage("Add New Config"),
         "appbar_cooldown": MessageLookupByLibrary.simpleMessage(
-            "Waiting for cooldown to avoid 429..."),
+            "Waiting between batches to avoid error 429..."),
         "appbar_idle":
             MessageLookupByLibrary.simpleMessage("NAI CasRand - Idle"),
         "appbar_regular":
@@ -44,6 +47,13 @@ class MessageLookup extends MessageLookupByLibrary {
             "Generating images - Burning anlas!"),
         "available_in_settings": MessageLookupByLibrary.simpleMessage(
             "Also available in settings page"),
+        "batch_count":
+            MessageLookupByLibrary.simpleMessage("Request per batch"),
+        "batch_interval": MessageLookupByLibrary.simpleMessage(
+            "Interval between batches (seconds)"),
+        "batch_settings":
+            MessageLookupByLibrary.simpleMessage("Batch settings"),
+        "batch_settings_info": m0,
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "cascaded_config_type":
             MessageLookupByLibrary.simpleMessage("Nested Config Type"),
@@ -97,7 +107,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "i2i_config": MessageLookupByLibrary.simpleMessage("Img2Img Settings"),
         "i2i_conifgs_set":
             MessageLookupByLibrary.simpleMessage("Image to image configs set."),
-        "i2i_image_size": m0,
+        "i2i_image_size": m1,
         "image_number_to_generate": MessageLookupByLibrary.simpleMessage(
             "Number of Images to Generate"),
         "image_size": MessageLookupByLibrary.simpleMessage("Image Size"),
@@ -113,10 +123,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("File import "),
         "info_import_from_clipboard":
             MessageLookupByLibrary.simpleMessage("Clipboard import "),
-        "info_set_genration_number": m1,
+        "info_set_genration_number": m2,
         "info_set_genration_number_failed":
             MessageLookupByLibrary.simpleMessage("Set genration number failed"),
-        "info_start_generation": m2,
+        "info_start_generation": m3,
         "info_tile_height":
             MessageLookupByLibrary.simpleMessage("Image Tile Height"),
         "is_ordered": MessageLookupByLibrary.simpleMessage("Ordered"),

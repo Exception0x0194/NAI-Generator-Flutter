@@ -640,6 +640,46 @@ class S {
     );
   }
 
+  /// `Batch settings`
+  String get batch_settings {
+    return Intl.message(
+      'Batch settings',
+      name: 'batch_settings',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Request per batch`
+  String get batch_count {
+    return Intl.message(
+      'Request per batch',
+      name: 'batch_count',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Interval between batches (seconds)`
+  String get batch_interval {
+    return Intl.message(
+      'Interval between batches (seconds)',
+      name: 'batch_interval',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Requests per batch: {batch_size}, interval between batches: {interval}s`
+  String batch_settings_info(Object batch_size, Object interval) {
+    return Intl.message(
+      'Requests per batch: $batch_size, interval between batches: ${interval}s',
+      name: 'batch_settings_info',
+      desc: '',
+      args: [batch_size, interval],
+    );
+  }
+
   /// `GitHub Repository`
   String get github_repo {
     return Intl.message(
@@ -950,10 +990,10 @@ class S {
     );
   }
 
-  /// `Waiting for cooldown to avoid 429...`
+  /// `Waiting between batches to avoid error 429...`
   String get appbar_cooldown {
     return Intl.message(
-      'Waiting for cooldown to avoid 429...',
+      'Waiting between batches to avoid error 429...',
       name: 'appbar_cooldown',
       desc: '',
       args: [],

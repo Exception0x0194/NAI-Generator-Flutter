@@ -62,16 +62,16 @@ class InfoManager with ChangeNotifier {
   double infoTileHeight = 1.0;
 
   // Number of requests per batch and cooldown
-  int batchCount = 5;
-  int batchCoolDownSec = 5;
-  int _batchCountdown = 5;
-  Timer? _cooldownTimer;
+  int batchCount = 10;
+  int batchIntervalSec = 10;
+  int _batchCountdown = 0;
+  Timer? _batchWaitingTimer;
 
   // Persistent saved data
   late Box saveBox;
 
   bool get isCoolingDown {
-    return _cooldownTimer != null;
+    return _batchWaitingTimer != null;
   }
 
   Map<String, dynamic> toJson() {
@@ -80,6 +80,8 @@ class InfoManager with ChangeNotifier {
       "preset_requests": presetRequests,
       "show_info_for_img": showInfoForImg,
       "info_tile_height": infoTileHeight,
+      "batch_count": batchCount,
+      "batch_interval": batchIntervalSec,
       "prompt_config": promptConfig.toJson(),
       "param_config": paramConfig.toJson()
     };
@@ -95,6 +97,8 @@ class InfoManager with ChangeNotifier {
       presetRequests = jsonConfig['preset_requests'] ?? 0;
       showInfoForImg = jsonConfig['show_info_for_img'] ?? true;
       infoTileHeight = jsonConfig['info_tile_height'] ?? 1.0;
+      batchCount = jsonConfig['batch_count'] ?? 10;
+      batchIntervalSec = jsonConfig['batch_interval'] ?? 10;
       promptConfig = tryPromptConfig;
       paramConfig = tryParamConfig;
     } catch (e) {
@@ -148,20 +152,20 @@ class InfoManager with ChangeNotifier {
     _generationTimestamp = DateTime.now();
     _generationIdx = 0;
     _remainingRequests = presetRequests;
-    // _batchCountdown = batchCount;
+    _batchCountdown = batchCount;
     generateImage();
   }
 
   Future<void> generateImage() async {
-    if (isRequesting || _cooldownTimer != null) return;
+    if (isRequesting || _batchWaitingTimer != null) return;
 
     if (_batchCountdown <= 0) {
       // If batch is finished, start cooldown timer
-      if (_cooldownTimer == null) {
-        _cooldownTimer = Timer(Duration(seconds: batchCoolDownSec), () {
+      if (_batchWaitingTimer == null) {
+        _batchWaitingTimer = Timer(Duration(seconds: batchIntervalSec), () {
           // Continue generation after cooldown
           _batchCountdown = batchCount;
-          _cooldownTimer = null;
+          _batchWaitingTimer = null;
           notifyListeners();
           if (isGenerating) generateImage();
         });

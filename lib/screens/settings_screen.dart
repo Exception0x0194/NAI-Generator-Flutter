@@ -34,6 +34,7 @@ class SettingsScreenState extends State<SettingsScreen> {
     return Scaffold(
       body: ListView(
         children: [
+          // Token settings
           EditableListTile(
               leading: const Icon(Icons.token_outlined),
               title: S.of(context).NAI_API_key,
@@ -45,9 +46,13 @@ class SettingsScreenState extends State<SettingsScreen> {
                   InfoManager().apiKey = value;
                 });
               }),
+          // Param settings
           Padding(
               padding: const EdgeInsets.only(left: 20, right: 80),
               child: ParamConfigWidget(config: InfoManager().paramConfig)),
+          // Batch settings
+          _buildBatchTile(),
+          // Github link
           _buildLinkTile()
         ],
       ),
@@ -113,5 +118,49 @@ class SettingsScreenState extends State<SettingsScreen> {
             'https://github.com/Exception0x0194/NAI-Generator-Flutter'))
       },
     );
+  }
+
+  _buildBatchTile() {
+    final batchCount = InfoManager().batchCount;
+    final batchInterval = InfoManager().batchIntervalSec;
+    return Padding(
+        padding: const EdgeInsets.only(right: 80),
+        child: ExpansionTile(
+          leading: const Icon(Icons.schedule),
+          title: Text(S.of(context).batch_settings),
+          subtitle: Text(
+              S.of(context).batch_settings_info(batchCount, batchInterval)),
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 20),
+              child: EditableListTile(
+                  leading: const Icon(Icons.checklist),
+                  title: S.of(context).batch_count,
+                  currentValue: batchCount.toString(),
+                  keyboardType: TextInputType.number,
+                  confirmOnSubmit: true,
+                  onEditComplete: (value) => {
+                        setState(() {
+                          InfoManager().batchCount =
+                              int.tryParse(value) ?? batchCount;
+                        })
+                      }),
+            ),
+            Padding(
+                padding: const EdgeInsets.only(left: 20),
+                child: EditableListTile(
+                    leading: const Icon(Icons.hourglass_empty),
+                    title: S.of(context).batch_interval,
+                    currentValue: batchInterval.toString(),
+                    keyboardType: TextInputType.number,
+                    confirmOnSubmit: true,
+                    onEditComplete: (value) => {
+                          setState(() {
+                            InfoManager().batchIntervalSec =
+                                int.tryParse(value) ?? batchInterval;
+                          })
+                        })),
+          ],
+        ));
   }
 }
