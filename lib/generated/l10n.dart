@@ -680,6 +680,26 @@ class S {
     );
   }
 
+  /// `Output folder`
+  String get output_folder {
+    return Intl.message(
+      'Output folder',
+      name: 'output_folder',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `System document folder`
+  String get system_document_folder {
+    return Intl.message(
+      'System document folder',
+      name: 'system_document_folder',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `GitHub Repository`
   String get github_repo {
     return Intl.message(

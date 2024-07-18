@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:universal_html/html.dart' as html;
@@ -27,7 +28,8 @@ Future<bool> requestAlbumPermission() async {
   return isGranted;
 }
 
-Future<void> saveBlob(Uint8List bytes, String fileName) async {
+Future<void> saveBlob(Uint8List bytes, String fileName,
+    {Directory? saveDir}) async {
   if (kIsWeb) {
     final blob = html.Blob([bytes]);
     final url = html.Url.createObjectUrlFromBlob(blob);
@@ -35,7 +37,15 @@ Future<void> saveBlob(Uint8List bytes, String fileName) async {
       ..setAttribute("download", fileName)
       ..click();
     html.Url.revokeObjectUrl(url);
-  } else {
+  } else if (Platform.isWindows) {
+    // Create save path
+    final targetDir = saveDir ??
+        Directory(
+            '${(await getApplicationDocumentsDirectory()).path}\\nai-generated');
+    if (!await targetDir.exists()) targetDir.create();
+    final file = File('${targetDir.path}\\$fileName'); // 创建文件路径
+    await file.writeAsBytes(bytes); // 写入文件
+  } else if (Platform.isAndroid) {
     await requestAlbumPermission();
     await SaverGallery.saveImage(
       bytes,
@@ -43,7 +53,6 @@ Future<void> saveBlob(Uint8List bytes, String fileName) async {
       androidRelativePath: "Pictures/nai-generated",
       androidExistNotSave: false,
     );
-    // print('Permission: $isGranted, save result: $saveResult');
   }
 }
 
@@ -56,7 +65,12 @@ Future<void> saveStringToFile(String content, String fileName) async {
       ..setAttribute("download", fileName)
       ..click();
     html.Url.revokeObjectUrl(url);
-  } else {
+  } else if (Platform.isWindows) {
+    final path = await FilePicker.platform.saveFile(fileName: fileName);
+    if (path == null) return;
+    final file = File(path);
+    await file.writeAsBytes(utf8.encode(content));
+  } else if (Platform.isAndroid) {
     await FilePicker.platform
         .saveFile(fileName: fileName, bytes: utf8.encode(content));
   }

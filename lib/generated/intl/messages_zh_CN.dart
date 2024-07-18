@@ -112,6 +112,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("……不一定在 0 到 1 之间"),
         "notice_enter_positon":
             MessageLookupByLibrary.simpleMessage("0 → 开头；留空 → 末尾"),
+        "output_folder": MessageLookupByLibrary.simpleMessage("输出文件夹"),
         "override_prompt": MessageLookupByLibrary.simpleMessage("覆盖 prompt"),
         "override_random_prompts":
             MessageLookupByLibrary.simpleMessage("覆盖随机 prompts"),
@@ -144,6 +145,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "sm": MessageLookupByLibrary.simpleMessage("SMEA"),
         "sm_dyn": MessageLookupByLibrary.simpleMessage("DYN"),
         "succeed": MessageLookupByLibrary.simpleMessage("成功"),
+        "system_document_folder":
+            MessageLookupByLibrary.simpleMessage("系统文档文件夹"),
         "toggle_compact_view": MessageLookupByLibrary.simpleMessage("切换紧凑视图"),
         "toggle_config_enable":
             MessageLookupByLibrary.simpleMessage("启用/禁用Config"),

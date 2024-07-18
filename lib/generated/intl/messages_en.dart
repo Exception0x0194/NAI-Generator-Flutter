@@ -135,6 +135,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "... not necessarily between 0 and 1"),
         "notice_enter_positon":
             MessageLookupByLibrary.simpleMessage("0 → head; blank → tail"),
+        "output_folder": MessageLookupByLibrary.simpleMessage("Output folder"),
         "override_prompt":
             MessageLookupByLibrary.simpleMessage("Override prompts"),
         "override_random_prompts":
@@ -173,6 +174,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "sm": MessageLookupByLibrary.simpleMessage("SMEA"),
         "sm_dyn": MessageLookupByLibrary.simpleMessage("DYN"),
         "succeed": MessageLookupByLibrary.simpleMessage("succeed"),
+        "system_document_folder":
+            MessageLookupByLibrary.simpleMessage("System document folder"),
         "toggle_compact_view":
             MessageLookupByLibrary.simpleMessage("Toggle Compact View"),
         "toggle_config_enable":

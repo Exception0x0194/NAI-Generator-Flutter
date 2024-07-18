@@ -1,5 +1,6 @@
 // 文件路径：lib/screens/settings_screen.dart
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -52,6 +53,8 @@ class SettingsScreenState extends State<SettingsScreen> {
               child: ParamConfigWidget(config: InfoManager().paramConfig)),
           // Batch settings
           _buildBatchTile(),
+          // Output directory selection, for windows only
+          if (Platform.isWindows) _buildDirSelectionTile(),
           // Github link
           _buildLinkTile()
         ],
@@ -81,24 +84,21 @@ class SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<void> _loadJsonConfig() async {
-    try {
-      FilePickerResult? result =
-          await FilePicker.platform.pickFiles(withData: true);
-      if (result != null) {
-        var fileContent = utf8.decode(result.files.single.bytes!);
-        Map<String, dynamic> jsonData = json.decode(fileContent);
-        setState(() {
-          if (InfoManager().fromJson(jsonData)) {
-            showInfoBar(context,
-                '${S.of(context).info_import_file}${S.of(context).succeed}');
-          } else {
-            throw Exception();
-          }
-        });
-      }
-    } catch (e) {
-      showErrorBar(
-          context, '${S.of(context).info_import_file}${S.of(context).failed}');
+    FilePickerResult? result =
+        await FilePicker.platform.pickFiles(withData: true);
+    if (result != null) {
+      var fileContent = utf8.decode(result.files.single.bytes!);
+      Map<String, dynamic> jsonData = json.decode(fileContent);
+      final loadResult = await InfoManager().fromJson(jsonData);
+      setState(() {
+        if (loadResult) {
+          showInfoBar(context,
+              '${S.of(context).info_import_file}${S.of(context).succeed}');
+        } else {
+          showErrorBar(context,
+              '${S.of(context).info_import_file}${S.of(context).failed}');
+        }
+      });
     }
   }
 
@@ -162,5 +162,23 @@ class SettingsScreenState extends State<SettingsScreen> {
                         })),
           ],
         ));
+  }
+
+  _buildDirSelectionTile() {
+    final outputDirPath = InfoManager().outputFolder == null
+        ? '<${S.of(context).system_document_folder}>\\nai_generated'
+        : InfoManager().outputFolder!.path;
+    return ListTile(
+      leading: const Icon(Icons.folder_outlined),
+      title: Text(S.of(context).output_folder),
+      subtitle: Text(outputDirPath),
+      onTap: () async {
+        final pickResult = await FilePicker.platform.getDirectoryPath();
+        if (pickResult == null) return;
+        setState(() {
+          InfoManager().outputFolder = Directory(pickResult);
+        });
+      },
+    );
   }
 }

@@ -61,6 +61,8 @@
     "batch_count": "每批次请求数目",
     "batch_interval": "批次间隔时间（秒）",
     "batch_settings_info": "每批次请求数目：{batch_size}，批次间隔时间：{interval}s",
+    "output_folder": "输出文件夹",
+    "system_document_folder": "系统文档文件夹",
     "github_repo": "项目地址",
     "import_settings_from_file": "从文件导入设置",
     "export_settings_to_file": "导出设置到文件",

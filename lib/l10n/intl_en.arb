@@ -62,6 +62,8 @@
     "batch_count": "Request per batch",
     "batch_interval": "Interval between batches (seconds)",
     "batch_settings_info": "Requests per batch: {batch_size}, interval between batches: {interval}s",
+    "output_folder": "Output folder",
+    "system_document_folder": "System document folder",
     "github_repo": "GitHub Repository",
     "import_settings_from_file": "Import Settings from File",
     "export_settings_to_file": "Export Settings to File",

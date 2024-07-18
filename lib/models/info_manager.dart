@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'prompt_config.dart';
 import 'param_config.dart';
@@ -67,6 +68,9 @@ class InfoManager with ChangeNotifier {
   int _batchCountdown = 0;
   Timer? _batchWaitingTimer;
 
+  // Output dir, for windows only
+  Directory? outputFolder;
+
   // Persistent saved data
   late Box saveBox;
 
@@ -82,12 +86,13 @@ class InfoManager with ChangeNotifier {
       "info_tile_height": infoTileHeight,
       "batch_count": batchCount,
       "batch_interval": batchIntervalSec,
+      "output_folder": outputFolder?.path,
       "prompt_config": promptConfig.toJson(),
       "param_config": paramConfig.toJson()
     };
   }
 
-  bool fromJson(Map<String, dynamic> jsonConfig) {
+  Future<bool> fromJson(Map<String, dynamic> jsonConfig) async {
     try {
       PromptConfig tryPromptConfig =
           PromptConfig.fromJson(jsonConfig['prompt_config'], 0);
@@ -103,6 +108,11 @@ class InfoManager with ChangeNotifier {
       paramConfig = tryParamConfig;
     } catch (e) {
       return false;
+    }
+    final outputPath = jsonConfig['output_folder'];
+    if (Platform.isWindows && outputPath != null) {
+      final loadedFolder = Directory(outputPath);
+      if (await loadedFolder.exists()) outputFolder = loadedFolder;
     }
     return true;
   }
@@ -233,7 +243,7 @@ class InfoManager with ChangeNotifier {
     var imageBytes = file.content as Uint8List;
     var filename =
         'nai-generated-${getTimestampDigits(_generationTimestamp)}-${_generationIdx.toString().padLeft(4, '0')}-${generateRandomFileName()}.png';
-    saveBlob(imageBytes, filename);
+    saveBlob(imageBytes, filename, saveDir: outputFolder);
     _generationInfos[infoIdx] = GenerationInfo(
         img: Image.memory(imageBytes, fit: BoxFit.fitHeight),
         info: {
