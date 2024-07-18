@@ -135,13 +135,17 @@ class MessageLookup extends MessageLookupByLibrary {
             "... not necessarily between 0 and 1"),
         "notice_enter_positon":
             MessageLookupByLibrary.simpleMessage("0 → head; blank → tail"),
-        "output_folder": MessageLookupByLibrary.simpleMessage("Output folder"),
+        "output_folder": MessageLookupByLibrary.simpleMessage("Output Folder"),
         "override_prompt":
             MessageLookupByLibrary.simpleMessage("Override prompts"),
         "override_random_prompts":
             MessageLookupByLibrary.simpleMessage("Override random prompts"),
         "prompt_config":
             MessageLookupByLibrary.simpleMessage("Prompt Settings"),
+        "proxy_settings": MessageLookupByLibrary.simpleMessage("HTTP Proxy"),
+        "proxy_settings_direct": MessageLookupByLibrary.simpleMessage("DIRECT"),
+        "proxy_settings_notice": MessageLookupByLibrary.simpleMessage(
+            "Example: 127.0.0.1:12345; blank → DIRECT"),
         "random_brackets":
             MessageLookupByLibrary.simpleMessage("Random Number of Brackets"),
         "random_seed": MessageLookupByLibrary.simpleMessage("Random Seed"),

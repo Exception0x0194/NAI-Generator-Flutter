@@ -680,10 +680,10 @@ class S {
     );
   }
 
-  /// `Output folder`
+  /// `Output Folder`
   String get output_folder {
     return Intl.message(
-      'Output folder',
+      'Output Folder',
       name: 'output_folder',
       desc: '',
       args: [],
@@ -695,6 +695,36 @@ class S {
     return Intl.message(
       'System document folder',
       name: 'system_document_folder',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `HTTP Proxy`
+  String get proxy_settings {
+    return Intl.message(
+      'HTTP Proxy',
+      name: 'proxy_settings',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Example: 127.0.0.1:12345; blank → DIRECT`
+  String get proxy_settings_notice {
+    return Intl.message(
+      'Example: 127.0.0.1:12345; blank → DIRECT',
+      name: 'proxy_settings_notice',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `DIRECT`
+  String get proxy_settings_direct {
+    return Intl.message(
+      'DIRECT',
+      name: 'proxy_settings_direct',
       desc: '',
       args: [],
     );

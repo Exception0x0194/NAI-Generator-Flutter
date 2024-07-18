@@ -14,6 +14,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:hive/hive.dart';
+import 'package:http/io_client.dart';
 
 class InfoManager with ChangeNotifier {
   static final InfoManager _instance = InfoManager._internal();
@@ -71,6 +72,9 @@ class InfoManager with ChangeNotifier {
   // Output dir, for windows only
   Directory? outputFolder;
 
+  // Proxy settings
+  String proxy = '';
+
   // Persistent saved data
   late Box saveBox;
 
@@ -87,6 +91,7 @@ class InfoManager with ChangeNotifier {
       "batch_count": batchCount,
       "batch_interval": batchIntervalSec,
       "output_folder": outputFolder?.path,
+      "proxy": proxy,
       "prompt_config": promptConfig.toJson(),
       "param_config": paramConfig.toJson()
     };
@@ -110,9 +115,12 @@ class InfoManager with ChangeNotifier {
       return false;
     }
     final outputPath = jsonConfig['output_folder'];
-    if (Platform.isWindows && outputPath != null) {
+    if (!kIsWeb && Platform.isWindows && outputPath != null) {
       final loadedFolder = Directory(outputPath);
       if (await loadedFolder.exists()) outputFolder = loadedFolder;
+    }
+    if (!kIsWeb && (Platform.isAndroid || Platform.isWindows)) {
+      proxy = jsonConfig['proxy'] ?? '';
     }
     return true;
   }
@@ -208,10 +216,30 @@ class InfoManager with ChangeNotifier {
     }
   }
 
+  http.Client createHttpClient() {
+    final ioClient = HttpClient();
+    var clientProxy = proxy != '' ? 'PROXY $proxy' : "DIRECT";
+    ioClient.findProxy = (uri) {
+      return clientProxy;
+    };
+    // Ignore bad certification
+    ioClient.badCertificateCallback =
+        (X509Certificate cert, String host, int port) => true;
+    return IOClient(ioClient);
+  }
+
   Future<Uint8List> sendRequest(Uri url, Map<String, dynamic> data) async {
     _batchCountdown--;
-    var response =
-        await http.post(url, headers: headers, body: json.encode(data));
+    http.Response response;
+    if (kIsWeb) {
+      // Avoid using proxy in web apps
+      response =
+          await http.post(url, headers: headers, body: json.encode(data));
+    } else {
+      final client = createHttpClient();
+      response =
+          await client.post(url, headers: headers, body: json.encode(data));
+    }
     return response.bodyBytes;
   }
 

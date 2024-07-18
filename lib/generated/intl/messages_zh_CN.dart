@@ -117,6 +117,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "override_random_prompts":
             MessageLookupByLibrary.simpleMessage("覆盖随机 prompts"),
         "prompt_config": MessageLookupByLibrary.simpleMessage("Prompt设置"),
+        "proxy_settings": MessageLookupByLibrary.simpleMessage("HTTP 代理"),
+        "proxy_settings_direct": MessageLookupByLibrary.simpleMessage("直连"),
+        "proxy_settings_notice":
+            MessageLookupByLibrary.simpleMessage("示例：127.0.0.1:12345；留空 → 直连"),
         "random_brackets": MessageLookupByLibrary.simpleMessage("随机括号数量"),
         "random_seed": MessageLookupByLibrary.simpleMessage("随机种子"),
         "reorder_config": MessageLookupByLibrary.simpleMessage("重新排序..."),
