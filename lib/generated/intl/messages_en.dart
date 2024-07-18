@@ -34,6 +34,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Available at: Home Page → Settings → Account → Get Persistent API Token"),
         "add_new_config":
             MessageLookupByLibrary.simpleMessage("Add New Config"),
+        "appbar_cooldown": MessageLookupByLibrary.simpleMessage(
+            "Waiting for cooldown to avoid 429..."),
         "appbar_idle":
             MessageLookupByLibrary.simpleMessage("NAI CasRand - Idle"),
         "appbar_regular":

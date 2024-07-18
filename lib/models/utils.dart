@@ -36,8 +36,8 @@ Future<void> saveBlob(Uint8List bytes, String fileName) async {
       ..click();
     html.Url.revokeObjectUrl(url);
   } else {
-    final isGranted = await requestAlbumPermission();
-    final saveResult = await SaverGallery.saveImage(
+    await requestAlbumPermission();
+    await SaverGallery.saveImage(
       bytes,
       name: fileName,
       androidRelativePath: "Pictures/nai-generated",

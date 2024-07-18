@@ -949,6 +949,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Waiting for cooldown to avoid 429...`
+  String get appbar_cooldown {
+    return Intl.message(
+      'Waiting for cooldown to avoid 429...',
+      name: 'appbar_cooldown',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

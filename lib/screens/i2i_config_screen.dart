@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../generated/l10n.dart';
+// import '../generated/l10n.dart';
 import '../models/info_manager.dart';
 import '../models/vibe_config.dart';
 import '../widgets/i2i_config_widget.dart';

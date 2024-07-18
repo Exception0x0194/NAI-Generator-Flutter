@@ -88,5 +88,6 @@
     "reset": "Reset",
     "appbar_idle": "NAI CasRand - Idle",
     "appbar_regular": "Generating images...",
-    "appbar_warning": "Generating images - Burning anlas!"
+    "appbar_warning": "Generating images - Burning anlas!",
+    "appbar_cooldown": "Waiting for cooldown to avoid 429..."
 }

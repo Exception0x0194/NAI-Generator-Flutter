@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'prompt_config.dart';
@@ -60,8 +61,18 @@ class InfoManager with ChangeNotifier {
   bool showInfoForImg = true;
   double infoTileHeight = 1.0;
 
+  // Number of requests per batch and cooldown
+  int batchCount = 5;
+  int batchCoolDownSec = 5;
+  int _batchCountdown = 5;
+  Timer? _cooldownTimer;
+
   // Persistent saved data
   late Box saveBox;
+
+  bool get isCoolingDown {
+    return _cooldownTimer != null;
+  }
 
   Map<String, dynamic> toJson() {
     return {
@@ -137,15 +148,33 @@ class InfoManager with ChangeNotifier {
     _generationTimestamp = DateTime.now();
     _generationIdx = 0;
     _remainingRequests = presetRequests;
+    // _batchCountdown = batchCount;
     generateImage();
   }
 
   Future<void> generateImage() async {
-    if (isRequesting) return;
+    if (isRequesting || _cooldownTimer != null) return;
+
+    if (_batchCountdown <= 0) {
+      // If batch is finished, start cooldown timer
+      if (_cooldownTimer == null) {
+        _cooldownTimer = Timer(Duration(seconds: batchCoolDownSec), () {
+          // Continue generation after cooldown
+          _batchCountdown = batchCount;
+          _cooldownTimer = null;
+          notifyListeners();
+          if (isGenerating) generateImage();
+        });
+        notifyListeners();
+        return; // Pause and wait for cooldown
+      }
+    }
+
     var infoIdx = logRequestStart();
 
     // Prepare head & payload
     var url = Uri.parse('https://image.novelai.net/ai/generate-image');
+    // var url = Uri.parse('http://127.0.0.1:5000/ai/generate-image');
     cachedPayload ??= await getPayload();
 
     notifyListeners();
@@ -166,6 +195,7 @@ class InfoManager with ChangeNotifier {
   }
 
   Future<Uint8List> sendRequest(Uri url, Map<String, dynamic> data) async {
+    _batchCountdown--;
     var response =
         await http.post(url, headers: headers, body: json.encode(data));
     return response.bodyBytes;

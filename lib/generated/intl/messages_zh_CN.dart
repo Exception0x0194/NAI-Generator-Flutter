@@ -33,6 +33,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "NAI_API_key_hint": MessageLookupByLibrary.simpleMessage(
             "可以从主页 → 设置 → Account → Get Persistent API Token 获取"),
         "add_new_config": MessageLookupByLibrary.simpleMessage("插入新Config"),
+        "appbar_cooldown":
+            MessageLookupByLibrary.simpleMessage("等待冷却以避免 429 错误……"),
         "appbar_idle": MessageLookupByLibrary.simpleMessage("NAI CasRand - 就绪"),
         "appbar_regular": MessageLookupByLibrary.simpleMessage("正在生成图片……"),
         "appbar_warning": MessageLookupByLibrary.simpleMessage("正在生成图片——消耗代币！"),

@@ -87,5 +87,6 @@
     "reset": "重置",
     "appbar_idle": "NAI CasRand - 就绪",
     "appbar_regular": "正在生成图片……",
-    "appbar_warning": "正在生成图片——消耗代币！"
+    "appbar_warning": "正在生成图片——消耗代币！",
+    "appbar_cooldown": "等待冷却以避免 429 错误……"
 }

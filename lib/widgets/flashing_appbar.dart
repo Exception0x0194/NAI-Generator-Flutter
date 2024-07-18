@@ -17,6 +17,7 @@ class FlashingAppBarState extends State<FlashingAppBar>
     with SingleTickerProviderStateMixin {
   AnimationController? _animationController;
   Animation<Color?>? _colorAnimation;
+  Color _staticColor = Colors.transparent;
   String _currentStatus = 'idle';
   String _currentTitle = '';
 
@@ -72,6 +73,9 @@ class FlashingAppBarState extends State<FlashingAppBar>
     } else {
       newState = 'idle';
     }
+    if (InfoManager().isCoolingDown) {
+      newState = 'cooldown';
+    }
 
     if (newState == _currentStatus) return;
     _currentStatus = newState;
@@ -81,6 +85,7 @@ class FlashingAppBarState extends State<FlashingAppBar>
         _animationController!.stop();
         _colorAnimation = null;
         _animationController!.value = 0.0;
+        _staticColor = Colors.transparent;
         break;
       case 'regular':
         _colorAnimation =
@@ -93,6 +98,11 @@ class FlashingAppBarState extends State<FlashingAppBar>
             .animate(_animationController!);
         _animationController!.forward();
         break;
+      case 'cooldown':
+        _animationController!.stop();
+        _colorAnimation = null;
+        _animationController!.value = 0.0;
+        _staticColor = Colors.grey;
     }
   }
 
@@ -108,11 +118,14 @@ class FlashingAppBarState extends State<FlashingAppBar>
       case 'caution':
         _currentTitle = S.of(context).appbar_warning;
         break;
+      case 'cooldown':
+        _currentTitle = S.of(context).appbar_cooldown;
+        break;
     }
     return AppBar(
       title: Text(_currentTitle),
       backgroundColor: _colorAnimation?.value ??
-          Colors.transparent, // Use theme color as default
+          _staticColor, // Use static color for default
     );
   }
 }
