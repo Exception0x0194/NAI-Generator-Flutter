@@ -75,6 +75,10 @@ class InfoManager with ChangeNotifier {
   // Proxy settings
   String proxy = '';
 
+  // Debug API path
+  String debugApiPath = 'http://localhost:5000/ai/generate-image';
+  bool debugApiEnabled = false;
+
   // Persistent saved data
   late Box saveBox;
 
@@ -195,8 +199,12 @@ class InfoManager with ChangeNotifier {
     var infoIdx = logRequestStart();
 
     // Prepare head & payload
-    var url = Uri.parse('https://image.novelai.net/ai/generate-image');
-    // var url = Uri.parse('http://127.0.0.1:5000/ai/generate-image');
+    Uri url;
+    if (debugApiEnabled) {
+      url = Uri.parse(debugApiPath);
+    } else {
+      url = Uri.parse('https://image.novelai.net/ai/generate-image');
+    }
     cachedPayload ??= await getPayload();
 
     notifyListeners();

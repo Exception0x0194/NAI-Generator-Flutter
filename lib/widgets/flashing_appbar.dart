@@ -122,10 +122,69 @@ class FlashingAppBarState extends State<FlashingAppBar>
         _currentTitle = S.of(context).appbar_cooldown;
         break;
     }
+    final titleBar = InkWell(
+      onTap: () => _showDebugDialog(context),
+      child: Text(_currentTitle),
+    );
     return AppBar(
-      title: Text(_currentTitle),
+      title: titleBar,
       backgroundColor: _colorAnimation?.value ??
           _staticColor, // Use static color for default
+    );
+  }
+
+  void _showDebugDialog(BuildContext context) {
+    final apiPathController =
+        TextEditingController(text: InfoManager().debugApiPath);
+    onEditComplete(BuildContext context, String value) {
+      Navigator.of(context).pop();
+      setState(() {
+        InfoManager().debugApiPath = value;
+      });
+    }
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+            builder: (context, setDialogState) => AlertDialog(
+                  title: const Text('Debug settings'),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      // Debug API Switch
+                      SwitchListTile(
+                          title: const Text('Enable debug API path'),
+                          value: InfoManager().debugApiEnabled,
+                          onChanged: (value) {
+                            setDialogState(() {
+                              InfoManager().debugApiEnabled = value;
+                            });
+                          }),
+                      // Debug API Path
+                      Padding(
+                          padding: const EdgeInsets.only(left: 20),
+                          child: TextField(
+                            controller: apiPathController,
+                            keyboardType: TextInputType.text,
+                            enabled: InfoManager().debugApiEnabled,
+                            maxLines: 1,
+                            onSubmitted: (value) =>
+                                onEditComplete(context, value),
+                            autofocus: true,
+                          )),
+                    ],
+                  ),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () =>
+                          onEditComplete(context, apiPathController.text),
+                      child: Text(S.of(context).confirm),
+                    ),
+                  ],
+                ));
+      },
     );
   }
 }

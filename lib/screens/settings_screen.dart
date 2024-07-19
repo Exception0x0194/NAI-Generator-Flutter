@@ -39,17 +39,7 @@ class SettingsScreenState extends State<SettingsScreen> {
           child: ListView(
             children: [
               // Token settings
-              EditableListTile(
-                  leading: const Icon(Icons.token_outlined),
-                  title: S.of(context).NAI_API_key,
-                  notice: S.of(context).NAI_API_key_hint,
-                  currentValue: InfoManager().apiKey,
-                  confirmOnSubmit: true,
-                  onEditComplete: (value) {
-                    setState(() {
-                      InfoManager().apiKey = value;
-                    });
-                  }),
+              _buildTokenTile(),
               // Param settings
               Padding(
                   padding: const EdgeInsets.only(left: 20),
@@ -57,8 +47,7 @@ class SettingsScreenState extends State<SettingsScreen> {
               // Output directory selection, for windows only
               if (!kIsWeb && Platform.isWindows) _buildOutputSelectionTile(),
               // Proxy settings
-              if (!kIsWeb && (Platform.isAndroid || Platform.isWindows))
-                _buildProxyTile(),
+              if (!kIsWeb) _buildProxyTile(),
               // Batch settings
               _buildBatchTile(),
               // Github link
@@ -207,6 +196,20 @@ class SettingsScreenState extends State<SettingsScreen> {
           if (!isValidProxy(value)) return;
           setState(() {
             InfoManager().proxy = value;
+          });
+        });
+  }
+
+  _buildTokenTile() {
+    return EditableListTile(
+        leading: const Icon(Icons.token_outlined),
+        title: S.of(context).NAI_API_key,
+        notice: S.of(context).NAI_API_key_hint,
+        currentValue: InfoManager().apiKey,
+        confirmOnSubmit: true,
+        onEditComplete: (value) {
+          setState(() {
+            InfoManager().apiKey = value;
           });
         });
   }
