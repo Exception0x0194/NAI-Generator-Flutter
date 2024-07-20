@@ -216,12 +216,12 @@ class InfoManager with ChangeNotifier {
     }
   }
 
-  http.Client createHttpClient() {
+  http.Client? createHttpClient() {
+    // Avoid using proxy in web apps
+    if (kIsWeb || proxy == '') return null;
     final ioClient = HttpClient();
-    var clientProxy = proxy != '' ? 'PROXY $proxy' : "DIRECT";
-    ioClient.findProxy = (uri) {
-      return clientProxy;
-    };
+    var clientProxy = 'PROXY $proxy';
+    ioClient.findProxy = (uri) => clientProxy;
     // Ignore bad certification
     ioClient.badCertificateCallback =
         (X509Certificate cert, String host, int port) => true;
@@ -231,12 +231,11 @@ class InfoManager with ChangeNotifier {
   Future<Uint8List> sendRequest(Uri url, Map<String, dynamic> data) async {
     _batchCountdown--;
     http.Response response;
-    if (kIsWeb) {
-      // Avoid using proxy in web apps
+    final client = createHttpClient();
+    if (client == null) {
       response =
           await http.post(url, headers: headers, body: json.encode(data));
     } else {
-      final client = createHttpClient();
       response =
           await client.post(url, headers: headers, body: json.encode(data));
     }
