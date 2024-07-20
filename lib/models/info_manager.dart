@@ -101,23 +101,16 @@ class InfoManager with ChangeNotifier {
     };
   }
 
-  Future<bool> fromJson(Map<String, dynamic> jsonConfig) async {
-    try {
-      PromptConfig tryPromptConfig =
-          PromptConfig.fromJson(jsonConfig['prompt_config'], 0);
-      ParamConfig tryParamConfig =
-          ParamConfig.fromJson(jsonConfig['param_config']);
-      apiKey = jsonConfig['api_key'];
-      presetRequests = jsonConfig['preset_requests'] ?? 0;
-      showInfoForImg = jsonConfig['show_info_for_img'] ?? true;
-      infoTileHeight = (jsonConfig['info_tile_height']?.toDouble() ?? 1.0);
-      batchCount = jsonConfig['batch_count'] ?? 10;
-      batchIntervalSec = jsonConfig['batch_interval'] ?? 10;
-      promptConfig = tryPromptConfig;
-      paramConfig = tryParamConfig;
-    } catch (e) {
-      return false;
-    }
+  fromJson(Map<String, dynamic> jsonConfig) async {
+    promptConfig = PromptConfig.fromJson(jsonConfig['prompt_config'], 0);
+    paramConfig = ParamConfig.fromJson(jsonConfig['param_config']);
+    apiKey = jsonConfig['api_key'];
+    presetRequests = jsonConfig['preset_requests'] ?? 0;
+    showInfoForImg = jsonConfig['show_info_for_img'] ?? true;
+    infoTileHeight = (jsonConfig['info_tile_height']?.toDouble() ?? 1.0);
+    batchCount = jsonConfig['batch_count'] ?? 10;
+    batchIntervalSec = jsonConfig['batch_interval'] ?? 10;
+
     final outputPath = jsonConfig['output_folder'];
     if (!kIsWeb && Platform.isWindows && outputPath != null) {
       final loadedFolder = Directory(outputPath);
@@ -126,7 +119,6 @@ class InfoManager with ChangeNotifier {
     if (!kIsWeb && (Platform.isAndroid || Platform.isWindows)) {
       proxy = jsonConfig['proxy'] ?? '';
     }
-    return true;
   }
 
   Map<String, String> get headers => {
