@@ -32,16 +32,15 @@ class CompactPromptConfigWidgetState extends State<CompactPromptConfigWidget> {
         padding: EdgeInsets.only(left: widget.indentLevel == 0 ? 0 : 20),
         child: ExpansionTile(
           // Title and config button
-          title: Flex(
-              direction: Axis.horizontal,
-              clipBehavior: Clip.hardEdge,
-              children: [
+          title: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(children: [
                 Text(widget.config.comment),
                 TextButton(
                   child: Text(_getConfigDescrption()),
                   onPressed: () => _showConfigDialog(),
                 )
-              ]),
+              ])),
           // Enable / disable switch
           trailing: Switch(
             value: widget.config.enabled,
@@ -332,6 +331,7 @@ class CompactPromptConfigWidgetState extends State<CompactPromptConfigWidget> {
         context: context,
         builder: (context) => StatefulBuilder(
               builder: (context, setDialogState) => AlertDialog(
+                scrollable: true,
                 title: Row(children: [
                   Text('${S.of(context).edit} ${widget.config.comment}'),
                   const Spacer(),

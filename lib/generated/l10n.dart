@@ -200,10 +200,10 @@ class S {
     );
   }
 
-  /// `Tap properties to edit`
+  /// `Tap properties to edit, scroll if information is cropped`
   String get prompt_compact_view_hint {
     return Intl.message(
-      'Tap properties to edit',
+      'Tap properties to edit, scroll if information is cropped',
       name: 'prompt_compact_view_hint',
       desc: '',
       args: [],

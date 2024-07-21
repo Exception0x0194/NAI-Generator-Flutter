@@ -117,7 +117,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "override_random_prompts":
             MessageLookupByLibrary.simpleMessage("覆盖随机 prompts"),
         "prompt_compact_view_hint":
-            MessageLookupByLibrary.simpleMessage("点击参数以修改"),
+            MessageLookupByLibrary.simpleMessage("点击参数以修改，可以左右滑动查看参数"),
         "prompt_config": MessageLookupByLibrary.simpleMessage("Prompt设置"),
         "proxy_settings": MessageLookupByLibrary.simpleMessage("HTTP 代理"),
         "proxy_settings_direct": MessageLookupByLibrary.simpleMessage("直连"),
