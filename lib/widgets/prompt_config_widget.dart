@@ -243,7 +243,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
                                   .toString()),
                           min: -10,
                           max: 10,
-                          divisions: 20,
+                          divisions: 21,
                           onChanged: (range) {
                             setState(() {
                               widget.config.randomBracketsLower =
@@ -307,82 +307,6 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
                       .toList();
                   Navigator.of(context).pop();
                 });
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _addNewConfig() async {
-    var newConfig =
-        PromptConfig(comment: 'New config', depth: widget.config.depth + 1);
-
-    setState(() {
-      if (widget.config.prompts.isNotEmpty) {
-        widget.config.prompts.add(newConfig);
-      } else {
-        widget.config.prompts = [newConfig];
-      }
-    });
-  }
-
-  Future<void> _importConfigFromClipboard() async {
-    ClipboardData? data = await Clipboard.getData(Clipboard.kTextPlain);
-    if (!mounted) return;
-
-    if (data != null && data.text != null) {
-      try {
-        final Map<String, dynamic> jsonConfig = json.decode(data.text!);
-        final newConfig = PromptConfig.fromJson(jsonConfig, 0);
-
-        setState(() {
-          if (widget.config.prompts.isEmpty) {
-            widget.config.prompts = [newConfig];
-          } else {
-            widget.config.prompts.add(newConfig); // 如果位置无效，添加到末尾
-          }
-        });
-      } catch (e) {
-        showErrorBar(context,
-            '${S.of(context).info_import_from_clipboard}${S.of(context).failed}');
-      }
-    }
-  }
-
-  Future<int?> _getInsertPosition() async {
-    return showDialog<int>(
-      context: context,
-      builder: (BuildContext context) {
-        TextEditingController controller = TextEditingController();
-        return AlertDialog(
-          title: Text(S.of(context).enter_position),
-          content: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(S.of(context).notice_enter_positon),
-                TextField(
-                  controller: controller,
-                  keyboardType: TextInputType.number,
-                  onSubmitted: (_) {
-                    final position = int.tryParse(controller.text);
-                    Navigator.of(context).pop(position ?? -1);
-                  },
-                  autofocus: true,
-                )
-              ]),
-          actions: <Widget>[
-            TextButton(
-              child: Text(S.of(context).cancel),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-            TextButton(
-              child: Text(S.of(context).confirm),
-              onPressed: () {
-                final position = int.tryParse(controller.text);
-                Navigator.of(context).pop(position ?? -1);
               },
             ),
           ],
@@ -512,37 +436,40 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
     ));
   }
 
-  String _getConfigDescrption() {
-    String ret = '';
-    switch (widget.config.selectionMethod) {
-      case 'all':
-        ret += '${S.of(context).selection_method_all} / ';
-        break;
-      case 'single':
-        ret += '${S.of(context).selection_method_single} / ';
-        break;
-      case 'single_sequential':
-        ret += '${S.of(context).selection_method_single_sequential} / ';
-        break;
-      case 'multiple_num':
-        ret +=
-            '${S.of(context).selection_method_multiple_num}: ${widget.config.num} / ';
-        break;
-      case 'multiple_prob':
-        ret +=
-            '${S.of(context).selection_method_multiple_prob}: ${widget.config.prob} / ';
+  void _addNewConfig() async {
+    var newConfig =
+        PromptConfig(comment: 'New config', depth: widget.config.depth + 1);
+
+    setState(() {
+      if (widget.config.prompts.isNotEmpty) {
+        widget.config.prompts.add(newConfig);
+      } else {
+        widget.config.prompts = [newConfig];
+      }
+    });
+  }
+
+  Future<void> _importConfigFromClipboard() async {
+    ClipboardData? data = await Clipboard.getData(Clipboard.kTextPlain);
+    if (!mounted) return;
+
+    if (data != null && data.text != null) {
+      try {
+        final Map<String, dynamic> jsonConfig = json.decode(data.text!);
+        final newConfig = PromptConfig.fromJson(jsonConfig, 0);
+
+        setState(() {
+          if (widget.config.prompts.isEmpty) {
+            widget.config.prompts = [newConfig];
+          } else {
+            widget.config.prompts.add(newConfig); // 如果位置无效，添加到末尾
+          }
+        });
+      } catch (e) {
+        showErrorBar(context,
+            '${S.of(context).info_import_from_clipboard}${S.of(context).failed}');
+      }
     }
-    if (widget.config.selectionMethod == 'all' ||
-        widget.config.selectionMethod == 'multiple_prob') {
-      ret +=
-          '${widget.config.shuffled ? S.of(context).is_shuffled : S.of(context).is_ordered} / ';
-    }
-    if (widget.config.type == 'str') {
-      ret += S.of(context).cascaded_config_type_str;
-    } else {
-      ret += S.of(context).cascaded_config_type_config;
-    }
-    return ret;
   }
 
   void _showReorderDialog() {

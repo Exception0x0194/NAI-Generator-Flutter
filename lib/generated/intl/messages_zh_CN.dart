@@ -56,7 +56,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "cascaded_strings": MessageLookupByLibrary.simpleMessage("字符串内容"),
         "cfg_rescale":
             MessageLookupByLibrary.simpleMessage("Prompt Guidance Rescale"),
-        "comment": MessageLookupByLibrary.simpleMessage("Config注释"),
+        "comment": MessageLookupByLibrary.simpleMessage("Config 注释"),
         "confirm": MessageLookupByLibrary.simpleMessage("确认"),
         "copy_to_clipboard": MessageLookupByLibrary.simpleMessage("导出到剪切板"),
         "custom_size": MessageLookupByLibrary.simpleMessage("手动调整尺寸"),
@@ -116,6 +116,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "override_prompt": MessageLookupByLibrary.simpleMessage("覆盖 prompt"),
         "override_random_prompts":
             MessageLookupByLibrary.simpleMessage("覆盖随机 prompts"),
+        "prompt_compact_view_hint":
+            MessageLookupByLibrary.simpleMessage("点击参数以修改"),
         "prompt_config": MessageLookupByLibrary.simpleMessage("Prompt设置"),
         "proxy_settings": MessageLookupByLibrary.simpleMessage("HTTP 代理"),
         "proxy_settings_direct": MessageLookupByLibrary.simpleMessage("直连"),

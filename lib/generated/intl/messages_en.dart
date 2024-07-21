@@ -140,6 +140,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Override prompts"),
         "override_random_prompts":
             MessageLookupByLibrary.simpleMessage("Override random prompts"),
+        "prompt_compact_view_hint":
+            MessageLookupByLibrary.simpleMessage("Tap properties to edit"),
         "prompt_config":
             MessageLookupByLibrary.simpleMessage("Prompt Settings"),
         "proxy_settings": MessageLookupByLibrary.simpleMessage("HTTP Proxy"),

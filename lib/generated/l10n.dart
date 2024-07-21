@@ -200,6 +200,16 @@ class S {
     );
   }
 
+  /// `Tap properties to edit`
+  String get prompt_compact_view_hint {
+    return Intl.message(
+      'Tap properties to edit',
+      name: 'prompt_compact_view_hint',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Copy to Clipboard`
   String get copy_to_clipboard {
     return Intl.message(

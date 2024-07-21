@@ -14,6 +14,7 @@
     "info_start_generation": "Started generation for {num} images",
     "generate_one_prompt": "Generate One Prompt",
     "comment": "Config Comment",
+    "prompt_compact_view_hint": "Tap properties to edit",
     "copy_to_clipboard": "Copy to Clipboard",
     "selection_method": "Selection Method",
     "selection_method_all": "All",
