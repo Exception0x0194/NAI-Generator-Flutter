@@ -21,21 +21,21 @@ class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'zh_CN';
 
   static String m0(batch_size, interval) =>
-      "每批次请求数目：${batch_size}，批次间隔时间：${interval}s";
+      "每批次请求数目：${batch_size}，批次间隔时间：${interval} s";
 
   static String m1(current_size, i2i_size) =>
       "生成尺寸：${current_size}\n输入尺寸：${i2i_size}";
 
-  static String m2(num) => "设置生成${num}幅图片";
+  static String m2(num) => "设置生成 ${num} 幅图片";
 
-  static String m3(num) => "开始生成${num}幅图片";
+  static String m3(num) => "开始生成 ${num} 幅图片";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "NAI_API_key": MessageLookupByLibrary.simpleMessage("NAI API Token"),
         "NAI_API_key_hint": MessageLookupByLibrary.simpleMessage(
             "可以从主页 → 设置 → Account → Get Persistent API Token 获取"),
-        "add_new_config": MessageLookupByLibrary.simpleMessage("插入新Config"),
+        "add_new_config": MessageLookupByLibrary.simpleMessage("插入新 Config"),
         "appbar_cooldown":
             MessageLookupByLibrary.simpleMessage("暂停生成以避免 429 错误……"),
         "appbar_idle": MessageLookupByLibrary.simpleMessage("NAI CasRand - 就绪"),
@@ -50,9 +50,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "cancel": MessageLookupByLibrary.simpleMessage("取消"),
         "cascaded_config_type": MessageLookupByLibrary.simpleMessage("下属设置类型"),
         "cascaded_config_type_config":
-            MessageLookupByLibrary.simpleMessage("嵌套Config"),
+            MessageLookupByLibrary.simpleMessage("嵌套 Config"),
         "cascaded_config_type_str": MessageLookupByLibrary.simpleMessage("字符串"),
-        "cascaded_configs": MessageLookupByLibrary.simpleMessage("嵌套Config内容"),
+        "cascaded_configs":
+            MessageLookupByLibrary.simpleMessage("嵌套 Config 内容"),
         "cascaded_strings": MessageLookupByLibrary.simpleMessage("字符串内容"),
         "cfg_rescale":
             MessageLookupByLibrary.simpleMessage("Prompt Guidance Rescale"),
@@ -60,11 +61,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "confirm": MessageLookupByLibrary.simpleMessage("确认"),
         "copy_to_clipboard": MessageLookupByLibrary.simpleMessage("导出到剪切板"),
         "custom_size": MessageLookupByLibrary.simpleMessage("手动调整尺寸"),
-        "delete_config": MessageLookupByLibrary.simpleMessage("删除Config"),
+        "delete_config": MessageLookupByLibrary.simpleMessage("删除 Config"),
         "disabled": MessageLookupByLibrary.simpleMessage("禁用"),
         "edit": MessageLookupByLibrary.simpleMessage("编辑"),
         "edit_image_number_to_generate":
-            MessageLookupByLibrary.simpleMessage("设置生成图片数量（设为0即不断生成）"),
+            MessageLookupByLibrary.simpleMessage("设置生成图片数量（设为 0 将持续生成）"),
         "enabled": MessageLookupByLibrary.simpleMessage("启用"),
         "enhance_only_once":
             MessageLookupByLibrary.simpleMessage("只 enhance 一次"),
@@ -92,7 +93,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("生成图片数量"),
         "image_size": MessageLookupByLibrary.simpleMessage("图像尺寸"),
         "import_config_from_clipboard":
-            MessageLookupByLibrary.simpleMessage("从剪切板导入Config"),
+            MessageLookupByLibrary.simpleMessage("从剪切板导入 Config"),
         "import_settings_from_file":
             MessageLookupByLibrary.simpleMessage("从文件导入设置"),
         "info_export_file": MessageLookupByLibrary.simpleMessage("导出文件"),
@@ -117,8 +118,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "override_random_prompts":
             MessageLookupByLibrary.simpleMessage("覆盖随机 prompts"),
         "prompt_compact_view_hint":
-            MessageLookupByLibrary.simpleMessage("点击参数以修改，可以左右滑动查看参数"),
-        "prompt_config": MessageLookupByLibrary.simpleMessage("Prompt设置"),
+            MessageLookupByLibrary.simpleMessage("左右滑动查看参数，点击参数以修改"),
+        "prompt_config": MessageLookupByLibrary.simpleMessage("Prompt 设置"),
         "proxy_settings": MessageLookupByLibrary.simpleMessage("HTTP 代理"),
         "proxy_settings_direct": MessageLookupByLibrary.simpleMessage("直连"),
         "proxy_settings_notice":
@@ -155,7 +156,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("系统文档文件夹"),
         "toggle_compact_view": MessageLookupByLibrary.simpleMessage("切换紧凑视图"),
         "toggle_config_enable":
-            MessageLookupByLibrary.simpleMessage("启用/禁用Config"),
+            MessageLookupByLibrary.simpleMessage("启用/禁用 Config"),
         "toggle_display_info_aside_img":
             MessageLookupByLibrary.simpleMessage("显示图片生成信息"),
         "toggle_generation": MessageLookupByLibrary.simpleMessage("开始/停止生成"),
