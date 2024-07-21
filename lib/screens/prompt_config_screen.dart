@@ -28,9 +28,7 @@ class PromptConfigScreenState extends State<PromptConfigScreen> {
                     config: InfoManager().promptConfig, indentLevel: 0)
               ])
             : PromptConfigWidget(
-                config: InfoManager().promptConfig,
-                indentLevel: 0,
-                showCompactView: false),
+                config: InfoManager().promptConfig, indentLevel: 0),
       ),
       floatingActionButton: FloatingActionButton(
         tooltip: S.of(context).toggle_compact_view,

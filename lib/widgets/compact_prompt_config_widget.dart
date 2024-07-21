@@ -26,24 +26,22 @@ class CompactPromptConfigWidget extends StatefulWidget {
 class CompactPromptConfigWidgetState extends State<CompactPromptConfigWidget> {
   @override
   Widget build(BuildContext context) {
-    final titleStyle = TextStyle(
-        decoration: widget.config.enabled
-            ? TextDecoration.none
-            : TextDecoration.lineThrough);
     final backgroundColor =
         widget.config.enabled ? null : Colors.black.withAlpha(30);
     return Padding(
         padding: EdgeInsets.only(left: widget.indentLevel == 0 ? 0 : 20),
         child: ExpansionTile(
           // Title and config button
-          title: Row(children: [
-            Text(widget.config.comment, style: titleStyle),
-            const SizedBox(width: 20),
-            TextButton(
-              child: Text(_getConfigDescrption()),
-              onPressed: () => _showConfigDialog(),
-            )
-          ]),
+          title: Flex(
+              direction: Axis.horizontal,
+              clipBehavior: Clip.hardEdge,
+              children: [
+                Text(widget.config.comment),
+                TextButton(
+                  child: Text(_getConfigDescrption()),
+                  onPressed: () => _showConfigDialog(),
+                )
+              ]),
           // Enable / disable switch
           trailing: Switch(
             value: widget.config.enabled,
@@ -499,26 +497,23 @@ class CompactPromptConfigWidgetState extends State<CompactPromptConfigWidget> {
         leading: const Icon(Icons.code),
         title: Text(
             '${S.of(context).random_brackets}: ${widget.config.randomBracketsLower.toString()} ~ ${widget.config.randomBracketsUpper.toString()}'),
-        subtitle: Row(children: [
-          Expanded(
-              child: RangeSlider(
-                  values: RangeValues(
-                      widget.config.randomBracketsLower.toDouble(),
-                      widget.config.randomBracketsUpper.toDouble()),
-                  labels: RangeLabels(
-                      widget.config.randomBracketsLower.toInt().toString(),
-                      widget.config.randomBracketsUpper.toInt().toString()),
-                  min: -10,
-                  max: 10,
-                  divisions: 21,
-                  onChanged: (range) {
-                    setState(() {
-                      widget.config.randomBracketsLower = range.start.toInt();
-                      widget.config.randomBracketsUpper = range.end.toInt();
-                    });
-                    setDialogState(() {});
-                  })),
-          const SizedBox(width: 20),
+        subtitle: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+          RangeSlider(
+              values: RangeValues(widget.config.randomBracketsLower.toDouble(),
+                  widget.config.randomBracketsUpper.toDouble()),
+              labels: RangeLabels(
+                  widget.config.randomBracketsLower.toInt().toString(),
+                  widget.config.randomBracketsUpper.toInt().toString()),
+              min: -10,
+              max: 10,
+              divisions: 21,
+              onChanged: (range) {
+                setState(() {
+                  widget.config.randomBracketsLower = range.start.toInt();
+                  widget.config.randomBracketsUpper = range.end.toInt();
+                });
+                setDialogState(() {});
+              }),
           IconButton(
               onPressed: () {
                 setState(() {

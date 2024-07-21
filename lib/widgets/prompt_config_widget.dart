@@ -11,14 +11,9 @@ import 'package:flutter/services.dart';
 class PromptConfigWidget extends StatefulWidget {
   final PromptConfig config;
   final int indentLevel;
-  final bool showCompactView;
 
-  const PromptConfigWidget({
-    super.key,
-    required this.config,
-    required this.indentLevel,
-    required this.showCompactView,
-  });
+  const PromptConfigWidget(
+      {super.key, required this.config, required this.indentLevel});
 
   @override
   PromptConfigWidgetState createState() => PromptConfigWidgetState();
@@ -64,23 +59,21 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
             tooltip: S.of(context).export_to_clipboard,
           )
         ]),
-        children: widget.showCompactView
-            ? _buildCompactChildList()
-            : [
-                Padding(
-                  padding: const EdgeInsets.only(left: 10.0),
-                  child: Column(children: [
-                    _buildSelectionMethodSelector(),
-                    _buildShuffled(),
-                    _buildInputProb(),
-                    _buildInputNum(),
-                    _buildRandomBrackets(),
-                    _buildTypeSelector(),
-                    _buildStrsExpansion(),
-                    _buildConfigsExpansion(),
-                  ]),
-                )
-              ],
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 10.0),
+            child: Column(children: [
+              _buildSelectionMethodSelector(),
+              _buildShuffled(),
+              _buildInputProb(),
+              _buildInputNum(),
+              _buildRandomBrackets(),
+              _buildTypeSelector(),
+              _buildStrsExpansion(),
+              _buildConfigsExpansion(),
+            ]),
+          )
+        ],
       ),
     );
   }
@@ -197,10 +190,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
             title: Text(S.of(context).cascaded_configs),
             children: [
               ...widget.config.prompts.map((config) => PromptConfigWidget(
-                    config: config,
-                    indentLevel: widget.indentLevel + 1,
-                    showCompactView: widget.showCompactView,
-                  )),
+                  config: config, indentLevel: widget.indentLevel + 1)),
               _buildButtonsRow()
             ],
           )
@@ -365,28 +355,6 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
         );
       },
     );
-  }
-
-  List<Widget> _buildCompactChildList() {
-    if (widget.config.type == 'str') {
-      return [
-        ListTile(
-          title: Text(S.of(context).cascaded_strings),
-          subtitle: Text(widget.config.strs.join('\n')),
-          onTap: () {
-            _editStrList();
-          },
-        ),
-      ];
-    } else {
-      return [
-        ...widget.config.prompts.map((config) => PromptConfigWidget(
-            config: config,
-            indentLevel: widget.indentLevel + 1,
-            showCompactView: widget.showCompactView)),
-        _buildButtonsRow()
-      ];
-    }
   }
 
   Widget _buildButtonsRow() {
