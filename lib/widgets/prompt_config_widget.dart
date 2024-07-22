@@ -233,13 +233,13 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
                                   .toString()),
                           min: -10,
                           max: 10,
-                          divisions: 21,
+                          divisions: 20,
                           onChanged: (range) {
                             setState(() {
                               widget.config.randomBracketsLower =
-                                  range.start.toInt();
+                                  range.start.round();
                               widget.config.randomBracketsUpper =
-                                  range.end.toInt();
+                                  range.end.round();
                             });
                             setDialogState(() {});
                           }),

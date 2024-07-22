@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:flutter/widgets.dart';
+
 import '../models/utils.dart';
 import '../models/prompt_config.dart';
 import '../generated/l10n.dart';
@@ -492,35 +494,43 @@ class CompactPromptConfigWidgetState extends State<CompactPromptConfigWidget> {
         : const SizedBox.shrink();
   }
 
-  _buildRandomBrackets(Function setDialogState) {
-    return ListTile(
-      leading: IconButton(
-          onPressed: () {
-            setState(() {
-              widget.config.randomBracketsUpper = 0;
-              widget.config.randomBracketsLower = 0;
-            });
-            setDialogState(() {});
-          },
-          icon: const Icon(Icons.refresh)),
-      title: Text(
-          '${S.of(context).random_brackets}: ${widget.config.randomBracketsLower.toString()} ~ ${widget.config.randomBracketsUpper.toString()}'),
-      subtitle: RangeSlider(
-          values: RangeValues(widget.config.randomBracketsLower.toDouble(),
-              widget.config.randomBracketsUpper.toDouble()),
-          labels: RangeLabels(
-              widget.config.randomBracketsLower.toInt().toString(),
-              widget.config.randomBracketsUpper.toInt().toString()),
-          min: -10,
-          max: 10,
-          divisions: 21,
-          onChanged: (range) {
-            setState(() {
-              widget.config.randomBracketsLower = range.start.toInt();
-              widget.config.randomBracketsUpper = range.end.toInt();
-            });
-            setDialogState(() {});
-          }),
-    );
+  Widget _buildRandomBrackets(Function setDialogState) {
+    return Column(children: [
+      ListTile(
+        leading: const Icon(Icons.code),
+        title: Text(
+            '${S.of(context).random_brackets}: ${widget.config.randomBracketsLower.toString()} ~ ${widget.config.randomBracketsUpper.toString()}'),
+        trailing: IconButton(
+            onPressed: () {
+              setState(() {
+                widget.config.randomBracketsUpper = 0;
+                widget.config.randomBracketsLower = 0;
+              });
+              setDialogState(() {});
+            },
+            icon: const Icon(Icons.refresh)),
+      ),
+      Padding(
+          padding: const EdgeInsets.only(left: 30),
+          child: SizedBox(
+              height: 20,
+              child: RangeSlider(
+                  values: RangeValues(
+                      widget.config.randomBracketsLower.toDouble(),
+                      widget.config.randomBracketsUpper.toDouble()),
+                  labels: RangeLabels(
+                      widget.config.randomBracketsLower.toInt().toString(),
+                      widget.config.randomBracketsUpper.toInt().toString()),
+                  min: -10,
+                  max: 10,
+                  divisions: 20,
+                  onChanged: (range) {
+                    setState(() {
+                      widget.config.randomBracketsLower = range.start.round();
+                      widget.config.randomBracketsUpper = range.end.round();
+                    });
+                    setDialogState(() {});
+                  })))
+    ]);
   }
 }
