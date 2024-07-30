@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nai_casrand/widgets/compact_prompt_config_widget.dart';
 
 import '../generated/l10n.dart';
 import '../models/info_manager.dart';
@@ -12,19 +13,23 @@ class PromptConfigScreen extends StatefulWidget {
 }
 
 class PromptConfigScreenState extends State<PromptConfigScreen> {
-  bool _showCompactView = false;
+  bool _showCompactView = true;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
-          child: Padding(
-        padding: const EdgeInsets.only(right: 0),
-        child: PromptConfigWidget(
-            config: InfoManager().promptConfig,
-            indentLevel: 0,
-            showCompactView: _showCompactView),
-      )),
+        child: _showCompactView
+            ? Column(children: [
+                ListTile(
+                    title: Text(S.of(context).prompt_compact_view_hint),
+                    dense: true),
+                CompactPromptConfigWidget(
+                    config: InfoManager().promptConfig, indentLevel: 0)
+              ])
+            : PromptConfigWidget(
+                config: InfoManager().promptConfig, indentLevel: 0),
+      ),
       floatingActionButton: FloatingActionButton(
         tooltip: S.of(context).toggle_compact_view,
         onPressed: () => {

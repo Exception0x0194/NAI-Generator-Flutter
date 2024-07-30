@@ -84,14 +84,14 @@ class SettingsScreenState extends State<SettingsScreen> {
     if (result != null) {
       var fileContent = utf8.decode(result.files.single.bytes!);
       Map<String, dynamic> jsonData = json.decode(fileContent);
-      final loadResult = await InfoManager().fromJson(jsonData);
       setState(() {
-        if (loadResult) {
+        try {
+          InfoManager().fromJson(jsonData);
           showInfoBar(context,
               '${S.of(context).info_import_file}${S.of(context).succeed}');
-        } else {
+        } catch (error) {
           showErrorBar(context,
-              '${S.of(context).info_import_file}${S.of(context).failed}');
+              '${S.of(context).info_import_file}${S.of(context).failed}: ${error.toString()}');
         }
       });
     }

@@ -11,14 +11,9 @@ import 'package:flutter/services.dart';
 class PromptConfigWidget extends StatefulWidget {
   final PromptConfig config;
   final int indentLevel;
-  final bool showCompactView;
 
-  const PromptConfigWidget({
-    super.key,
-    required this.config,
-    required this.indentLevel,
-    required this.showCompactView,
-  });
+  const PromptConfigWidget(
+      {super.key, required this.config, required this.indentLevel});
 
   @override
   PromptConfigWidgetState createState() => PromptConfigWidgetState();
@@ -64,23 +59,21 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
             tooltip: S.of(context).export_to_clipboard,
           )
         ]),
-        children: widget.showCompactView
-            ? _buildCompactChildList()
-            : [
-                Padding(
-                  padding: const EdgeInsets.only(left: 10.0),
-                  child: Column(children: [
-                    _buildSelectionMethodSelector(),
-                    _buildShuffled(),
-                    _buildInputProb(),
-                    _buildInputNum(),
-                    _buildRandomBrackets(),
-                    _buildTypeSelector(),
-                    _buildStrsExpansion(),
-                    _buildConfigsExpansion(),
-                  ]),
-                )
-              ],
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 10.0),
+            child: Column(children: [
+              _buildSelectionMethodSelector(),
+              _buildShuffled(),
+              _buildInputProb(),
+              _buildInputNum(),
+              _buildRandomBrackets(),
+              _buildTypeSelector(),
+              _buildStrsExpansion(),
+              _buildConfigsExpansion(),
+            ]),
+          )
+        ],
       ),
     );
   }
@@ -197,10 +190,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
             title: Text(S.of(context).cascaded_configs),
             children: [
               ...widget.config.prompts.map((config) => PromptConfigWidget(
-                    config: config,
-                    indentLevel: widget.indentLevel + 1,
-                    showCompactView: widget.showCompactView,
-                  )),
+                  config: config, indentLevel: widget.indentLevel + 1)),
               _buildButtonsRow()
             ],
           )
@@ -247,9 +237,9 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
                           onChanged: (range) {
                             setState(() {
                               widget.config.randomBracketsLower =
-                                  range.start.toInt();
+                                  range.start.round();
                               widget.config.randomBracketsUpper =
-                                  range.end.toInt();
+                                  range.end.round();
                             });
                             setDialogState(() {});
                           }),
@@ -315,82 +305,6 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
     );
   }
 
-  void _addNewConfig() async {
-    var newConfig =
-        PromptConfig(comment: 'New config', depth: widget.config.depth + 1);
-
-    setState(() {
-      if (widget.config.prompts.isNotEmpty) {
-        widget.config.prompts.add(newConfig);
-      } else {
-        widget.config.prompts = [newConfig];
-      }
-    });
-  }
-
-  Future<void> _importConfigFromClipboard() async {
-    ClipboardData? data = await Clipboard.getData(Clipboard.kTextPlain);
-    if (!mounted) return;
-
-    if (data != null && data.text != null) {
-      try {
-        final Map<String, dynamic> jsonConfig = json.decode(data.text!);
-        final newConfig = PromptConfig.fromJson(jsonConfig, 0);
-
-        setState(() {
-          if (widget.config.prompts.isEmpty) {
-            widget.config.prompts = [newConfig];
-          } else {
-            widget.config.prompts.add(newConfig); // 如果位置无效，添加到末尾
-          }
-        });
-      } catch (e) {
-        showErrorBar(context,
-            '${S.of(context).info_import_from_clipboard}${S.of(context).failed}');
-      }
-    }
-  }
-
-  Future<int?> _getInsertPosition() async {
-    return showDialog<int>(
-      context: context,
-      builder: (BuildContext context) {
-        TextEditingController controller = TextEditingController();
-        return AlertDialog(
-          title: Text(S.of(context).enter_position),
-          content: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(S.of(context).notice_enter_positon),
-                TextField(
-                  controller: controller,
-                  keyboardType: TextInputType.number,
-                  onSubmitted: (_) {
-                    final position = int.tryParse(controller.text);
-                    Navigator.of(context).pop(position ?? -1);
-                  },
-                  autofocus: true,
-                )
-              ]),
-          actions: <Widget>[
-            TextButton(
-              child: Text(S.of(context).cancel),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-            TextButton(
-              child: Text(S.of(context).confirm),
-              onPressed: () {
-                final position = int.tryParse(controller.text);
-                Navigator.of(context).pop(position ?? -1);
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   Widget _buildSwitchTile(
       String title, bool currentValue, ValueChanged<bool> onChanged) {
     return SwitchListTile(
@@ -443,28 +357,6 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
     );
   }
 
-  List<Widget> _buildCompactChildList() {
-    if (widget.config.type == 'str') {
-      return [
-        ListTile(
-          title: Text(S.of(context).cascaded_strings),
-          subtitle: Text(widget.config.strs.join('\n')),
-          onTap: () {
-            _editStrList();
-          },
-        ),
-      ];
-    } else {
-      return [
-        ...widget.config.prompts.map((config) => PromptConfigWidget(
-            config: config,
-            indentLevel: widget.indentLevel + 1,
-            showCompactView: widget.showCompactView)),
-        _buildButtonsRow()
-      ];
-    }
-  }
-
   Widget _buildButtonsRow() {
     return ListTile(
         title: Row(
@@ -512,37 +404,40 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
     ));
   }
 
-  String _getConfigDescrption() {
-    String ret = '';
-    switch (widget.config.selectionMethod) {
-      case 'all':
-        ret += '${S.of(context).selection_method_all} / ';
-        break;
-      case 'single':
-        ret += '${S.of(context).selection_method_single} / ';
-        break;
-      case 'single_sequential':
-        ret += '${S.of(context).selection_method_single_sequential} / ';
-        break;
-      case 'multiple_num':
-        ret +=
-            '${S.of(context).selection_method_multiple_num}: ${widget.config.num} / ';
-        break;
-      case 'multiple_prob':
-        ret +=
-            '${S.of(context).selection_method_multiple_prob}: ${widget.config.prob} / ';
+  void _addNewConfig() async {
+    var newConfig =
+        PromptConfig(comment: 'New config', depth: widget.config.depth + 1);
+
+    setState(() {
+      if (widget.config.prompts.isNotEmpty) {
+        widget.config.prompts.add(newConfig);
+      } else {
+        widget.config.prompts = [newConfig];
+      }
+    });
+  }
+
+  Future<void> _importConfigFromClipboard() async {
+    ClipboardData? data = await Clipboard.getData(Clipboard.kTextPlain);
+    if (!mounted) return;
+
+    if (data != null && data.text != null) {
+      try {
+        final Map<String, dynamic> jsonConfig = json.decode(data.text!);
+        final newConfig = PromptConfig.fromJson(jsonConfig, 0);
+
+        setState(() {
+          if (widget.config.prompts.isEmpty) {
+            widget.config.prompts = [newConfig];
+          } else {
+            widget.config.prompts.add(newConfig); // 如果位置无效，添加到末尾
+          }
+        });
+      } catch (e) {
+        showErrorBar(context,
+            '${S.of(context).info_import_from_clipboard}${S.of(context).failed}');
+      }
     }
-    if (widget.config.selectionMethod == 'all' ||
-        widget.config.selectionMethod == 'multiple_prob') {
-      ret +=
-          '${widget.config.shuffled ? S.of(context).is_shuffled : S.of(context).is_ordered} / ';
-    }
-    if (widget.config.type == 'str') {
-      ret += S.of(context).cascaded_config_type_str;
-    } else {
-      ret += S.of(context).cascaded_config_type_config;
-    }
-    return ret;
   }
 
   void _showReorderDialog() {

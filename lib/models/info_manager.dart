@@ -101,23 +101,16 @@ class InfoManager with ChangeNotifier {
     };
   }
 
-  Future<bool> fromJson(Map<String, dynamic> jsonConfig) async {
-    try {
-      PromptConfig tryPromptConfig =
-          PromptConfig.fromJson(jsonConfig['prompt_config'], 0);
-      ParamConfig tryParamConfig =
-          ParamConfig.fromJson(jsonConfig['param_config']);
-      apiKey = jsonConfig['api_key'];
-      presetRequests = jsonConfig['preset_requests'] ?? 0;
-      showInfoForImg = jsonConfig['show_info_for_img'] ?? true;
-      infoTileHeight = (jsonConfig['info_tile_height']?.toDouble() ?? 1.0);
-      batchCount = jsonConfig['batch_count'] ?? 10;
-      batchIntervalSec = jsonConfig['batch_interval'] ?? 10;
-      promptConfig = tryPromptConfig;
-      paramConfig = tryParamConfig;
-    } catch (e) {
-      return false;
-    }
+  fromJson(Map<String, dynamic> jsonConfig) async {
+    promptConfig = PromptConfig.fromJson(jsonConfig['prompt_config'], 0);
+    paramConfig = ParamConfig.fromJson(jsonConfig['param_config']);
+    apiKey = jsonConfig['api_key'];
+    presetRequests = jsonConfig['preset_requests'] ?? 0;
+    showInfoForImg = jsonConfig['show_info_for_img'] ?? true;
+    infoTileHeight = (jsonConfig['info_tile_height']?.toDouble() ?? 1.0);
+    batchCount = jsonConfig['batch_count'] ?? 10;
+    batchIntervalSec = jsonConfig['batch_interval'] ?? 10;
+
     final outputPath = jsonConfig['output_folder'];
     if (!kIsWeb && Platform.isWindows && outputPath != null) {
       final loadedFolder = Directory(outputPath);
@@ -126,7 +119,6 @@ class InfoManager with ChangeNotifier {
     if (!kIsWeb && (Platform.isAndroid || Platform.isWindows)) {
       proxy = jsonConfig['proxy'] ?? '';
     }
-    return true;
   }
 
   Map<String, String> get headers => {
@@ -224,12 +216,12 @@ class InfoManager with ChangeNotifier {
     }
   }
 
-  http.Client createHttpClient() {
+  http.Client? createHttpClient() {
+    // Avoid using proxy in web apps
+    if (kIsWeb || proxy == '') return null;
     final ioClient = HttpClient();
-    var clientProxy = proxy != '' ? 'PROXY $proxy' : "DIRECT";
-    ioClient.findProxy = (uri) {
-      return clientProxy;
-    };
+    var clientProxy = 'PROXY $proxy';
+    ioClient.findProxy = (uri) => clientProxy;
     // Ignore bad certification
     ioClient.badCertificateCallback =
         (X509Certificate cert, String host, int port) => true;
@@ -239,12 +231,11 @@ class InfoManager with ChangeNotifier {
   Future<Uint8List> sendRequest(Uri url, Map<String, dynamic> data) async {
     _batchCountdown--;
     http.Response response;
-    if (kIsWeb) {
-      // Avoid using proxy in web apps
+    final client = createHttpClient();
+    if (client == null) {
       response =
           await http.post(url, headers: headers, body: json.encode(data));
     } else {
-      final client = createHttpClient();
       response =
           await client.post(url, headers: headers, body: json.encode(data));
     }
