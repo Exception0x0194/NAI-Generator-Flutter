@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:hive/hive.dart';
 import 'package:http/io_client.dart';
+import 'package:image/image.dart' as img;
 
 class InfoManager with ChangeNotifier {
   static final InfoManager _instance = InfoManager._internal();
@@ -79,6 +80,12 @@ class InfoManager with ChangeNotifier {
   String debugApiPath = 'http://localhost:5000/ai/generate-image';
   bool debugApiEnabled = false;
 
+  // Image metadata erase
+  bool metadataEraseEnabled = false;
+  bool customMetadataEnabled = false;
+  String customMetadataContent =
+      '{"Description": "👻👻👻", "Software": "NovelAI", "Source": "Stable Diffusion XL 9CC2F394", "Generation time": "11.4514", "Comment": "{\\"prompt\\": \\"👻👻👻\\", \\"steps\\": 28, \\"height\\": 1024, \\"width\\": 1024, \\"scale\\": 5, \\"uncond_scale\\": 1.0, \\"cfg_rescale\\": 0.0, \\"seed\\": \\"\\", \\"n_samples\\": 1, \\"hide_debug_overlay\\": false, \\"noise_schedule\\": \\"native\\", \\"legacy_v3_extend\\": false, \\"reference_information_extracted_multiple\\": [], \\"reference_strength_multiple\\": [], \\"sampler\\": \\"k_euler_ancestral\\", \\"controlnet_strength\\": 1.0, \\"controlnet_model\\": null, \\"dynamic_thresholding\\": false, \\"dynamic_thresholding_percentile\\": 0.999, \\"dynamic_thresholding_mimic_scale\\": 10.0, \\"sm\\": false, \\"sm_dyn\\": false, \\"skip_cfg_below_sigma\\": 0.0, \\"lora_unet_weights\\": null, \\"lora_clip_weights\\": null, \\"uc\\": \\"\\", \\"request_type\\": \\"PromptGenerateRequest\\", \\"signed_hash\\": \\"\\"}"}';
+
   // Persistent saved data
   late Box saveBox;
 
@@ -96,28 +103,36 @@ class InfoManager with ChangeNotifier {
       "batch_interval": batchIntervalSec,
       "output_folder": outputFolder?.path,
       "proxy": proxy,
+      "metadata_erase_enabled": metadataEraseEnabled,
+      "custom_metadata_enabled": customMetadataEnabled,
+      "custom_metadata_content": customMetadataContent,
       "prompt_config": promptConfig.toJson(),
       "param_config": paramConfig.toJson()
     };
   }
 
-  fromJson(Map<String, dynamic> jsonConfig) async {
-    promptConfig = PromptConfig.fromJson(jsonConfig['prompt_config'], 0);
-    paramConfig = ParamConfig.fromJson(jsonConfig['param_config']);
-    apiKey = jsonConfig['api_key'];
-    presetRequests = jsonConfig['preset_requests'] ?? 0;
-    showInfoForImg = jsonConfig['show_info_for_img'] ?? true;
-    infoTileHeight = (jsonConfig['info_tile_height']?.toDouble() ?? 1.0);
-    batchCount = jsonConfig['batch_count'] ?? 10;
-    batchIntervalSec = jsonConfig['batch_interval'] ?? 10;
+  fromJson(Map<String, dynamic> json) async {
+    promptConfig = PromptConfig.fromJson(json['prompt_config'], 0);
+    paramConfig = ParamConfig.fromJson(json['param_config']);
+    apiKey = json['api_key'];
+    presetRequests = json['preset_requests'] ?? 0;
+    showInfoForImg = json['show_info_for_img'] ?? true;
+    infoTileHeight = (json['info_tile_height']?.toDouble() ?? 1.0);
+    batchCount = json['batch_count'] ?? 10;
+    batchIntervalSec = json['batch_interval'] ?? 10;
 
-    final outputPath = jsonConfig['output_folder'];
+    metadataEraseEnabled = json['metadata_erase_enabled'] ?? false;
+    customMetadataEnabled = json['custom_metadata_enabled'] ?? false;
+    customMetadataContent =
+        json['custom_metadata_content'] ?? customMetadataContent;
+
+    final outputPath = json['output_folder'];
     if (!kIsWeb && Platform.isWindows && outputPath != null) {
       final loadedFolder = Directory(outputPath);
       if (await loadedFolder.exists()) outputFolder = loadedFolder;
     }
     if (!kIsWeb && (Platform.isAndroid || Platform.isWindows)) {
-      proxy = jsonConfig['proxy'] ?? '';
+      proxy = json['proxy'] ?? '';
     }
   }
 
@@ -268,6 +283,15 @@ class InfoManager with ChangeNotifier {
 
   void saveImage(ArchiveFile file, Map<String, dynamic> data, int infoIdx) {
     var imageBytes = file.content as Uint8List;
+    if (metadataEraseEnabled) {
+      var image = img.decodePng(imageBytes)!;
+      if (!customMetadataEnabled) {
+        image = image.convert(numChannels: 3);
+      } else {
+        image = embedMetadata(image, customMetadataContent);
+      }
+      imageBytes = img.encodePng(image);
+    }
     var filename =
         'nai-generated-${getTimestampDigits(_generationTimestamp)}-${_generationIdx.toString().padLeft(4, '0')}-${generateRandomFileName()}.png';
     saveBlob(imageBytes, filename, saveDir: outputFolder);

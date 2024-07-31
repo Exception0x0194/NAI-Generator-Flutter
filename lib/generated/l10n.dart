@@ -650,6 +650,46 @@ class S {
     );
   }
 
+  /// `Erase metadata in generated images`
+  String get metadata_erase_enabled {
+    return Intl.message(
+      'Erase metadata in generated images',
+      name: 'metadata_erase_enabled',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Embed fake metadata into generated images`
+  String get custom_metadata_enabled {
+    return Intl.message(
+      'Embed fake metadata into generated images',
+      name: 'custom_metadata_enabled',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Metadata content`
+  String get custom_metadata_content {
+    return Intl.message(
+      'Metadata content',
+      name: 'custom_metadata_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Should be a JSON string`
+  String get edit_custom_metadata_content_hint {
+    return Intl.message(
+      'Should be a JSON string',
+      name: 'edit_custom_metadata_content_hint',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Batch settings`
   String get batch_settings {
     return Intl.message(

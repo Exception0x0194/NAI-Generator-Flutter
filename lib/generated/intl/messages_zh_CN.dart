@@ -60,10 +60,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "comment": MessageLookupByLibrary.simpleMessage("Config 注释"),
         "confirm": MessageLookupByLibrary.simpleMessage("确认"),
         "copy_to_clipboard": MessageLookupByLibrary.simpleMessage("导出到剪切板"),
+        "custom_metadata_content":
+            MessageLookupByLibrary.simpleMessage("伪造水印内容"),
+        "custom_metadata_enabled":
+            MessageLookupByLibrary.simpleMessage("添加伪造水印信息"),
         "custom_size": MessageLookupByLibrary.simpleMessage("手动调整尺寸"),
         "delete_config": MessageLookupByLibrary.simpleMessage("删除 Config"),
         "disabled": MessageLookupByLibrary.simpleMessage("禁用"),
         "edit": MessageLookupByLibrary.simpleMessage("编辑"),
+        "edit_custom_metadata_content_hint":
+            MessageLookupByLibrary.simpleMessage("应当是一个 JSON 字符串"),
         "edit_image_number_to_generate":
             MessageLookupByLibrary.simpleMessage("设置生成图片数量（设为 0 将持续生成）"),
         "enabled": MessageLookupByLibrary.simpleMessage("启用"),
@@ -109,6 +115,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "info_tile_height": MessageLookupByLibrary.simpleMessage("图片磁贴高度"),
         "is_ordered": MessageLookupByLibrary.simpleMessage("顺序"),
         "is_shuffled": MessageLookupByLibrary.simpleMessage("乱序"),
+        "metadata_erase_enabled":
+            MessageLookupByLibrary.simpleMessage("清除生成图片中的水印信息"),
         "notNecessarily0to1":
             MessageLookupByLibrary.simpleMessage("……不一定在 0 到 1 之间"),
         "notice_enter_positon":

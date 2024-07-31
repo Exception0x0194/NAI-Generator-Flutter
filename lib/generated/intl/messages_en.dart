@@ -71,10 +71,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "confirm": MessageLookupByLibrary.simpleMessage("Confirm"),
         "copy_to_clipboard":
             MessageLookupByLibrary.simpleMessage("Copy to Clipboard"),
+        "custom_metadata_content":
+            MessageLookupByLibrary.simpleMessage("Metadata content"),
+        "custom_metadata_enabled": MessageLookupByLibrary.simpleMessage(
+            "Embed fake metadata into generated images"),
         "custom_size": MessageLookupByLibrary.simpleMessage("Custom Size"),
         "delete_config": MessageLookupByLibrary.simpleMessage("Delete Config"),
         "disabled": MessageLookupByLibrary.simpleMessage("Disabled"),
         "edit": MessageLookupByLibrary.simpleMessage("Edit "),
+        "edit_custom_metadata_content_hint":
+            MessageLookupByLibrary.simpleMessage("Should be a JSON string"),
         "edit_image_number_to_generate": MessageLookupByLibrary.simpleMessage(
             "Set Number of Images to Generate (Set to 0 for continuous generation)"),
         "enabled": MessageLookupByLibrary.simpleMessage("Enabled"),
@@ -131,6 +137,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Image Tile Height"),
         "is_ordered": MessageLookupByLibrary.simpleMessage("Ordered"),
         "is_shuffled": MessageLookupByLibrary.simpleMessage("Shuffled"),
+        "metadata_erase_enabled": MessageLookupByLibrary.simpleMessage(
+            "Erase metadata in generated images"),
         "notNecessarily0to1": MessageLookupByLibrary.simpleMessage(
             "... not necessarily between 0 and 1"),
         "notice_enter_positon":

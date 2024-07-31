@@ -44,6 +44,7 @@ class SettingsScreenState extends State<SettingsScreen> {
               Padding(
                   padding: const EdgeInsets.only(left: 20),
                   child: ParamConfigWidget(config: InfoManager().paramConfig)),
+              _buildEraseMetadataTile(),
               // Output directory selection, for windows only
               if (!kIsWeb && Platform.isWindows) _buildOutputSelectionTile(),
               // Proxy settings
@@ -212,5 +213,107 @@ class SettingsScreenState extends State<SettingsScreen> {
             InfoManager().apiKey = value;
           });
         });
+  }
+
+  _buildEraseMetadataTile() {
+    List<Widget> tiles = [
+      SwitchListTile(
+          secondary: const Icon(Icons.delete_sweep),
+          title: Text(S.of(context).metadata_erase_enabled),
+          value: InfoManager().metadataEraseEnabled,
+          onChanged: (value) {
+            setState(() {
+              InfoManager().metadataEraseEnabled = value;
+            });
+          })
+    ];
+    tiles.add(InfoManager().metadataEraseEnabled
+        ? Padding(
+            padding: const EdgeInsets.only(left: 20),
+            child: SwitchListTile(
+                secondary: const Icon(Icons.edit_note),
+                title: Text(S.of(context).custom_metadata_enabled),
+                value: InfoManager().customMetadataEnabled,
+                onChanged: (value) {
+                  setState(() {
+                    InfoManager().customMetadataEnabled = value;
+                  });
+                }))
+        : const SizedBox.shrink());
+    tiles.add(InfoManager().metadataEraseEnabled &&
+            InfoManager().customMetadataEnabled
+        ? Padding(
+            padding: const EdgeInsets.only(left: 30),
+            child: ListTile(
+              title: Text(S.of(context).custom_metadata_content),
+              subtitle: Text(
+                InfoManager().customMetadataContent,
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+              ),
+              onTap: () => _showEditCustomMetadataContentDialog(),
+            ))
+        : const SizedBox.shrink());
+
+    return Column(children: tiles);
+  }
+
+  _showEditCustomMetadataContentDialog() {
+    var textController =
+        TextEditingController(text: InfoManager().customMetadataContent);
+    const exampleContent1 =
+        '{"Description": "👻👻👻", "Software": "NovelAI", "Source": "Stable Diffusion XL 9CC2F394", "Generation time": "11.4514", "Comment": "{\\"prompt\\": \\"👻👻👻\\", \\"steps\\": 28, \\"height\\": 1024, \\"width\\": 1024, \\"scale\\": 5, \\"uncond_scale\\": 1.0, \\"cfg_rescale\\": 0.0, \\"seed\\": \\"\\", \\"n_samples\\": 1, \\"hide_debug_overlay\\": false, \\"noise_schedule\\": \\"native\\", \\"legacy_v3_extend\\": false, \\"reference_information_extracted_multiple\\": [], \\"reference_strength_multiple\\": [], \\"sampler\\": \\"k_euler_ancestral\\", \\"controlnet_strength\\": 1.0, \\"controlnet_model\\": null, \\"dynamic_thresholding\\": false, \\"dynamic_thresholding_percentile\\": 0.999, \\"dynamic_thresholding_mimic_scale\\": 10.0, \\"sm\\": false, \\"sm_dyn\\": false, \\"skip_cfg_below_sigma\\": 0.0, \\"lora_unet_weights\\": null, \\"lora_clip_weights\\": null, \\"uc\\": \\"\\", \\"request_type\\": \\"PromptGenerateRequest\\", \\"signed_hash\\": \\"\\"}"}';
+    const exampleContent2 =
+        '{"Description": "🐷🐷🐷", "Software": "NovelAI", "Source": "Stable Diffusion XL 9CC2F394", "Generation time": "11.4514", "Comment": "{\\"prompt\\": \\"🐷🐷🐷\\", \\"steps\\": 28, \\"height\\": 1024, \\"width\\": 1024, \\"scale\\": 5, \\"uncond_scale\\": 1.0, \\"cfg_rescale\\": 0.0, \\"seed\\": \\"\\", \\"n_samples\\": 1, \\"hide_debug_overlay\\": false, \\"noise_schedule\\": \\"native\\", \\"legacy_v3_extend\\": false, \\"reference_information_extracted_multiple\\": [], \\"reference_strength_multiple\\": [], \\"sampler\\": \\"k_euler_ancestral\\", \\"controlnet_strength\\": 1.0, \\"controlnet_model\\": null, \\"dynamic_thresholding\\": false, \\"dynamic_thresholding_percentile\\": 0.999, \\"dynamic_thresholding_mimic_scale\\": 10.0, \\"sm\\": false, \\"sm_dyn\\": false, \\"skip_cfg_below_sigma\\": 0.0, \\"lora_unet_weights\\": null, \\"lora_clip_weights\\": null, \\"uc\\": \\"\\", \\"request_type\\": \\"PromptGenerateRequest\\", \\"signed_hash\\": \\"\\"}"}';
+    onEditComplete() {
+      Navigator.of(context).pop();
+      InfoManager().customMetadataContent = textController.text;
+    }
+
+    showDialog(
+        context: context,
+        builder: (context) => StatefulBuilder(
+            builder: (context, setDialogState) => AlertDialog(
+                  title: Text(S.of(context).edit +
+                      S.of(context).custom_metadata_content),
+                  content: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(S.of(context).edit_custom_metadata_content_hint),
+                      TextField(
+                        controller: textController,
+                        maxLines: null,
+                        onSubmitted: (value) {
+                          setState(() {
+                            onEditComplete();
+                          });
+                        },
+                      )
+                    ],
+                  ),
+                  actions: [
+                    TextButton(
+                        onPressed: () => setDialogState(() {
+                              textController.text = exampleContent1;
+                            }),
+                        child: const Text('👻')),
+                    TextButton(
+                        onPressed: () => setDialogState(() {
+                              textController.text = exampleContent2;
+                            }),
+                        child: const Text('🐷')),
+                    TextButton(
+                        onPressed: Navigator.of(context).pop,
+                        child: Text(S.of(context).cancel)),
+                    TextButton(
+                        onPressed: () {
+                          setState(() {
+                            onEditComplete();
+                          });
+                        },
+                        child: Text(S.of(context).confirm)),
+                  ],
+                )));
   }
 }

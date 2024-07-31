@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:archive/archive.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,6 +14,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:universal_html/html.dart' as html;
 import 'package:saver_gallery/saver_gallery.dart';
 import 'package:another_flushbar/flushbar.dart';
+import 'package:image/image.dart' as img;
 
 Future<bool> requestAlbumPermission() async {
   bool isGranted;
@@ -147,4 +149,31 @@ List<double> getPossibleScaleFactors(int width, int height,
     }
   }
   return ret;
+}
+
+img.Image embedMetadata(img.Image image, String metadataString) {
+  final magicBytes = utf8.encode("stealth_pngcomp");
+  final encodedData = gzip.encode(utf8.encode(metadataString));
+  final bitLength = encodedData.length * 8;
+  final bitLengthInBytes = ByteData(4);
+  bitLengthInBytes.setInt32(0, bitLength);
+  final dataToEmbed = [
+    ...magicBytes,
+    ...bitLengthInBytes.buffer.asUint8List(),
+    ...encodedData
+  ];
+
+  var bitIndex = 0;
+  for (var x = 0; x < image.width; x++) {
+    for (var y = 0; y < image.height; y++) {
+      final byteIndex = (bitIndex / 8).floor();
+      if (byteIndex >= dataToEmbed.length) break;
+      final bit = (dataToEmbed[byteIndex] >> (7 - bitIndex % 8)) & 1;
+      final pixel = image.getPixel(x, y);
+      pixel.a = 254 | bit;
+      image.setPixel(x, y, pixel);
+      bitIndex++;
+    }
+  }
+  return image;
 }
