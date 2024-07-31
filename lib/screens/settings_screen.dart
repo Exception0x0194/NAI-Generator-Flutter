@@ -283,7 +283,7 @@ class SettingsScreenState extends State<SettingsScreen> {
                       Text(S.of(context).edit_custom_metadata_content_hint),
                       TextField(
                         controller: textController,
-                        maxLines: null,
+                        maxLines: 10,
                         onSubmitted: (value) {
                           setState(() {
                             onEditComplete();
@@ -293,26 +293,29 @@ class SettingsScreenState extends State<SettingsScreen> {
                     ],
                   ),
                   actions: [
-                    TextButton(
-                        onPressed: () => setDialogState(() {
-                              textController.text = exampleContent1;
-                            }),
-                        child: const Text('👻')),
-                    TextButton(
-                        onPressed: () => setDialogState(() {
-                              textController.text = exampleContent2;
-                            }),
-                        child: const Text('🐷')),
-                    TextButton(
-                        onPressed: Navigator.of(context).pop,
-                        child: Text(S.of(context).cancel)),
-                    TextButton(
-                        onPressed: () {
-                          setState(() {
-                            onEditComplete();
-                          });
-                        },
-                        child: Text(S.of(context).confirm)),
+                    Row(children: [
+                      TextButton(
+                          onPressed: () => setDialogState(() {
+                                textController.text = exampleContent1;
+                              }),
+                          child: const Text('👻')),
+                      TextButton(
+                          onPressed: () => setDialogState(() {
+                                textController.text = exampleContent2;
+                              }),
+                          child: const Text('🐷')),
+                      const Spacer(),
+                      TextButton(
+                          onPressed: Navigator.of(context).pop,
+                          child: Text(S.of(context).cancel)),
+                      TextButton(
+                          onPressed: () {
+                            setState(() {
+                              onEditComplete();
+                            });
+                          },
+                          child: Text(S.of(context).confirm)),
+                    ])
                   ],
                 )));
   }
