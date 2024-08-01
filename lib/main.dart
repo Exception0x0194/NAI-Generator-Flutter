@@ -83,7 +83,8 @@ class MyHomePageState extends State<MyHomePage> {
     }
     InfoManager().saveBox = await Hive.openBox('savedBox');
     var jsonData = InfoManager().saveBox.get('savedConfig');
-    jsonData = jsonData ?? await rootBundle.loadString('json/example.json');
+    jsonData =
+        jsonData ?? await rootBundle.loadString('assets/json/example.json');
     InfoManager().fromJson(json.decode(jsonData));
   }
 

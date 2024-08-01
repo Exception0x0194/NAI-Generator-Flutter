@@ -121,7 +121,7 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
     });
     if (InfoManager().isGenerating) {
       InfoManager().startGeneration();
-      var n = InfoManager().presetRequests;
+      var n = InfoManager().numberOfRequests;
       showInfoBar(context,
           S.of(context).info_start_generation(n == 0 ? '∞' : n.toString()));
     }
@@ -152,24 +152,24 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
                         setDialogState(() {});
                       },
                     )),
-                SwitchListTile(
+                CheckboxListTile(
                   secondary: InfoManager().showInfoForImg
                       ? const Icon(Icons.visibility_off)
                       : const Icon(Icons.visibility),
                   title: Text(S.of(context).toggle_display_info_aside_img),
                   value: InfoManager().showInfoForImg,
                   onChanged: (value) {
-                    setState(() => InfoManager().showInfoForImg = value);
+                    setState(() => InfoManager().showInfoForImg = value!);
                     setDialogState(() {});
                   },
                 ),
-                SwitchListTile(
+                CheckboxListTile(
                   secondary: const Icon(Icons.shuffle),
                   title: Text(S.of(context).use_random_seed),
                   value: InfoManager().paramConfig.randomSeed,
                   onChanged: (value) {
                     setDialogState(() {
-                      InfoManager().paramConfig.randomSeed = value;
+                      InfoManager().paramConfig.randomSeed = value!;
                     });
                   },
                 ),
@@ -191,10 +191,10 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
                 EditableListTile(
                   leading: const Icon(Icons.alarm),
                   title: S.of(context).image_number_to_generate,
-                  currentValue: InfoManager().presetRequests == 0
+                  currentValue: InfoManager().numberOfRequests == 0
                       ? '∞'
-                      : InfoManager().presetRequests.toString(),
-                  editValue: InfoManager().presetRequests.toString(),
+                      : InfoManager().numberOfRequests.toString(),
+                  editValue: InfoManager().numberOfRequests.toString(),
                   notice: '0 → ∞',
                   onEditComplete: (value) {
                     _setPresetRequestNum(value);
@@ -222,7 +222,7 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
       showErrorBar(context, S.of(context).info_set_genration_number_failed);
       return;
     }
-    InfoManager().presetRequests = parseResult;
+    InfoManager().numberOfRequests = parseResult;
     showInfoBar(
         context,
         S.of(context).info_set_genration_number(

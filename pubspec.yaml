@@ -52,6 +52,7 @@ dependencies:
   permission_handler: ^11.3.1
   device_info_plus: ^10.1.0
   image: ^4.2.0
+  package_info_plus: ^8.0.1
 
 dev_dependencies:
   flutter_test:
@@ -63,21 +64,16 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^4.0.0
+  rename: ^3.0.2
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 # The following section is specific to Flutter packages.
 flutter:
 
-  # fonts:
-  # - family: Noto
-  #   fonts:
-  #     - asset: fonts/notosanssc.ttf
-  # - family: Roboto
-  #   fonts:
-  #     - asset: fonts/roboto.ttf
   assets:
-    - json/example.json
+    - assets/json/example.json
+    - assets/appicon.png
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

@@ -66,7 +66,7 @@
     "batch_settings": "Batch settings",
     "batch_count": "Request per batch",
     "batch_interval": "Interval between batches (seconds)",
-    "batch_settings_info": "Requests per batch: {batch_size}, interval between batches: {interval}s",
+    "batch_settings_info": "Requests per batch: {batch_size}, interval between batches: {interval}s, total requests: {number_of_requests}",
     "output_folder": "Output Folder",
     "system_document_folder": "System document folder",
     "proxy_settings": "HTTP Proxy",
@@ -103,5 +103,6 @@
     "appbar_idle": "NAI CasRand - Idle",
     "appbar_regular": "Generating images...",
     "appbar_warning": "Generating images - Burning anlas!",
-    "appbar_cooldown": "Waiting between batches to avoid error 429..."
+    "appbar_cooldown": "Waiting between batches to avoid error 429...",
+    "app_info": "Application information"
 }

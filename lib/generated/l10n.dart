@@ -720,13 +720,14 @@ class S {
     );
   }
 
-  /// `Requests per batch: {batch_size}, interval between batches: {interval}s`
-  String batch_settings_info(Object batch_size, Object interval) {
+  /// `Requests per batch: {batch_size}, interval between batches: {interval}s, total requests: {number_of_requests}`
+  String batch_settings_info(
+      Object batch_size, Object interval, Object number_of_requests) {
     return Intl.message(
-      'Requests per batch: $batch_size, interval between batches: ${interval}s',
+      'Requests per batch: $batch_size, interval between batches: ${interval}s, total requests: $number_of_requests',
       name: 'batch_settings_info',
       desc: '',
-      args: [batch_size, interval],
+      args: [batch_size, interval, number_of_requests],
     );
   }
 
@@ -1095,6 +1096,16 @@ class S {
     return Intl.message(
       'Waiting between batches to avoid error 429...',
       name: 'appbar_cooldown',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Application information`
+  String get app_info {
+    return Intl.message(
+      'Application information',
+      name: 'app_info',
       desc: '',
       args: [],
     );

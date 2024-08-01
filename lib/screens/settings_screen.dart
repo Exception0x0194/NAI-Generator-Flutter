@@ -6,6 +6,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import '../generated/l10n.dart';
 import '../models/info_manager.dart';
@@ -21,44 +22,36 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class SettingsScreenState extends State<SettingsScreen> {
-  final TextEditingController _apiKeyController = TextEditingController();
-  final TextEditingController _proxyController = TextEditingController();
-
-  @override
-  void dispose() {
-    _apiKeyController.dispose();
-    _proxyController.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-          padding: const EdgeInsets.only(right: 80),
-          child: ListView(
-            children: [
-              // Token settings
-              _buildTokenTile(),
-              // Param settings
-              Padding(
-                  padding: const EdgeInsets.only(left: 20),
-                  child: ParamConfigWidget(config: InfoManager().paramConfig)),
-              _buildEraseMetadataTile(),
-              // Output directory selection, for windows only
-              if (!kIsWeb && Platform.isWindows) _buildOutputSelectionTile(),
-              // Proxy settings
-              if (!kIsWeb) _buildProxyTile(),
-              // Batch settings
-              _buildBatchTile(),
-              // Github link
-              _buildLinkTile()
-            ],
-          )),
+      body: ListView(
+        children: [
+          // Token settings
+          _buildTokenTile(),
+          // Param settings
+          Padding(
+              padding: const EdgeInsets.only(left: 20),
+              child: ParamConfigWidget(config: InfoManager().paramConfig)),
+          _buildEraseMetadataTile(),
+          // Output directory selection, for windows only
+          if (!kIsWeb && Platform.isWindows) _buildOutputSelectionTile(),
+          // Proxy settings
+          if (!kIsWeb) _buildProxyTile(),
+          // Batch settings
+          _buildBatchTile(),
+        ],
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
+          FloatingActionButton(
+            onPressed: () => _showInfoPage(),
+            tooltip: S.of(context).app_info,
+            child: const Icon(Icons.info),
+          ),
+          const SizedBox(height: 20),
           FloatingActionButton(
             onPressed: () async {
               await _loadJsonConfig();
@@ -119,12 +112,17 @@ class SettingsScreenState extends State<SettingsScreen> {
   _buildBatchTile() {
     final batchCount = InfoManager().batchCount;
     final batchInterval = InfoManager().batchIntervalSec;
+    final numberOfRequests = InfoManager().numberOfRequests;
+    final numberOfRequestsStr =
+        numberOfRequests == 0 ? '∞' : numberOfRequests.toString();
     return ExpansionTile(
       leading: const Icon(Icons.schedule),
       title: Text(S.of(context).batch_settings),
-      subtitle:
-          Text(S.of(context).batch_settings_info(batchCount, batchInterval)),
+      subtitle: Text(S
+          .of(context)
+          .batch_settings_info(batchCount, batchInterval, numberOfRequestsStr)),
       children: [
+        // Batch count
         Padding(
           padding: const EdgeInsets.only(left: 20),
           child: EditableListTile(
@@ -140,6 +138,7 @@ class SettingsScreenState extends State<SettingsScreen> {
                     })
                   }),
         ),
+        // Batch interval
         Padding(
             padding: const EdgeInsets.only(left: 20),
             child: EditableListTile(
@@ -154,6 +153,25 @@ class SettingsScreenState extends State<SettingsScreen> {
                             int.tryParse(value) ?? batchInterval;
                       })
                     })),
+        // Number of requests
+        Padding(
+            padding: const EdgeInsets.only(left: 20),
+            child: EditableListTile(
+              leading: const Icon(Icons.alarm),
+              title: S.of(context).image_number_to_generate,
+              currentValue:
+                  numberOfRequests == 0 ? '∞' : numberOfRequests.toString(),
+              editValue: numberOfRequests.toString(),
+              notice: '0 → ∞',
+              onEditComplete: (value) {
+                setState(() {
+                  InfoManager().numberOfRequests =
+                      int.tryParse(value) ?? numberOfRequests;
+                });
+              },
+              keyboardType: TextInputType.number,
+              confirmOnSubmit: true,
+            )),
       ],
     );
   }
@@ -217,26 +235,26 @@ class SettingsScreenState extends State<SettingsScreen> {
 
   _buildEraseMetadataTile() {
     List<Widget> tiles = [
-      SwitchListTile(
+      CheckboxListTile(
           secondary: const Icon(Icons.delete_sweep),
           title: Text(S.of(context).metadata_erase_enabled),
           value: InfoManager().metadataEraseEnabled,
           onChanged: (value) {
             setState(() {
-              InfoManager().metadataEraseEnabled = value;
+              InfoManager().metadataEraseEnabled = value!;
             });
           })
     ];
     tiles.add(InfoManager().metadataEraseEnabled
         ? Padding(
             padding: const EdgeInsets.only(left: 20),
-            child: SwitchListTile(
+            child: CheckboxListTile(
                 secondary: const Icon(Icons.edit_note),
                 title: Text(S.of(context).custom_metadata_enabled),
                 value: InfoManager().customMetadataEnabled,
                 onChanged: (value) {
                   setState(() {
-                    InfoManager().customMetadataEnabled = value;
+                    InfoManager().customMetadataEnabled = value!;
                   });
                 }))
         : const SizedBox.shrink());
@@ -311,5 +329,27 @@ class SettingsScreenState extends State<SettingsScreen> {
                     ])
                   ],
                 )));
+  }
+
+  _showInfoPage() async {
+    final packageInfo = await PackageInfo.fromPlatform();
+    final appName = packageInfo.appName;
+    final appVersion = packageInfo.version;
+    final iconImage = Image.asset(
+      'assets/appicon.png',
+      width: 64,
+      height: 64,
+    );
+
+    if (!mounted) return;
+    showAboutDialog(
+        context: context,
+        applicationName: appName,
+        applicationVersion: appVersion,
+        applicationIcon: iconImage,
+        children: [
+          // Github link
+          _buildLinkTile()
+        ]);
   }
 }

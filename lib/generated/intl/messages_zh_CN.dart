@@ -20,8 +20,8 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'zh_CN';
 
-  static String m0(batch_size, interval) =>
-      "每批次请求数目：${batch_size}，批次间隔时间：${interval} s";
+  static String m0(batch_size, interval, number_of_requests) =>
+      "每批次请求数目：${batch_size}，批次间隔时间：${interval} s，生成图片总数：${number_of_requests}";
 
   static String m1(current_size, i2i_size) =>
       "生成尺寸：${current_size}\n输入尺寸：${i2i_size}";
@@ -36,6 +36,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "NAI_API_key_hint": MessageLookupByLibrary.simpleMessage(
             "可以从主页 → 设置 → Account → Get Persistent API Token 获取"),
         "add_new_config": MessageLookupByLibrary.simpleMessage("插入新 Config"),
+        "app_info": MessageLookupByLibrary.simpleMessage("应用信息"),
         "appbar_cooldown":
             MessageLookupByLibrary.simpleMessage("暂停生成以避免 429 错误……"),
         "appbar_idle": MessageLookupByLibrary.simpleMessage("NAI CasRand - 就绪"),

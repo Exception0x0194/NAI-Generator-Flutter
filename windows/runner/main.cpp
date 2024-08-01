@@ -29,7 +29,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
   FlutterWindow window(project);
   Win32Window::Point origin(10, 10);
   Win32Window::Size size(640, 960);
-  if (!window.Create(L"NAI CasRand", origin, size))
+  if (!window.Create(L"NAI_CasRand", origin, size))
   {
     return EXIT_FAILURE;
   }

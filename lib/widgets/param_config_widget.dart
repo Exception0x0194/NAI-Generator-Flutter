@@ -112,13 +112,11 @@ class ParamConfigWidgetState extends State<ParamConfigWidget> {
 
   Widget _buildSwitchTile(String title, bool currentValue,
       ValueChanged<bool> onChanged, Icon? icon) {
-    return SwitchListTile(
+    return CheckboxListTile(
       secondary: icon,
       title: Text(title),
       value: currentValue,
-      onChanged: onChanged,
-      subtitle:
-          Text(currentValue ? S.of(context).enabled : S.of(context).disabled),
+      onChanged: (value) => onChanged(value!),
     );
   }
 

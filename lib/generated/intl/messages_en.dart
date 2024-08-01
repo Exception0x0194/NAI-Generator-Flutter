@@ -20,8 +20,8 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en';
 
-  static String m0(batch_size, interval) =>
-      "Requests per batch: ${batch_size}, interval between batches: ${interval}s";
+  static String m0(batch_size, interval, number_of_requests) =>
+      "Requests per batch: ${batch_size}, interval between batches: ${interval}s, total requests: ${number_of_requests}";
 
   static String m1(current_size, i2i_size) =>
       "Generation size: ${current_size}\nInput size: ${i2i_size}";
@@ -37,6 +37,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Available at: Home Page → Settings → Account → Get Persistent API Token"),
         "add_new_config":
             MessageLookupByLibrary.simpleMessage("Add New Config"),
+        "app_info":
+            MessageLookupByLibrary.simpleMessage("Application information"),
         "appbar_cooldown": MessageLookupByLibrary.simpleMessage(
             "Waiting between batches to avoid error 429..."),
         "appbar_idle":

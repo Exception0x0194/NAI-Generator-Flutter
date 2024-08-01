@@ -49,8 +49,6 @@ class InfoManager with ChangeNotifier {
 
   // Request status
   bool isRequesting = false;
-  int presetRequests = 0;
-  int _remainingRequests = 0;
   bool isGenerating = false;
 
   // Output indexing
@@ -64,11 +62,14 @@ class InfoManager with ChangeNotifier {
   bool showInfoForImg = true;
   double infoTileHeight = 1.0;
 
-  // Number of requests per batch and cooldown
+  // Batch settings
   int batchCount = 10;
   int batchIntervalSec = 10;
   int _batchCountdown = 0;
   Timer? _batchWaitingTimer;
+  // Number of requests
+  int numberOfRequests = 0;
+  int _remainingRequests = 0;
 
   // Output dir, for windows only
   Directory? outputFolder;
@@ -96,7 +97,7 @@ class InfoManager with ChangeNotifier {
   Map<String, dynamic> toJson() {
     return {
       "api_key": apiKey,
-      "preset_requests": presetRequests,
+      "preset_requests": numberOfRequests,
       "show_info_for_img": showInfoForImg,
       "info_tile_height": infoTileHeight,
       "batch_count": batchCount,
@@ -115,7 +116,7 @@ class InfoManager with ChangeNotifier {
     promptConfig = PromptConfig.fromJson(json['prompt_config'], 0);
     paramConfig = ParamConfig.fromJson(json['param_config']);
     apiKey = json['api_key'];
-    presetRequests = json['preset_requests'] ?? 0;
+    numberOfRequests = json['preset_requests'] ?? 0;
     showInfoForImg = json['show_info_for_img'] ?? true;
     infoTileHeight = (json['info_tile_height']?.toDouble() ?? 1.0);
     batchCount = json['batch_count'] ?? 10;
@@ -180,7 +181,7 @@ class InfoManager with ChangeNotifier {
   void startGeneration() {
     _generationTimestamp = DateTime.now();
     _generationIdx = 0;
-    _remainingRequests = presetRequests;
+    _remainingRequests = numberOfRequests;
     _batchCountdown = batchCount;
     generateImage();
   }
