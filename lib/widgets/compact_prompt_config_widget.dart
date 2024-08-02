@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/widgets.dart';
 
 import '../models/utils.dart';
 import '../models/prompt_config.dart';

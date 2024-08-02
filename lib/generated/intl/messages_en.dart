@@ -20,11 +20,11 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en';
 
-  static String m0(batch_size, interval, number_of_requests) =>
-      "Requests per batch: ${batch_size}, interval between batches: ${interval}s, total requests: ${number_of_requests}";
+  static String m0(batchSize, interval, numberOfRequests) =>
+      "Requests per batch: ${batchSize}, interval between batches: ${interval}s, total requests: ${numberOfRequests}";
 
-  static String m1(current_size, i2i_size) =>
-      "Generation size: ${current_size}\nInput size: ${i2i_size}";
+  static String m1(currentSize, i2iSize) =>
+      "Generation size: ${currentSize}\nInput size: ${i2iSize}";
 
   static String m2(num) => "Set ${num} generations";
 

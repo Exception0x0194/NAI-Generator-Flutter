@@ -1,8 +1,6 @@
 import 'dart:convert';
-import 'dart:ffi';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nai_casrand/models/info_manager.dart';
 
@@ -109,21 +107,21 @@ class DirectorToolScreenState extends State<DirectorToolScreen> {
         children: [
           Expanded(
               child: IconButton(
-            icon: Icon(Icons.add_photo_alternate),
+            icon: const Icon(Icons.add_photo_alternate),
             onPressed: () => _addDirectorImage(),
           )),
           widget.config.imageB64 == null
-              ? SizedBox.shrink()
+              ? const SizedBox.shrink()
               : Expanded(
                   child: IconButton(
-                  icon: Icon(Icons.delete_outline),
+                  icon: const Icon(Icons.delete_outline),
                   onPressed: () => _removeDirectorImage(),
                 )),
         ],
       ),
       Padding(
-        padding: EdgeInsets.all(10),
-        child: _widgetImage ?? SizedBox.shrink(),
+        padding: const EdgeInsets.all(10),
+        child: _widgetImage ?? const SizedBox.shrink(),
       )
     ]);
   }
@@ -193,15 +191,13 @@ class DirectorToolScreenState extends State<DirectorToolScreen> {
                                         widget.config.emotions.remove(e);
                                       }
                                     });
+                                    setState(() {});
                                   }))
                               .toList()),
                     ),
                     actions: [
                       TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                            setState(() {});
-                          },
+                          onPressed: Navigator.of(context).pop,
                           child: Text(S.of(context).confirm))
                     ],
                   )));
@@ -209,7 +205,7 @@ class DirectorToolScreenState extends State<DirectorToolScreen> {
 
     return ListTile(
         leading: const Icon(Icons.add_reaction_outlined),
-        title: Text('Emotion'),
+        title: const Text('Emotion'),
         subtitle: Text(widget.config.emotions.join(', ')),
         onTap: () => showEmotionSelectionDialog());
   }
