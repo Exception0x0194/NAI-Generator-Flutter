@@ -25,23 +25,26 @@ class SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView(
-        children: [
-          // Token settings
-          _buildTokenTile(),
-          // Param settings
-          Padding(
-              padding: const EdgeInsets.only(left: 20),
-              child: ParamConfigWidget(config: InfoManager().paramConfig)),
-          _buildEraseMetadataTile(),
-          // Output directory selection, for windows only
-          if (!kIsWeb && Platform.isWindows) _buildOutputSelectionTile(),
-          // Proxy settings
-          if (!kIsWeb) _buildProxyTile(),
-          // Batch settings
-          _buildBatchTile(),
-        ],
-      ),
+      body: Padding(
+          padding: const EdgeInsets.only(right: 80),
+          child: ListView(
+            children: [
+              // Token settings
+              _buildTokenTile(),
+              // Param settings
+              Padding(
+                  padding: const EdgeInsets.only(left: 20),
+                  child: ParamConfigWidget(config: InfoManager().paramConfig)),
+              // Batch settings
+              _buildBatchTile(),
+              // Erase metadata / add fake metadata
+              _buildEraseMetadataTile(),
+              // Output directory selection, for windows only
+              if (!kIsWeb && Platform.isWindows) _buildOutputSelectionTile(),
+              // Proxy settings
+              if (!kIsWeb) _buildProxyTile(),
+            ],
+          )),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
@@ -333,12 +336,13 @@ class SettingsScreenState extends State<SettingsScreen> {
 
   _showInfoPage() async {
     final packageInfo = await PackageInfo.fromPlatform();
-    final appName = packageInfo.appName;
+    const appName = 'NAI_CasRand';
     final appVersion = packageInfo.version;
     final iconImage = Image.asset(
       'assets/appicon.png',
       width: 64,
       height: 64,
+      filterQuality: FilterQuality.medium,
     );
 
     if (!mounted) return;
