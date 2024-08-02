@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:nai_casrand/models/director_tool_config.dart';
+
 import 'prompt_config.dart';
 import 'param_config.dart';
 import 'generation_info.dart';
@@ -34,6 +36,10 @@ class InfoManager with ChangeNotifier {
 
   // I2I / Enhance Config
   I2IConfig i2iConfig = I2IConfig();
+
+  // Director Tools
+  DirectorToolConfig directorToolConfig =
+      DirectorToolConfig(type: "emotion", width: 1024, height: 1024, defry: 0);
 
   // Info of generated images
   final List<GenerationInfo> _generationInfos = [];
@@ -148,6 +154,16 @@ class InfoManager with ChangeNotifier {
     var pickedPrompts = promptConfig.pickPromptsFromConfig();
     var prompts = pickedPrompts['head']! + pickedPrompts['tail']!;
 
+    // Get director tool cofig (if available)
+    if (directorToolConfig.imageB64 != null) {
+      final toolConfig = directorToolConfig.toJson();
+      if (directorToolConfig.type == 'emotion') {
+        prompts = '${toolConfig['emotion']};;$prompts';
+      }
+      toolConfig['prompt'] = prompts;
+      return {"body": toolConfig, "comment": pickedPrompts['comment']};
+    }
+
     var parameters = paramConfig.toJson();
     var action = 'generate';
 
@@ -211,7 +227,11 @@ class InfoManager with ChangeNotifier {
     if (debugApiEnabled) {
       url = Uri.parse(debugApiPath);
     } else {
-      url = Uri.parse('https://image.novelai.net/ai/generate-image');
+      if (directorToolConfig.imageB64 == null) {
+        url = Uri.parse('https://image.novelai.net/ai/generate-image');
+      } else {
+        url = Uri.parse('https://image.novelai.net/ai/augment-image');
+      }
     }
     cachedPayload ??= await getPayload();
 
@@ -301,16 +321,27 @@ class InfoManager with ChangeNotifier {
     saveBlob(imageBytes, filename, saveDir: outputFolder);
     _generationInfos[infoIdx] = GenerationInfo(
         img: Image.memory(imageBytes, fit: BoxFit.fitHeight),
-        info: {
-          'filename': filename,
-          'idx': infoIdx,
-          'log': (data['comment'] as String),
-          'prompt': data['body']['input'],
-          'seed': data['body']['parameters']['seed'],
-          'bytes': imageBytes,
-          'height': data['body']['parameters']['height'],
-          'width': data['body']['parameters']['width'],
-        },
+        info: data['parameters'] != null
+            ? {
+                'filename': filename,
+                'idx': infoIdx,
+                'log': (data['comment'] as String),
+                'prompt': data['body']['input'],
+                'seed': data['body']['parameters']['seed'],
+                'bytes': imageBytes,
+                'height': data['body']['parameters']['height'],
+                'width': data['body']['parameters']['width'],
+              }
+            : {
+                'filename': filename,
+                'idx': infoIdx,
+                'log': (data['comment'] as String),
+                'prompt': data['body']['prompt'],
+                'seed': 'N/A',
+                'bytes': imageBytes,
+                'height': data['body']['height'],
+                'width': data['body']['width'],
+              },
         type: 'img');
     _generationIdx++;
     decrementRequests();
@@ -328,9 +359,10 @@ class InfoManager with ChangeNotifier {
 
   void generatePrompt() async {
     var data = await getPayload();
-    addNewInfo(GenerationInfo(
-        info: {'log': data['comment'], 'prompt': data['body']['input']},
-        type: 'info'));
+    addNewInfo(GenerationInfo(info: {
+      'log': data['comment'],
+      'prompt': data['body']['input'] ?? data['body']['prompt'],
+    }, type: 'info'));
     notifyListeners();
   }
 

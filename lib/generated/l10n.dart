@@ -1110,6 +1110,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Donation link`
+  String get donation_link {
+    return Intl.message(
+      'Donation link',
+      name: 'donation_link',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Buy me a coffee!`
+  String get donation_link_subtitle {
+    return Intl.message(
+      'Buy me a coffee!',
+      name: 'donation_link_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
