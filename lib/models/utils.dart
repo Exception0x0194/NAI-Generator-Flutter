@@ -14,6 +14,7 @@ import 'package:universal_html/html.dart' as html;
 import 'package:saver_gallery/saver_gallery.dart';
 import 'package:another_flushbar/flushbar.dart';
 import 'package:image/image.dart' as img;
+import 'package:gzip/gzip.dart';
 
 Future<bool> requestAlbumPermission() async {
   bool isGranted;
@@ -150,9 +151,10 @@ List<double> getPossibleScaleFactors(int width, int height,
   return ret;
 }
 
-img.Image embedMetadata(img.Image image, String metadataString) {
+Future<img.Image> embedMetadata(img.Image image, String metadataString) async {
+  final zipper = GZip();
   final magicBytes = utf8.encode("stealth_pngcomp");
-  final encodedData = gzip.encode(utf8.encode(metadataString));
+  final encodedData = await zipper.compress(utf8.encode(metadataString));
   final bitLength = encodedData.length * 8;
   final bitLengthInBytes = ByteData(4);
   bitLengthInBytes.setInt32(0, bitLength);

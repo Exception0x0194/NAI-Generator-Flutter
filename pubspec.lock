@@ -229,6 +229,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  gzip:
+    dependency: "direct main"
+    description:
+      name: gzip
+      sha256: "104fc48465c5e30c634e856cad8d23caead9a2f2761424095eeb1183fd869426"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.0"
   hive:
     dependency: "direct main"
     description:

@@ -282,14 +282,17 @@ class InfoManager with ChangeNotifier {
     return success;
   }
 
-  void saveImage(ArchiveFile file, Map<String, dynamic> data, int infoIdx) {
+  void saveImage(
+      ArchiveFile file, Map<String, dynamic> data, int infoIdx) async {
     var imageBytes = file.content as Uint8List;
     if (metadataEraseEnabled) {
       var image = img.decodePng(imageBytes)!;
+      image = img.decodeBmp(img.encodeBmp(image))!;
       if (!customMetadataEnabled) {
         image = image.convert(numChannels: 3);
       } else {
-        image = embedMetadata(image, customMetadataContent);
+        image = image.convert(numChannels: 4);
+        image = await embedMetadata(image, customMetadataContent);
       }
       imageBytes = img.encodePng(image);
     }
