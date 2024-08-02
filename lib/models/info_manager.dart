@@ -321,7 +321,7 @@ class InfoManager with ChangeNotifier {
     saveBlob(imageBytes, filename, saveDir: outputFolder);
     _generationInfos[infoIdx] = GenerationInfo(
         img: Image.memory(imageBytes, fit: BoxFit.fitHeight),
-        info: data['parameters'] != null
+        info: data['body']['parameters'] != null
             ? {
                 'filename': filename,
                 'idx': infoIdx,
