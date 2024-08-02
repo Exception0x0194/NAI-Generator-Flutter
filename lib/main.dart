@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hive/hive.dart';
+import 'package:nai_casrand/screens/director_tool_screen.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -109,6 +110,8 @@ class MyHomePageState extends State<MyHomePage> {
                 // ignore: prefer_const_constructors
                 I2IConfigScreen(),
                 // ignore: prefer_const_constructors
+                DirectorToolScreen(),
+                // ignore: prefer_const_constructors
                 SettingsScreen(),
               ],
             ),
@@ -125,6 +128,10 @@ class MyHomePageState extends State<MyHomePage> {
                 BottomNavigationBarItem(
                   icon: const Icon(Icons.screen_rotation),
                   label: S.of(context).i2i_config,
+                ),
+                const BottomNavigationBarItem(
+                  icon: Icon(Icons.open_in_new),
+                  label: 'Director Tool',
                 ),
                 BottomNavigationBarItem(
                   icon: const Icon(Icons.settings),

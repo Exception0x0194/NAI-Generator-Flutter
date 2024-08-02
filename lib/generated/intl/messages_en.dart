@@ -80,6 +80,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "custom_size": MessageLookupByLibrary.simpleMessage("Custom Size"),
         "delete_config": MessageLookupByLibrary.simpleMessage("Delete Config"),
         "disabled": MessageLookupByLibrary.simpleMessage("Disabled"),
+        "donation_link": MessageLookupByLibrary.simpleMessage("Donation link"),
+        "donation_link_subtitle":
+            MessageLookupByLibrary.simpleMessage("Buy me a coffee!"),
         "edit": MessageLookupByLibrary.simpleMessage("Edit "),
         "edit_custom_metadata_content_hint":
             MessageLookupByLibrary.simpleMessage("Should be a JSON string"),

@@ -68,6 +68,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "custom_size": MessageLookupByLibrary.simpleMessage("手动调整尺寸"),
         "delete_config": MessageLookupByLibrary.simpleMessage("删除 Config"),
         "disabled": MessageLookupByLibrary.simpleMessage("禁用"),
+        "donation_link": MessageLookupByLibrary.simpleMessage("赞助链接"),
+        "donation_link_subtitle":
+            MessageLookupByLibrary.simpleMessage("赛博功德，随喜赞叹🙏"),
         "edit": MessageLookupByLibrary.simpleMessage("编辑"),
         "edit_custom_metadata_content_hint":
             MessageLookupByLibrary.simpleMessage("应当是一个 JSON 字符串"),

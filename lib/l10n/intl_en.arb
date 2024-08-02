@@ -104,5 +104,7 @@
     "appbar_regular": "Generating images...",
     "appbar_warning": "Generating images - Burning anlas!",
     "appbar_cooldown": "Waiting between batches to avoid error 429...",
-    "app_info": "Application information"
+    "app_info": "Application information",
+    "donation_link": "Donation link",
+    "donation_link_subtitle": "Buy me a coffee!"
 }

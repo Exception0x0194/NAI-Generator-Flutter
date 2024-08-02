@@ -361,7 +361,45 @@ class SettingsScreenState extends State<SettingsScreen> {
         applicationIcon: iconImage,
         children: [
           // Github link
-          _buildLinkTile()
+          _buildLinkTile(),
+          // Donation link
+          _buildDonationLink()
         ]);
+  }
+
+  _buildDonationLink() {
+    return ListTile(
+      title: Text(S.of(context).donation_link),
+      subtitle: Text(S.of(context).donation_link_subtitle),
+      leading: const Icon(Icons.favorite_border),
+      onTap: _showDonationQRCode,
+    );
+  }
+
+  void _showDonationQRCode() {
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text(S.of(context).donation_link_subtitle),
+              content: Row(
+                children: [
+                  Image.asset(
+                    'assets/qrcode1.jpg',
+                    width: 200,
+                    height: 200,
+                    filterQuality: FilterQuality.medium,
+                  ),
+                  const SizedBox(
+                    width: 20,
+                  ),
+                  Image.asset(
+                    'assets/qrcode2.jpg',
+                    width: 200,
+                    height: 200,
+                    filterQuality: FilterQuality.medium,
+                  ),
+                ],
+              ),
+            ));
   }
 }
