@@ -12,6 +12,7 @@ NAI Cascaded Random Generator（NAI CanRand）是一个按照指定模式生成�
 
 ### 界面展示
 
+<!-- 
 | 图像生成界面            | 提示词设置界面          |
 | ----------------------- | ----------------------- |
 | ![](docs/imgs/0001.jpg) | ![](docs/imgs/0002.jpg) |
@@ -19,6 +20,48 @@ NAI Cascaded Random Generator（NAI CanRand）是一个按照指定模式生成�
 | I2I / Vibe Transfer 设置界面 | Director Tools 界面     | 生成参数和用户选项界面  |
 | ---------------------------- | ----------------------- | ----------------------- |
 | ![](docs/imgs/0003.jpg)      | ![](docs/imgs/0005.jpg) | ![](docs/imgs/0004.jpg) |
+-->
+
+<style>
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 5px;
+    text-align: center;
+    margin-left: 20px;
+}
+
+.grid-container .grid-element {
+    display: grid;
+    grid-template-rows: repeat(2, auto);
+    margin-right: -6px;
+    gap: 5px;
+    border: 1px solid gray; 
+}
+</style>
+
+<div class="grid-container">
+    <div class="grid-element">
+        <span>图像生成界面</span>
+        <img src="docs/imgs/0001.jpg"/>
+    </div>
+    <div class="grid-element">
+        <span>提示词设置界面</span>
+        <img src="docs/imgs/0002.jpg"/>
+    </div>
+    <div class="grid-element">
+        <span>I2I / Vibe Transfer 设置界面</span>
+        <img src="docs/imgs/0003.jpg"/>
+    </div>
+    <div class="grid-element">
+        <span>Director Tools 界面</span>
+        <img src="docs/imgs/0005.jpg"/>
+    </div>
+    <div class="grid-element">
+        <span>生成参数和用户选项界面</span>
+        <img src="docs/imgs/0004.jpg"/>
+    </div>
+</div>
 
 ## 快速上手
 
