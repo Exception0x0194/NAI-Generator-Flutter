@@ -16,7 +16,7 @@ class GenerationInfoWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (info.type == 'img') {
+    if (info.displayImage != null) {
       return _buildImgWidget(context);
     } else {
       return LayoutBuilder(builder: ((context, constraints) {
@@ -25,22 +25,18 @@ class GenerationInfoWidget extends StatelessWidget {
     }
   }
 
-  Widget _buildInfoWidget(BuildContext context, {bool margined = true}) {
+  Widget _buildInfoWidget(BuildContext context) {
     return Container(
       width: 300,
-      decoration: margined
-          ? BoxDecoration(
-              border: Border.all(color: Colors.grey, width: 1),
-            )
-          : null,
-      margin: margined
-          ? const EdgeInsets.symmetric(vertical: 8, horizontal: 8)
-          : null,
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey, width: 1),
+      ),
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
       child: Stack(children: [
         ListView(children: [
           ListTile(
-            title: Text('Log #${info.info['idx'].toString()}'),
-            subtitle: Text(info.info['log'] ?? ''),
+            title: Text('Log #${info.displayInfo['idx'].toString()}'),
+            subtitle: Text(info.displayInfo['log'] ?? ''),
           )
         ]),
         Align(alignment: Alignment.topRight, child: _buildButtons(context)),
@@ -57,9 +53,9 @@ class GenerationInfoWidget extends StatelessWidget {
         child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Stack(
             children: [
-              info.img!,
+              info.displayImage!,
               LayoutBuilder(builder: ((context, constraints) {
-                var aspect = info.info['width']! / info.info['height']!;
+                var aspect = info.width! / info.height!;
                 var width = aspect * constraints.maxHeight;
                 return SizedBox(
                     width: width,
@@ -68,14 +64,14 @@ class GenerationInfoWidget extends StatelessWidget {
                         children: [
                           Expanded(
                               child: ListTile(
-                                  title: Text(info.info['filename']!),
+                                  title: Text(info.displayInfo['filename']!),
                                   dense: true)),
                           if (!showInfoForImg) _buildButtons(context)
                         ]));
               })),
             ],
           ),
-          if (showInfoForImg) _buildInfoWidget(context, margined: false)
+          if (showInfoForImg) _buildInfoWidget(context)
         ]));
   }
 
@@ -84,19 +80,19 @@ class GenerationInfoWidget extends StatelessWidget {
         decoration: BoxDecoration(
             color: Colors.white.withOpacity(0.2), shape: BoxShape.rectangle),
         child: Row(mainAxisSize: MainAxisSize.min, children: [
-          if (info.type == 'img')
+          if (info.displayImage != null)
             IconButton(
               icon: const Icon(Icons.brush),
               onPressed: () => {_showI2IConfigDialog(context)},
             ),
           IconButton(
             icon: const Icon(Icons.info_outline),
-            onPressed: () => {_showInfoDialog(context, info.info)},
+            onPressed: () => {_showInfoDialog(context, info.displayInfo)},
           ),
           IconButton(
             icon: const Icon(Icons.copy),
             onPressed: () {
-              copyToClipboard(info.info['log'] ?? '');
+              copyToClipboard(info.displayInfo['log'] ?? '');
               showInfoBar(context, 'Copied info.');
             },
           ),
@@ -163,7 +159,7 @@ class GenerationInfoWidget extends StatelessWidget {
                           padding: const EdgeInsets.only(left: 20),
                           child: Column(
                               children: getPossibleScaleFactors(
-                                      info.info['width'], info.info['height'])
+                                      info.width!, info.height!)
                                   .map((value) {
                             return ListTile(
                               title: Text('${value}x'),
@@ -175,13 +171,6 @@ class GenerationInfoWidget extends StatelessWidget {
                             );
                           }).toList()))
                     ]),
-                // SwitchListTile(
-                //     title: Text(S.of(context).enhance_only_once),
-                //     dense: true,
-                //     value: once,
-                //     onChanged: (value) {
-                //       setDialogState(() => once = value);
-                //     }),
                 SwitchListTile(
                     title: Text(S.of(context).enhance_override_prompts),
                     dense: true,
@@ -208,15 +197,15 @@ class GenerationInfoWidget extends StatelessWidget {
       BuildContext context, double scale, bool once, bool overridePrompt) {
     if (overridePrompt) {
       InfoManager().i2iConfig.overridePromptEnabled = true;
-      InfoManager().i2iConfig.overridePrompt = info.info['prompt'];
+      InfoManager().i2iConfig.overridePrompt = info.displayInfo['prompt'];
     }
-    int targetWidth = (scale * info.info['width'] / 64).ceil() * 64;
-    int targetHeight = (scale * info.info['height'] / 64).ceil() * 64;
+    int targetWidth = (scale * info.displayInfo['width'] / 64).ceil() * 64;
+    int targetHeight = (scale * info.displayInfo['height'] / 64).ceil() * 64;
     // InfoManager().i2iConfig.width = targetWidth;
     // InfoManager().i2iConfig.height = targetHeight;
     InfoManager().paramConfig.width = targetWidth;
     InfoManager().paramConfig.height = targetHeight;
-    InfoManager().i2iConfig.imgB64 = base64Encode(info.info['bytes']);
+    InfoManager().i2iConfig.imgB64 = base64Encode(info.displayInfo['bytes']);
 
     showInfoBar(context, S.of(context).i2i_conifgs_set);
   }

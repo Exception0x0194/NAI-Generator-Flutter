@@ -13,7 +13,6 @@ import 'utils.dart';
 
 import 'package:archive/archive.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:hive/hive.dart';
 import 'package:http/io_client.dart';
@@ -320,8 +319,7 @@ class InfoManager with ChangeNotifier {
         'nai-generated-${getTimestampDigits(_generationTimestamp)}-${_generationIdx.toString().padLeft(4, '0')}-${generateRandomFileName()}.png';
     saveBlob(imageBytes, filename, saveDir: outputFolder);
     _generationInfos[infoIdx] = GenerationInfo(
-        img: Image.memory(imageBytes, fit: BoxFit.fitHeight),
-        info: data['body']['parameters'] != null
+        displayInfo: data['body']['parameters'] != null
             ? {
                 'filename': filename,
                 'idx': infoIdx,
@@ -329,20 +327,15 @@ class InfoManager with ChangeNotifier {
                 'prompt': data['body']['input'],
                 'seed': data['body']['parameters']['seed'],
                 'bytes': imageBytes,
-                'height': data['body']['parameters']['height'],
-                'width': data['body']['parameters']['width'],
               }
             : {
                 'filename': filename,
                 'idx': infoIdx,
                 'log': (data['comment'] as String),
                 'prompt': data['body']['prompt'],
-                'seed': 'N/A',
                 'bytes': imageBytes,
-                'height': data['body']['height'],
-                'width': data['body']['width'],
               },
-        type: 'img');
+        imageBytes: imageBytes);
     _generationIdx++;
     decrementRequests();
   }
@@ -359,15 +352,15 @@ class InfoManager with ChangeNotifier {
 
   void generatePrompt() async {
     var data = await getPayload();
-    addNewInfo(GenerationInfo(info: {
+    addNewInfo(GenerationInfo(displayInfo: {
       'log': data['comment'],
       'prompt': data['body']['input'] ?? data['body']['prompt'],
-    }, type: 'info'));
+    }));
     notifyListeners();
   }
 
   void addLog(String message) {
-    addNewInfo(GenerationInfo(img: null, info: {'log': message}, type: 'info'));
+    addNewInfo(GenerationInfo(displayInfo: {'log': message}));
   }
 
   int logRequestStart() {
@@ -375,15 +368,15 @@ class InfoManager with ChangeNotifier {
         ? 'Looping - '
         : '${_remainingRequests.toString()} request${_remainingRequests > 1 ? 's' : ''} remaining - ';
     return addNewInfo(
-        GenerationInfo(type: 'info', info: {'log': '${log}Requesting...'}));
+        GenerationInfo(displayInfo: {'log': '${log}Requesting...'}));
   }
 
   void setLog(int infoIdx, String message) {
-    _generationInfos[infoIdx].info['log'] = message;
+    _generationInfos[infoIdx].displayInfo['log'] = message;
   }
 
   int addNewInfo(GenerationInfo newInfo) {
-    newInfo.info['idx'] = _generationCount;
+    newInfo.displayInfo['idx'] = _generationCount;
     _generationCount++;
     if (_generationInfos.length < _generationInfosMaxLength) {
       _generationInfos.add(newInfo);
