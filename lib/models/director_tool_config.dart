@@ -14,9 +14,20 @@ class DirectorToolConfig {
   Map<String, dynamic> toJson() {
     return {
       "req_type": type,
-      "emotion": type == "emotion"
-          ? emotions[Random().nextInt(emotions.length)]
-          : null,
+      "emotion": emotions,
+      "defry": defry,
+      "width": width,
+      "height": height,
+      "image": imageB64,
+    };
+  }
+
+  Map<String, dynamic> getPayload() {
+    return {
+      "req_type": type,
+      "prompt": type == "emotion"
+          ? "${emotions[Random().nextInt(emotions.length)]};;"
+          : "",
       "defry": defry,
       "width": width,
       "height": height,

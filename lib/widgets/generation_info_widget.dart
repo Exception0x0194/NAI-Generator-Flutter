@@ -11,12 +11,18 @@ class GenerationInfoWidget extends StatelessWidget {
   final GenerationInfo info;
   final bool showInfoForImg;
 
-  const GenerationInfoWidget(
-      {super.key, required this.info, required this.showInfoForImg});
+  late final Image? displayImage;
+
+  GenerationInfoWidget(
+      {super.key, required this.info, required this.showInfoForImg}) {
+    if (info.imageBytes != null) {
+      displayImage = Image.memory(info.imageBytes!);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    if (info.displayImage != null) {
+    if (info.imageBytes != null) {
       return _buildImgWidget(context);
     } else {
       return LayoutBuilder(builder: ((context, constraints) {
@@ -53,7 +59,7 @@ class GenerationInfoWidget extends StatelessWidget {
         child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Stack(
             children: [
-              info.displayImage!,
+              displayImage!,
               LayoutBuilder(builder: ((context, constraints) {
                 var aspect = info.width! / info.height!;
                 var width = aspect * constraints.maxHeight;
@@ -80,14 +86,14 @@ class GenerationInfoWidget extends StatelessWidget {
         decoration: BoxDecoration(
             color: Colors.white.withOpacity(0.2), shape: BoxShape.rectangle),
         child: Row(mainAxisSize: MainAxisSize.min, children: [
-          if (info.displayImage != null)
+          if (info.imageBytes != null)
             IconButton(
               icon: const Icon(Icons.brush),
               onPressed: () => {_showI2IConfigDialog(context)},
             ),
           IconButton(
             icon: const Icon(Icons.info_outline),
-            onPressed: () => {_showInfoDialog(context, info.displayInfo)},
+            onPressed: () => _showInfoDialog(context),
           ),
           IconButton(
             icon: const Icon(Icons.copy),
@@ -99,8 +105,8 @@ class GenerationInfoWidget extends StatelessWidget {
         ]));
   }
 
-  void _showInfoDialog(BuildContext context, Map<String, dynamic> info) {
-    const keysToShow = ['filename', 'log', 'prompt', 'seed'];
+  void _showInfoDialog(BuildContext context) {
+    final items = info.displayInfo.entries;
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -108,13 +114,12 @@ class GenerationInfoWidget extends StatelessWidget {
           title: const Text('Info Details'),
           content: SingleChildScrollView(
             child: ListBody(
-              children:
-                  keysToShow.where((key) => info.containsKey(key)).map((key) {
+              children: items.map((item) {
                 return Stack(
                   children: [
                     ListTile(
-                      title: Text(key),
-                      subtitle: Text(info[key].toString()),
+                      title: Text(item.key),
+                      subtitle: Text(item.value.toString()),
                     ),
                     Positioned(
                       top: 0,
@@ -122,7 +127,7 @@ class GenerationInfoWidget extends StatelessWidget {
                       child: IconButton(
                         icon: const Icon(Icons.copy),
                         onPressed: () {
-                          copyToClipboard(info[key].toString());
+                          copyToClipboard(item.value.toString());
                           Navigator.of(context)
                               .pop(); // Optional: close the dialog after copying
                           showInfoBar(context, 'Copied $key to clipboard.');
@@ -199,13 +204,13 @@ class GenerationInfoWidget extends StatelessWidget {
       InfoManager().i2iConfig.overridePromptEnabled = true;
       InfoManager().i2iConfig.overridePrompt = info.displayInfo['prompt'];
     }
-    int targetWidth = (scale * info.displayInfo['width'] / 64).ceil() * 64;
-    int targetHeight = (scale * info.displayInfo['height'] / 64).ceil() * 64;
+    int targetWidth = (scale * info.width! / 64).ceil() * 64;
+    int targetHeight = (scale * info.height! / 64).ceil() * 64;
     // InfoManager().i2iConfig.width = targetWidth;
     // InfoManager().i2iConfig.height = targetHeight;
     InfoManager().paramConfig.width = targetWidth;
     InfoManager().paramConfig.height = targetHeight;
-    InfoManager().i2iConfig.imgB64 = base64Encode(info.displayInfo['bytes']);
+    InfoManager().i2iConfig.imgB64 = base64Encode(info.imageBytes!);
 
     showInfoBar(context, S.of(context).i2i_conifgs_set);
   }

@@ -1,34 +1,33 @@
 import 'dart:typed_data';
 
-import 'package:flutter/material.dart';
 import 'package:image_size_getter/image_size_getter.dart';
 
 class GenerationInfo {
-  Image? _displayImage;
-  Map<String, dynamic> displayInfo;
-
+  Uint8List? _imageBytes;
   int? width, height;
+
+  Map<String, dynamic> displayInfo;
 
   GenerationInfo({required this.displayInfo, Uint8List? imageBytes}) {
     if (imageBytes != null) {
-      _displayImage = Image.memory(imageBytes);
+      _imageBytes = imageBytes;
       final size = ImageSizeGetter.getSize(MemoryInput(imageBytes));
       width = size.width;
       height = size.height;
     }
   }
 
-  Image? get displayImage {
-    return _displayImage;
+  Uint8List? get imageBytes {
+    return _imageBytes;
   }
 
-  void setImage(Uint8List? imageBytes) {
+  set imageBytes(Uint8List? imageBytes) {
     if (imageBytes == null) {
-      _displayImage = null;
+      _imageBytes = null;
       width = height = null;
       return;
     }
-    _displayImage = Image.memory(imageBytes);
+    _imageBytes = imageBytes;
     final size = ImageSizeGetter.getSize(MemoryInput(imageBytes));
     width = size.width;
     height = size.height;

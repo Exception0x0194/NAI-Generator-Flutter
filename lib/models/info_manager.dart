@@ -155,11 +155,8 @@ class InfoManager with ChangeNotifier {
 
     // Get director tool cofig (if available)
     if (directorToolConfig.imageB64 != null) {
-      final toolConfig = directorToolConfig.toJson();
-      if (directorToolConfig.type == 'emotion') {
-        prompts = '${toolConfig['emotion']};;$prompts';
-      }
-      toolConfig['prompt'] = prompts;
+      final toolConfig = directorToolConfig.getPayload();
+      toolConfig['prompt'] += prompts;
       return {"body": toolConfig, "comment": pickedPrompts['comment']};
     }
 
@@ -326,14 +323,12 @@ class InfoManager with ChangeNotifier {
                 'log': (data['comment'] as String),
                 'prompt': data['body']['input'],
                 'seed': data['body']['parameters']['seed'],
-                'bytes': imageBytes,
               }
             : {
                 'filename': filename,
                 'idx': infoIdx,
                 'log': (data['comment'] as String),
                 'prompt': data['body']['prompt'],
-                'bytes': imageBytes,
               },
         imageBytes: imageBytes);
     _generationIdx++;
