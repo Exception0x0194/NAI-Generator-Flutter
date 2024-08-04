@@ -971,6 +971,16 @@ class S {
     );
   }
 
+  /// `Director Tool type`
+  String get director_tool_type {
+    return Intl.message(
+      'Director Tool type',
+      name: 'director_tool_type',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `succeed`
   String get succeed {
     return Intl.message(

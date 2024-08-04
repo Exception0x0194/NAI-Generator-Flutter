@@ -90,6 +90,7 @@
     "enhance_override_prompts": "以图片 prompt 覆盖随机 prompt",
     "enhance_override_smea": "强行使用设置中的 SMEA 参数",
     "i2i_conifgs_set": "已设置图生图参数",
+    "director_tool_type": "工具类型",
     "succeed": "成功",
     "failed": "失败",
     "enabled": "启用",

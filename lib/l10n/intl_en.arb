@@ -91,6 +91,7 @@
     "enhance_override_prompts": "Overwrite random prompts",
     "enhance_override_smea": "Forcely use SMEA settings",
     "i2i_conifgs_set": "Image to image configs set.",
+    "director_tool_type": "Director Tool type",
     "succeed": "succeed",
     "failed": "failed",
     "enabled": "Enabled",

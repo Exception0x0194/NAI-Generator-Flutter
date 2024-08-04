@@ -130,7 +130,8 @@ class GenerationInfoWidget extends StatelessWidget {
                           copyToClipboard(item.value.toString());
                           Navigator.of(context)
                               .pop(); // Optional: close the dialog after copying
-                          showInfoBar(context, 'Copied $key to clipboard.');
+                          showInfoBar(
+                              context, 'Copied ${item.key} to clipboard.');
                         },
                       ),
                     ),

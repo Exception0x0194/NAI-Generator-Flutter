@@ -156,8 +156,17 @@ class InfoManager with ChangeNotifier {
     // Get director tool cofig (if available)
     if (directorToolConfig.imageB64 != null) {
       final toolConfig = directorToolConfig.getPayload();
-      toolConfig['prompt'] += prompts;
-      return {"body": toolConfig, "comment": pickedPrompts['comment']};
+      String comment = 'Director Tool: ${directorToolConfig.type}';
+      if (directorToolConfig.withPrompt) {
+        comment += '\n';
+        if (!directorToolConfig.overrideEnabled) {
+          toolConfig['prompt'] += prompts;
+          comment += pickedPrompts['comment'] ?? '';
+        } else {
+          comment += '<Prompt overritten>';
+        }
+      }
+      return {"body": toolConfig, "comment": comment};
     }
 
     var parameters = paramConfig.toJson();
@@ -328,7 +337,7 @@ class InfoManager with ChangeNotifier {
                 'filename': filename,
                 'idx': infoIdx,
                 'log': (data['comment'] as String),
-                'prompt': data['body']['prompt'],
+                'prompt': data['body']['prompt'] ?? '<N/A>',
               },
         imageBytes: imageBytes);
     _generationIdx++;

@@ -129,21 +129,21 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
           ],
         ),
         // SMEA override settings
-        SwitchListTile(
+        CheckboxListTile(
             title: Text(S.of(context).enhance_override_smea),
             secondary: const Icon(Icons.keyboard_double_arrow_right),
             value: widget.config.overrideSmea,
             onChanged: (value) => setState(() {
-                  widget.config.overrideSmea = value;
+                  widget.config.overrideSmea = value!;
                 })),
         // Prompt override settings
-        SwitchListTile(
+        CheckboxListTile(
             title: Text(S.of(context).override_random_prompts),
             secondary: const Icon(Icons.edit_note),
             value: widget.config.overridePromptEnabled,
             onChanged: (value) {
               setState(() {
-                widget.config.overridePromptEnabled = value;
+                widget.config.overridePromptEnabled = value!;
               });
             }),
         widget.config.overridePromptEnabled
@@ -152,6 +152,7 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
                 child: EditableListTile(
                     title: S.of(context).override_prompt,
                     currentValue: widget.config.overridePrompt,
+                    confirmOnSubmit: true,
                     onEditComplete: (value) {
                       setState(() {
                         widget.config.overridePrompt = value;

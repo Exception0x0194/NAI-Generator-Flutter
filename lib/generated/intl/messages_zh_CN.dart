@@ -67,6 +67,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("添加伪造水印信息"),
         "custom_size": MessageLookupByLibrary.simpleMessage("手动调整尺寸"),
         "delete_config": MessageLookupByLibrary.simpleMessage("删除 Config"),
+        "director_tool_type": MessageLookupByLibrary.simpleMessage("工具类型"),
         "disabled": MessageLookupByLibrary.simpleMessage("禁用"),
         "donation_link": MessageLookupByLibrary.simpleMessage("赞助链接"),
         "donation_link_subtitle":

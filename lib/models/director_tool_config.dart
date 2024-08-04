@@ -9,7 +9,14 @@ class DirectorToolConfig {
   int width = 0;
   int height = 0;
 
+  bool overrideEnabled = false;
+  String overridePrompt = "";
+
   int defry = 0;
+
+  bool get withPrompt {
+    return ['colorize', 'emotion'].contains(type);
+  }
 
   Map<String, dynamic> toJson() {
     return {
@@ -19,20 +26,33 @@ class DirectorToolConfig {
       "width": width,
       "height": height,
       "image": imageB64,
+      "override_enabled": overrideEnabled,
+      "override_prompt": overridePrompt,
     };
   }
 
   Map<String, dynamic> getPayload() {
-    return {
-      "req_type": type,
-      "prompt": type == "emotion"
+    if (withPrompt) {
+      var prompt = type == "emotion"
           ? "${emotions[Random().nextInt(emotions.length)]};;"
-          : "",
-      "defry": defry,
-      "width": width,
-      "height": height,
-      "image": imageB64,
-    };
+          : "";
+      if (overrideEnabled) prompt += overridePrompt;
+      return {
+        "req_type": type,
+        "prompt": prompt,
+        "defry": defry,
+        "width": width,
+        "height": height,
+        "image": imageB64,
+      };
+    } else {
+      return {
+        "req_type": type,
+        "width": width,
+        "height": height,
+        "image": imageB64,
+      };
+    }
   }
 
   DirectorToolConfig(

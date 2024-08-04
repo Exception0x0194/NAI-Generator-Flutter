@@ -38,6 +38,22 @@ class DirectorToolScreen extends StatefulWidget {
     'hurt',
     'playful'
   ];
+  final toolTypes = [
+    'bg-removal',
+    'lineart',
+    'sketch',
+    'colorize',
+    'emotion',
+    'declutter',
+  ];
+  final displayedToolTypes = [
+    'Remove BG',
+    'Line Art',
+    'Sketch',
+    'Colorize',
+    'Emotion',
+    'Declutter',
+  ];
 
   @override
   State<StatefulWidget> createState() => DirectorToolScreenState();
@@ -51,22 +67,24 @@ class DirectorToolScreenState extends State<DirectorToolScreen> {
     return Scaffold(
       body: ListView(children: [
         _buildTypeSelectionTile(),
-        _buildDefryTile(),
+        if (widget.config.withPrompt) ...[
+          _buildPromptTile(),
+          _buildDefryTile()
+        ],
         _buildImageTile(),
       ]),
     );
   }
 
   Widget _buildTypeSelectionTile() {
-    const toolTypes = ['colorize', 'emotion'];
-
     return Column(children: [
       // Tool type selection
       SelectableListTile(
-          title: 'Tool Type',
+          title: S.of(context).director_tool_type,
           leading: const Icon(Icons.handyman),
           currentValue: widget.config.type,
-          options: toolTypes,
+          options: widget.toolTypes,
+          options_text: widget.displayedToolTypes,
           onSelectComplete: (value) => setState(() {
                 widget.config.type = value;
               })),
@@ -208,5 +226,30 @@ class DirectorToolScreenState extends State<DirectorToolScreen> {
         title: const Text('Emotion'),
         subtitle: Text(widget.config.emotions.join(', ')),
         onTap: () => showEmotionSelectionDialog());
+  }
+
+  Widget _buildPromptTile() {
+    return Column(
+      children: [
+        CheckboxListTile(
+            title: Text(S.of(context).override_random_prompts),
+            secondary: const Icon(Icons.edit_note),
+            value: widget.config.overrideEnabled,
+            onChanged: (value) => setState(() {
+                  widget.config.overrideEnabled = value!;
+                })),
+        widget.config.overrideEnabled
+            ? Padding(
+                padding: const EdgeInsets.only(left: 20),
+                child: EditableListTile(
+                    title: S.of(context).override_prompt,
+                    currentValue: widget.config.overridePrompt,
+                    confirmOnSubmit: true,
+                    onEditComplete: (value) => setState(() {
+                          widget.config.overridePrompt = value;
+                        })))
+            : const SizedBox.shrink()
+      ],
+    );
   }
 }

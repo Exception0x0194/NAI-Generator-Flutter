@@ -79,6 +79,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Embed fake metadata into generated images"),
         "custom_size": MessageLookupByLibrary.simpleMessage("Custom Size"),
         "delete_config": MessageLookupByLibrary.simpleMessage("Delete Config"),
+        "director_tool_type":
+            MessageLookupByLibrary.simpleMessage("Director Tool type"),
         "disabled": MessageLookupByLibrary.simpleMessage("Disabled"),
         "donation_link": MessageLookupByLibrary.simpleMessage("Donation link"),
         "donation_link_subtitle":
