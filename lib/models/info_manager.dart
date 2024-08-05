@@ -150,24 +150,25 @@ class InfoManager with ChangeNotifier {
       };
 
   Future<Map<String, dynamic>> getPayload() async {
+    // Director tools config
+    if (directorToolConfig.imageB64 != null) {
+      final directorToolPayload = directorToolConfig.getPayload();
+      String comment = 'Director Tool: ${directorToolConfig.type}\n';
+      if (directorToolConfig.overrideEnabled) {
+        // Prompt is overritten in tool config
+        comment += '<Prompt overritten>';
+      } else {
+        var pickedPrompts = promptConfig.pickPromptsFromConfig();
+        var prompts = pickedPrompts['head']! + pickedPrompts['tail']!;
+        directorToolPayload['prompt'] += prompts;
+        comment += pickedPrompts['comment'] ?? '';
+      }
+      return {'body': directorToolPayload, 'comment': comment};
+    }
+
+    // I2I config
     var pickedPrompts = promptConfig.pickPromptsFromConfig();
     var prompts = pickedPrompts['head']! + pickedPrompts['tail']!;
-
-    // Get director tool cofig (if available)
-    if (directorToolConfig.imageB64 != null) {
-      final toolConfig = directorToolConfig.getPayload();
-      String comment = 'Director Tool: ${directorToolConfig.type}';
-      if (directorToolConfig.withPrompt) {
-        comment += '\n';
-        if (!directorToolConfig.overrideEnabled) {
-          toolConfig['prompt'] += prompts;
-          comment += pickedPrompts['comment'] ?? '';
-        } else {
-          comment += '<Prompt overritten>';
-        }
-      }
-      return {"body": toolConfig, "comment": comment};
-    }
 
     var parameters = paramConfig.toJson();
     var action = 'generate';
