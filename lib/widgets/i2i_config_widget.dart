@@ -1,11 +1,14 @@
 import 'dart:convert';
 
+import 'package:another_flushbar/flushbar.dart';
+import 'package:another_flushbar/flushbar_route.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:nai_casrand/models/info_manager.dart';
-import 'package:nai_casrand/models/utils.dart';
-import 'package:nai_casrand/widgets/editable_list_tile.dart';
+import 'package:image/image.dart' as img;
 
+import '../models/info_manager.dart';
+import '../models/utils.dart';
+import '../widgets/editable_list_tile.dart';
 import '../models/i2i_config.dart';
 import '../generated/l10n.dart';
 
@@ -278,6 +281,20 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
     var pickedFile = await picker.pickImage(source: ImageSource.gallery);
     if (pickedFile == null) return;
     var bytes = await pickedFile.readAsBytes();
+
+    final image = img.decodeImage(bytes);
+    String? prompt = null;
+    try {
+      final metadataString = await extractMetadata(image!);
+      final metadata = json.decode(metadataString!);
+      prompt = metadata['Description'];
+    } catch (err) {
+      showWarningBar(context, 'No metadta found in imported picture.');
+    }
+    if (prompt != null) {
+      _showImportMetadataDialog(prompt);
+    }
+
     widget.config.imgB64 = base64Encode(bytes);
     _loadImage();
   }
@@ -325,5 +342,32 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
       InfoManager().paramConfig.width = targetWidth;
       InfoManager().paramConfig.height = targetHeight;
     });
+  }
+
+  void _showImportMetadataDialog(String importedPrompt) {
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text('Metadata found in imported picture!'),
+              content: ListTile(
+                  title: Text(
+                    importedPrompt,
+                    maxLines: 5,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  dense: true),
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text('Cancel')),
+                TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text('Import'))
+              ],
+            ));
   }
 }

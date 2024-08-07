@@ -126,6 +126,23 @@ void showErrorBar(BuildContext context, String message) {
   ).show(context);
 }
 
+void showWarningBar(BuildContext context, String message) {
+  Flushbar(
+    flushbarPosition: FlushbarPosition.TOP,
+    margin: const EdgeInsets.all(8),
+    borderRadius: BorderRadius.circular(8),
+    animationDuration: const Duration(milliseconds: 300),
+    duration: const Duration(milliseconds: 1500),
+    leftBarIndicatorColor: Colors.orange,
+    icon: const Icon(
+      Icons.error_outline,
+      size: 28.0,
+      color: Colors.orange,
+    ),
+    message: message,
+  ).show(context);
+}
+
 String getTimestampDigits(DateTime now) {
   return '${now.year}'
       '${now.month.toString().padLeft(2, '0')}'
