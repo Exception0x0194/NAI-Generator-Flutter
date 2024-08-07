@@ -961,6 +961,76 @@ class S {
     );
   }
 
+  /// `Metadata found in imported image`
+  String get metadata_found {
+    return Intl.message(
+      'Metadata found in imported image',
+      name: 'metadata_found',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tap to paste parameters`
+  String get tap_to_paste_parameters {
+    return Intl.message(
+      'Tap to paste parameters',
+      name: 'tap_to_paste_parameters',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Prompt`
+  String get prompt {
+    return Intl.message(
+      'Prompt',
+      name: 'prompt',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Parameters`
+  String get parameters {
+    return Intl.message(
+      'Parameters',
+      name: 'parameters',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Paste all`
+  String get paste_all {
+    return Intl.message(
+      'Paste all',
+      name: 'paste_all',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Imported {num} parameter/s.`
+  String loaded_parameters_count(Object num) {
+    return Intl.message(
+      'Imported $num parameter/s.',
+      name: 'loaded_parameters_count',
+      desc: '',
+      args: [num],
+    );
+  }
+
+  /// `Pasted {parameter_name}.`
+  String pasted_parameter(Object parameter_name) {
+    return Intl.message(
+      'Pasted $parameter_name.',
+      name: 'pasted_parameter',
+      desc: '',
+      args: [parameter_name],
+    );
+  }
+
   /// `Image to image configs set.`
   String get i2i_conifgs_set {
     return Intl.message(

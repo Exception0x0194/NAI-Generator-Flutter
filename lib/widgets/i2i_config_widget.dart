@@ -362,20 +362,32 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
       showErrorBar(context, 'Error reading metadata: ${err.toString()}');
       return;
     }
-    pastePrompt() => setState(() {
-          widget.config.overridePromptEnabled = true;
-          widget.config.overridePrompt = prompt;
-          if (mounted) showInfoBar(context, 'Pasted prompt.');
-        });
-    pasteUC() {
-      InfoManager().paramConfig.loadJson({'negative_prompt': uc});
-      if (mounted) showInfoBar(context, 'Imported UC.');
+    pastePrompt() {
+      setState(() {
+        widget.config.overridePromptEnabled = true;
+        widget.config.overridePrompt = prompt;
+        if (mounted) {
+          showInfoBar(
+              context, S.of(context).pasted_parameter(S.of(context).prompt));
+        }
+      });
     }
 
-    pasteParam() => setState(() {
-          final loaded = InfoManager().paramConfig.loadJson(param);
-          if (mounted) showInfoBar(context, 'Imported $loaded parameters.');
-        });
+    pasteUC() {
+      InfoManager().paramConfig.loadJson({'negative_prompt': uc});
+      if (mounted) {
+        showInfoBar(context, S.of(context).pasted_parameter(S.of(context).uc));
+      }
+    }
+
+    pasteParam() {
+      setState(() {
+        final loaded = InfoManager().paramConfig.loadJson(param);
+        if (mounted) {
+          showInfoBar(context, S.of(context).loaded_parameters_count(loaded));
+        }
+      });
+    }
     // pasteSeed() {
     //   InfoManager().paramConfig.loadJson({'seed': seed});
     //   if (mounted) showInfoBar(context, 'Imported Seed.');
@@ -384,14 +396,14 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
-              title: Text('Metadata found!'),
+              title: Text(S.of(context).metadata_found),
               content: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text('Tap to paste param'),
+                  Text(S.of(context).tap_to_paste_parameters),
                   ListTile(
-                      title: Text('Prompt'),
+                      title: Text(S.of(context).prompt),
                       subtitle: Text(
                         prompt,
                         maxLines: 5,
@@ -399,7 +411,7 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
                       ),
                       onTap: pastePrompt),
                   ListTile(
-                      title: Text('UC'),
+                      title: Text(S.of(context).uc),
                       subtitle: Text(
                         uc,
                         maxLines: 5,
@@ -407,7 +419,7 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
                       ),
                       onTap: pasteUC),
                   ListTile(
-                      title: Text('Param'),
+                      title: Text(S.of(context).parameters),
                       subtitle: Text(
                         json.encode(param),
                         maxLines: 5,
@@ -432,7 +444,7 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
                       pasteUC();
                       pasteParam();
                     },
-                    child: Text('Paste all')),
+                    child: Text(S.of(context).paste_all)),
                 TextButton(
                     onPressed: () {
                       Navigator.of(context).pop();

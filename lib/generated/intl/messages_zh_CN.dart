@@ -30,6 +30,10 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m3(num) => "开始生成 ${num} 幅图片";
 
+  static String m4(num) => "导入了 ${num} 个参数。";
+
+  static String m5(parameter_name) => "导入了${parameter_name}。";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "NAI_API_key": MessageLookupByLibrary.simpleMessage("NAI API Token"),
@@ -120,8 +124,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "info_tile_height": MessageLookupByLibrary.simpleMessage("图片磁贴高度"),
         "is_ordered": MessageLookupByLibrary.simpleMessage("顺序"),
         "is_shuffled": MessageLookupByLibrary.simpleMessage("乱序"),
+        "loaded_parameters_count": m4,
         "metadata_erase_enabled":
             MessageLookupByLibrary.simpleMessage("清除生成图片中的水印信息"),
+        "metadata_found": MessageLookupByLibrary.simpleMessage("发现了图片中的元数据"),
         "notNecessarily0to1":
             MessageLookupByLibrary.simpleMessage("……不一定在 0 到 1 之间"),
         "notice_enter_positon":
@@ -130,6 +136,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "override_prompt": MessageLookupByLibrary.simpleMessage("覆盖 prompt"),
         "override_random_prompts":
             MessageLookupByLibrary.simpleMessage("覆盖随机 prompts"),
+        "parameters": MessageLookupByLibrary.simpleMessage("生成参数"),
+        "paste_all": MessageLookupByLibrary.simpleMessage("复制所有参数"),
+        "pasted_parameter": m5,
+        "prompt": MessageLookupByLibrary.simpleMessage("提示词"),
         "prompt_compact_view_hint":
             MessageLookupByLibrary.simpleMessage("左右滑动查看参数，点击参数以修改"),
         "prompt_config": MessageLookupByLibrary.simpleMessage("Prompt 设置"),
@@ -167,6 +177,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "succeed": MessageLookupByLibrary.simpleMessage("成功"),
         "system_document_folder":
             MessageLookupByLibrary.simpleMessage("系统文档文件夹"),
+        "tap_to_paste_parameters":
+            MessageLookupByLibrary.simpleMessage("点击以复制参数"),
         "toggle_compact_view": MessageLookupByLibrary.simpleMessage("切换紧凑视图"),
         "toggle_config_enable":
             MessageLookupByLibrary.simpleMessage("启用/禁用 Config"),

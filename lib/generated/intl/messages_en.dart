@@ -30,6 +30,10 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m3(num) => "Started generation for ${num} images";
 
+  static String m4(num) => "Imported ${num} parameter/s.";
+
+  static String m5(parameter_name) => "Pasted ${parameter_name}.";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "NAI_API_key": MessageLookupByLibrary.simpleMessage("NAI API Token"),
@@ -144,8 +148,11 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Image Tile Height"),
         "is_ordered": MessageLookupByLibrary.simpleMessage("Ordered"),
         "is_shuffled": MessageLookupByLibrary.simpleMessage("Shuffled"),
+        "loaded_parameters_count": m4,
         "metadata_erase_enabled": MessageLookupByLibrary.simpleMessage(
             "Erase metadata in generated images"),
+        "metadata_found": MessageLookupByLibrary.simpleMessage(
+            "Metadata found in imported image"),
         "notNecessarily0to1": MessageLookupByLibrary.simpleMessage(
             "... not necessarily between 0 and 1"),
         "notice_enter_positon":
@@ -155,6 +162,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Override prompts"),
         "override_random_prompts":
             MessageLookupByLibrary.simpleMessage("Override random prompts"),
+        "parameters": MessageLookupByLibrary.simpleMessage("Parameters"),
+        "paste_all": MessageLookupByLibrary.simpleMessage("Paste all"),
+        "pasted_parameter": m5,
+        "prompt": MessageLookupByLibrary.simpleMessage("Prompt"),
         "prompt_compact_view_hint": MessageLookupByLibrary.simpleMessage(
             "Tap properties to edit, scroll if information is cropped"),
         "prompt_config":
@@ -197,6 +208,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "succeed": MessageLookupByLibrary.simpleMessage("succeed"),
         "system_document_folder":
             MessageLookupByLibrary.simpleMessage("System document folder"),
+        "tap_to_paste_parameters":
+            MessageLookupByLibrary.simpleMessage("Tap to paste parameters"),
         "toggle_compact_view":
             MessageLookupByLibrary.simpleMessage("Toggle Compact View"),
         "toggle_config_enable":
