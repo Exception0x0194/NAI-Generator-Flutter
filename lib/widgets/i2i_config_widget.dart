@@ -310,7 +310,11 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
         _widgetImage = const SizedBox.shrink();
       });
     } else {
-      var image = Image.memory(base64Decode(widget.config.imgB64!));
+      var image = Image.memory(
+        base64Decode(widget.config.imgB64!),
+        filterQuality: FilterQuality.medium,
+        fit: BoxFit.contain,
+      );
       image.image
           .resolve(const ImageConfiguration())
           .addListener(ImageStreamListener((ImageInfo info, bool _) {
@@ -348,15 +352,25 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
     String prompt, uc;
     // Supposedly seed is not needed in I2I
     // int seed;
-    Map<String, dynamic> param;
+    Map<String, dynamic> param = {};
+    const keys = [
+      'steps',
+      'height',
+      'width',
+      'sampler',
+      'scale',
+      'cfg_rescale',
+      'uncond_scale',
+      'sm',
+      'sm_dyn'
+    ];
     try {
       prompt = parameters['prompt'];
       uc = parameters['uc'];
       // seed = parameters['seed'];
-      param = parameters
-        ..remove('prompt')
-        ..remove('uc')
-        ..remove('seed');
+      for (String key in keys) {
+        param[key] = parameters[key];
+      }
     } catch (err) {
       if (!mounted) return;
       showErrorBar(context, 'Error reading metadata: ${err.toString()}');
