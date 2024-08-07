@@ -1,7 +1,5 @@
 import 'dart:convert';
 
-import 'package:another_flushbar/flushbar.dart';
-import 'package:another_flushbar/flushbar_route.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image/image.dart' as img;
@@ -11,6 +9,7 @@ import '../models/utils.dart';
 import '../widgets/editable_list_tile.dart';
 import '../models/i2i_config.dart';
 import '../generated/l10n.dart';
+import '../utils/metadata.dart';
 
 class I2IConfigWidget extends StatefulWidget {
   final I2IConfig config;
@@ -283,16 +282,17 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
     var bytes = await pickedFile.readAsBytes();
 
     final image = img.decodeImage(bytes);
-    String? prompt = null;
+    Map<String, dynamic>? parameters;
     try {
       final metadataString = await extractMetadata(image!);
-      final metadata = json.decode(metadataString!);
-      prompt = metadata['Description'];
+      final Map<String, dynamic> metadata = json.decode(metadataString!);
+      parameters = json.decode(metadata['Comment']);
     } catch (err) {
+      if (!mounted) return;
       showWarningBar(context, 'No metadta found in imported picture.');
     }
-    if (prompt != null) {
-      _showImportMetadataDialog(prompt);
+    if (parameters != null) {
+      _showImportMetadataDialog(parameters);
     }
 
     widget.config.imgB64 = base64Encode(bytes);
@@ -344,29 +344,100 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
     });
   }
 
-  void _showImportMetadataDialog(String importedPrompt) {
+  void _showImportMetadataDialog(Map<String, dynamic> parameters) {
+    String prompt, uc;
+    // Supposedly seed is not needed in I2I
+    // int seed;
+    Map<String, dynamic> param;
+    try {
+      prompt = parameters['prompt'];
+      uc = parameters['uc'];
+      // seed = parameters['seed'];
+      param = parameters
+        ..remove('prompt')
+        ..remove('uc')
+        ..remove('seed');
+    } catch (err) {
+      if (!mounted) return;
+      showErrorBar(context, 'Error reading metadata: ${err.toString()}');
+      return;
+    }
+    pastePrompt() => setState(() {
+          widget.config.overridePromptEnabled = true;
+          widget.config.overridePrompt = prompt;
+          if (mounted) showInfoBar(context, 'Pasted prompt.');
+        });
+    pasteUC() {
+      InfoManager().paramConfig.loadJson({'negative_prompt': uc});
+      if (mounted) showInfoBar(context, 'Imported UC.');
+    }
+
+    pasteParam() => setState(() {
+          final loaded = InfoManager().paramConfig.loadJson(param);
+          if (mounted) showInfoBar(context, 'Imported $loaded parameters.');
+        });
+    // pasteSeed() {
+    //   InfoManager().paramConfig.loadJson({'seed': seed});
+    //   if (mounted) showInfoBar(context, 'Imported Seed.');
+    // }
+
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
-              title: Text('Metadata found in imported picture!'),
-              content: ListTile(
-                  title: Text(
-                    importedPrompt,
-                    maxLines: 5,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  dense: true),
+              title: Text('Metadata found!'),
+              content: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('Tap to paste param'),
+                  ListTile(
+                      title: Text('Prompt'),
+                      subtitle: Text(
+                        prompt,
+                        maxLines: 5,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      onTap: pastePrompt),
+                  ListTile(
+                      title: Text('UC'),
+                      subtitle: Text(
+                        uc,
+                        maxLines: 5,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      onTap: pasteUC),
+                  ListTile(
+                      title: Text('Param'),
+                      subtitle: Text(
+                        json.encode(param),
+                        maxLines: 5,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      onTap: pasteParam),
+                  // ListTile(
+                  //     title: Text('Seed'),
+                  //     subtitle: Text(
+                  //       seed.toString(),
+                  //       maxLines: 5,
+                  //       overflow: TextOverflow.ellipsis,
+                  //     ),
+                  //     onTap: pasteSeed)
+                ],
+              ),
               actions: [
                 TextButton(
                     onPressed: () {
                       Navigator.of(context).pop();
+                      pastePrompt();
+                      pasteUC();
+                      pasteParam();
                     },
-                    child: Text('Cancel')),
+                    child: Text('Paste all')),
                 TextButton(
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
-                    child: Text('Import'))
+                    child: Text(S.of(context).confirm))
               ],
             ));
   }

@@ -10,6 +10,7 @@ import 'generation_info.dart';
 import 'vibe_config.dart';
 import 'i2i_config.dart';
 import 'utils.dart';
+import '../utils/metadata.dart';
 
 import 'package:archive/archive.dart';
 import 'package:flutter/foundation.dart';

@@ -101,4 +101,92 @@ class ParamConfig {
       negativePrompt: json['negative_prompt'],
     );
   }
+
+  int loadJson(Map<String, dynamic> json) {
+    int loadCount = 0;
+    if (json.containsKey('width')) {
+      width = json['width'];
+      loadCount++;
+    }
+    if (json.containsKey('height')) {
+      height = json['height'];
+      loadCount++;
+    }
+    if (json.containsKey('scale')) {
+      scale = json['scale'];
+      loadCount++;
+    }
+    if (json.containsKey('sampler')) {
+      sampler = json['sampler'];
+      loadCount++;
+    }
+    if (json.containsKey('steps')) {
+      steps = json['steps'];
+      loadCount++;
+    }
+    if (json.containsKey('n_samples')) {
+      nSamples = json['n_samples'];
+      loadCount++;
+    }
+    if (json.containsKey('ucPreset')) {
+      ucPreset = json['ucPreset'];
+      loadCount++;
+    }
+    if (json.containsKey('qualityToggle')) {
+      qualityToggle = json['qualityToggle'];
+      loadCount++;
+    }
+    if (json.containsKey('sm')) {
+      sm = json['sm'];
+      loadCount++;
+    }
+    if (json.containsKey('sm_dyn')) {
+      smDyn = json['sm_dyn'];
+      loadCount++;
+    }
+    if (json.containsKey('dynamic_thresholding')) {
+      dynamicThresholding = json['dynamic_thresholding'];
+      loadCount++;
+    }
+    if (json.containsKey('controlnet_strength')) {
+      controlNetStrength = json['controlnet_strength'] is int
+          ? (json['controlnet_strength'] as int).toDouble()
+          : json['controlnet_strength'];
+      loadCount++;
+    }
+    if (json.containsKey('legacy')) {
+      legacy = json['legacy'];
+      loadCount++;
+    }
+    if (json.containsKey('add_original_image')) {
+      addOriginalImage = json['add_original_image'];
+      loadCount++;
+    }
+    if (json.containsKey('uncond_scale')) {
+      uncondScale = json['uncond_scale'] is int
+          ? (json['uncond_scale'] as int).toDouble()
+          : json['uncond_scale'];
+      loadCount++;
+    }
+    if (json.containsKey('cfg_rescale')) {
+      cfgRescale = json['cfg_rescale'] is int
+          ? (json['cfg_rescale'] as int).toDouble()
+          : json['cfg_rescale'];
+      loadCount++;
+    }
+    if (json.containsKey('noise_schedule')) {
+      noiseSchedule = json['noise_schedule'];
+      loadCount++;
+    }
+    if (json.containsKey('negative_prompt')) {
+      negativePrompt = json['negative_prompt'];
+      loadCount++;
+    }
+    if (json.containsKey('seed')) {
+      seed = json['seed'];
+      randomSeed = false;
+      loadCount++;
+    }
+    return loadCount;
+  }
 }
