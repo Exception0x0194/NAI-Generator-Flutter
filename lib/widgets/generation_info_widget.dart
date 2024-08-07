@@ -70,7 +70,11 @@ class GenerationInfoWidget extends StatelessWidget {
                         children: [
                           Expanded(
                               child: ListTile(
-                                  title: Text(info.displayInfo['filename']!),
+                                  title: Text(
+                                    info.displayInfo['filename']!,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
                                   dense: true)),
                           if (!showInfoForImg) _buildButtons(context)
                         ]));

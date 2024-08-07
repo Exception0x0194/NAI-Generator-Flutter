@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../models/info_manager.dart';
 import '../generated/l10n.dart';
 
+enum AppState { idle, generatingFree, generatingCost, batchWaiting }
+
 class FlashingAppBar extends StatefulWidget implements PreferredSizeWidget {
   const FlashingAppBar({super.key});
 
@@ -18,7 +20,7 @@ class FlashingAppBarState extends State<FlashingAppBar>
   AnimationController? _animationController;
   Animation<Color?>? _colorAnimation;
   Color _staticColor = Colors.transparent;
-  String _currentStatus = 'idle';
+  AppState _status = AppState.idle;
   String _currentTitle = '';
 
   @override
@@ -58,47 +60,46 @@ class FlashingAppBarState extends State<FlashingAppBar>
   }
 
   void refreshDisplay() {
-    String newState = 'idle';
+    AppState newState;
     if (InfoManager().isGenerating) {
       int width = InfoManager().paramConfig.width;
       int height = InfoManager().paramConfig.height;
       const int freePixels = 1024 * 1024;
       if (width * height > freePixels) {
-        // Burning Anlas
-        newState = 'caution';
+        newState = AppState.generatingCost;
       } else {
-        // Regular generation
-        newState = 'regular';
+        newState = AppState.generatingFree;
       }
     } else {
-      newState = 'idle';
+      newState = AppState.idle;
     }
     if (InfoManager().isCoolingDown) {
-      newState = 'cooldown';
+      newState = AppState.batchWaiting;
     }
 
-    if (newState == _currentStatus) return;
-    _currentStatus = newState;
+    // Change display only on status is changed
+    if (newState == _status) return;
+    _status = newState;
 
-    switch (_currentStatus) {
-      case 'idle':
+    switch (_status) {
+      case AppState.idle:
         _animationController!.stop();
         _colorAnimation = null;
         _animationController!.value = 0.0;
         _staticColor = Colors.transparent;
         break;
-      case 'regular':
+      case AppState.generatingFree:
         _colorAnimation =
             ColorTween(begin: Colors.transparent, end: Colors.yellow)
                 .animate(_animationController!);
         _animationController!.forward();
         break;
-      case 'caution':
+      case AppState.generatingCost:
         _colorAnimation = ColorTween(begin: Colors.transparent, end: Colors.red)
             .animate(_animationController!);
         _animationController!.forward();
         break;
-      case 'cooldown':
+      case AppState.batchWaiting:
         _animationController!.stop();
         _colorAnimation = null;
         _animationController!.value = 0.0;
@@ -108,17 +109,17 @@ class FlashingAppBarState extends State<FlashingAppBar>
 
   @override
   Widget build(BuildContext context) {
-    switch (_currentStatus) {
-      case 'idle':
+    switch (_status) {
+      case AppState.idle:
         _currentTitle = S.of(context).appbar_idle;
         break;
-      case 'regular':
+      case AppState.generatingFree:
         _currentTitle = S.of(context).appbar_regular;
         break;
-      case 'caution':
+      case AppState.generatingCost:
         _currentTitle = S.of(context).appbar_warning;
         break;
-      case 'cooldown':
+      case AppState.batchWaiting:
         _currentTitle = S.of(context).appbar_cooldown;
         break;
     }
