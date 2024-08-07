@@ -54,6 +54,7 @@ class DirectorToolScreen extends StatefulWidget {
     'Emotion',
     'Declutter',
   ];
+  final imageSize = 300.0;
 
   @override
   State<StatefulWidget> createState() => DirectorToolScreenState();
@@ -65,14 +66,21 @@ class DirectorToolScreenState extends State<DirectorToolScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView(children: [
-        _buildTypeSelectionTile(),
-        if (widget.config.withPrompt) ...[
-          _buildPromptTile(),
-          _buildDefryTile()
-        ],
-        _buildImageTile(),
-      ]),
+      body: SingleChildScrollView(
+        child: ExpansionTile(
+          leading: const Icon(Icons.open_in_new),
+          title: const Text('Director Tools'),
+          initiallyExpanded: true,
+          children: [
+            _buildImageTile(),
+            _buildTypeSelectionTile(),
+            if (widget.config.withPrompt) ...[
+              _buildPromptTile(),
+              _buildDefryTile()
+            ],
+          ],
+        ),
+      ),
     );
   }
 
@@ -105,27 +113,38 @@ class DirectorToolScreenState extends State<DirectorToolScreen> {
           subtitle: Text(widget.config.defry.toString()),
           leading: const Icon(Icons.tune),
         ),
-        SizedBox(
-            height: 30,
-            child: Slider(
-                value: widget.config.defry.toDouble(),
-                min: 0,
-                max: 5,
-                divisions: 5,
-                onChanged: (value) => setState(() {
-                      widget.config.defry = value.toInt();
-                    })))
+        Padding(
+            padding: const EdgeInsets.only(left: 40),
+            child: SizedBox(
+                height: 30,
+                child: Slider(
+                    value: widget.config.defry.toDouble(),
+                    min: 0,
+                    max: 5,
+                    divisions: 5,
+                    onChanged: (value) => setState(() {
+                          widget.config.defry = value.toInt();
+                        }))))
       ],
     );
   }
 
   Widget _buildImageTile() {
     return Column(children: [
+      _widgetImage != null
+          ? Padding(
+              padding: const EdgeInsets.all(10),
+              child: SizedBox(
+                  width: widget.imageSize,
+                  height: widget.imageSize,
+                  child: _widgetImage),
+            )
+          : const SizedBox.shrink(),
       Row(
         children: [
           Expanded(
               child: IconButton(
-            icon: const Icon(Icons.add_photo_alternate),
+            icon: const Icon(Icons.add_photo_alternate_outlined),
             onPressed: () => _addDirectorImage(),
           )),
           widget.config.imageB64 == null
@@ -137,10 +156,6 @@ class DirectorToolScreenState extends State<DirectorToolScreen> {
                 )),
         ],
       ),
-      Padding(
-        padding: const EdgeInsets.all(10),
-        child: _widgetImage ?? const SizedBox.shrink(),
-      )
     ]);
   }
 
