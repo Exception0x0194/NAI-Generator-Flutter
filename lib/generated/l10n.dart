@@ -400,6 +400,16 @@ class S {
     );
   }
 
+  /// `Enter prompts to be picked, one line for each prompt`
+  String get edit_cascaded_config_str_notice {
+    return Intl.message(
+      'Enter prompts to be picked, one line for each prompt',
+      name: 'edit_cascaded_config_str_notice',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Nested Configs`
   String get cascaded_configs {
     return Intl.message(

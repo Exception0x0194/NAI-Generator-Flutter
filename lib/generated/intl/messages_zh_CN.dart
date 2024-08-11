@@ -79,6 +79,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "donation_link_subtitle":
             MessageLookupByLibrary.simpleMessage("赛博功德，随喜赞叹🙏"),
         "edit": MessageLookupByLibrary.simpleMessage("编辑"),
+        "edit_cascaded_config_str_notice":
+            MessageLookupByLibrary.simpleMessage("输入抽取的字符串内容，每行一个"),
         "edit_custom_metadata_content_hint":
             MessageLookupByLibrary.simpleMessage("应当是一个 JSON 字符串"),
         "edit_image_number_to_generate":

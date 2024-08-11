@@ -68,8 +68,11 @@ class CompactPromptConfigWidgetState extends State<CompactPromptConfigWidget> {
         ret += '${S.of(context).selection_method_single} / ';
         break;
       case 'single_sequential':
-        ret +=
-            '${S.of(context).selection_method_single_sequential}${S.of(context).single_sequential_repeats(widget.config.num)} / ';
+        ret += S.of(context).selection_method_single_sequential;
+        if (widget.config.num > 1) {
+          ret += S.of(context).single_sequential_repeats(widget.config.num);
+        }
+        ret += ' / ';
         break;
       case 'multiple_num':
         ret +=
@@ -131,11 +134,18 @@ class CompactPromptConfigWidgetState extends State<CompactPromptConfigWidget> {
       builder: (context) {
         return AlertDialog(
           title: Text('${S.of(context).edit}${S.of(context).cascaded_strings}'),
-          content: TextField(
-            controller: controller,
-            keyboardType: TextInputType.multiline,
-            maxLines: null, // 允许无限行
-            autofocus: true,
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(S.of(context).edit_cascaded_config_str_notice),
+              TextField(
+                controller: controller,
+                keyboardType: TextInputType.multiline,
+                maxLines: null, // 允许无限行
+                autofocus: true,
+              )
+            ],
           ),
           actions: [
             TextButton(

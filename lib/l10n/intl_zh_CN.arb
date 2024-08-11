@@ -34,6 +34,7 @@
     "cascaded_config_type": "下属设置类型",
     "cascaded_config_type_config": "嵌套 Config",
     "cascaded_config_type_str": "字符串",
+    "edit_cascaded_config_str_notice": "输入抽取的字符串内容，每行一个",
     "cascaded_configs": "嵌套 Config 内容",
     "cascaded_strings": "字符串内容",
     "add_new_config": "插入新 Config",

@@ -34,6 +34,7 @@
     "cascaded_config_type": "Nested Config Type",
     "cascaded_config_type_config": "Nested Config",
     "cascaded_config_type_str": "String",
+    "edit_cascaded_config_str_notice": "Enter prompts to be picked, one line for each prompt",
     "cascaded_configs": "Nested Configs",
     "cascaded_strings": "String Values",
     "add_new_config": "Add New Config",

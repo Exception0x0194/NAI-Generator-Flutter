@@ -92,6 +92,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "donation_link_subtitle":
             MessageLookupByLibrary.simpleMessage("Buy me a coffee!"),
         "edit": MessageLookupByLibrary.simpleMessage("Edit "),
+        "edit_cascaded_config_str_notice": MessageLookupByLibrary.simpleMessage(
+            "Enter prompts to be picked, one line for each prompt"),
         "edit_custom_metadata_content_hint":
             MessageLookupByLibrary.simpleMessage("Should be a JSON string"),
         "edit_image_number_to_generate": MessageLookupByLibrary.simpleMessage(

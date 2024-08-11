@@ -45,7 +45,7 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
                 Expanded(
                     child: IconButton(
                         onPressed: _addI2IImage,
-                        icon: const Icon(Icons.cached))),
+                        icon: const Icon(Icons.add_photo_alternate_outlined))),
                 Expanded(
                     child: IconButton(
                         onPressed: _removeI2IImage,
