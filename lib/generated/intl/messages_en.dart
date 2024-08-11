@@ -34,6 +34,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m5(parameter_name) => "Pasted ${parameter_name}.";
 
+  static String m6(num) => ", repeat ${num} each";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "NAI_API_key": MessageLookupByLibrary.simpleMessage("NAI API Token"),
@@ -148,6 +150,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Image Tile Height"),
         "is_ordered": MessageLookupByLibrary.simpleMessage("Ordered"),
         "is_shuffled": MessageLookupByLibrary.simpleMessage("Shuffled"),
+        "items": MessageLookupByLibrary.simpleMessage(" items"),
         "loaded_parameters_count": m4,
         "metadata_erase_enabled": MessageLookupByLibrary.simpleMessage(
             "Erase metadata in generated images"),
@@ -203,6 +206,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Set enhancement parameters"),
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),
         "shuffled": MessageLookupByLibrary.simpleMessage("Shuffle"),
+        "single_sequential_repeats": m6,
+        "single_sequential_repeats_num":
+            MessageLookupByLibrary.simpleMessage("Repeat Number"),
         "sm": MessageLookupByLibrary.simpleMessage("SMEA"),
         "sm_dyn": MessageLookupByLibrary.simpleMessage("DYN"),
         "succeed": MessageLookupByLibrary.simpleMessage("succeed"),

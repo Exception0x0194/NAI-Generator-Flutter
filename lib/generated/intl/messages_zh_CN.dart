@@ -34,6 +34,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m5(parameter_name) => "导入了${parameter_name}。";
 
+  static String m6(num) => "，每个重复 ${num} 次";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "NAI_API_key": MessageLookupByLibrary.simpleMessage("NAI API Token"),
@@ -124,6 +126,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "info_tile_height": MessageLookupByLibrary.simpleMessage("图片磁贴高度"),
         "is_ordered": MessageLookupByLibrary.simpleMessage("顺序"),
         "is_shuffled": MessageLookupByLibrary.simpleMessage("乱序"),
+        "items": MessageLookupByLibrary.simpleMessage(" 个项目"),
         "loaded_parameters_count": m4,
         "metadata_erase_enabled":
             MessageLookupByLibrary.simpleMessage("清除生成图片中的水印信息"),
@@ -172,6 +175,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("设置 enhance 参数"),
         "settings": MessageLookupByLibrary.simpleMessage("参数设置"),
         "shuffled": MessageLookupByLibrary.simpleMessage("打乱次序"),
+        "single_sequential_repeats": m6,
+        "single_sequential_repeats_num":
+            MessageLookupByLibrary.simpleMessage("重复次数"),
         "sm": MessageLookupByLibrary.simpleMessage("SMEA"),
         "sm_dyn": MessageLookupByLibrary.simpleMessage("DYN"),
         "succeed": MessageLookupByLibrary.simpleMessage("成功"),

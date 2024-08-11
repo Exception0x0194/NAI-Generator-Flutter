@@ -260,6 +260,26 @@ class S {
     );
   }
 
+  /// `, repeat {num} each`
+  String single_sequential_repeats(Object num) {
+    return Intl.message(
+      ', repeat $num each',
+      name: 'single_sequential_repeats',
+      desc: '',
+      args: [num],
+    );
+  }
+
+  /// `Repeat Number`
+  String get single_sequential_repeats_num {
+    return Intl.message(
+      'Repeat Number',
+      name: 'single_sequential_repeats_num',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Multiple - with specified Count`
   String get selection_method_multiple_num {
     return Intl.message(
@@ -1136,6 +1156,16 @@ class S {
     return Intl.message(
       'Reset',
       name: 'reset',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ` items`
+  String get items {
+    return Intl.message(
+      ' items',
+      name: 'items',
       desc: '',
       args: [],
     );

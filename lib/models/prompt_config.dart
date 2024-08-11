@@ -15,7 +15,8 @@ class PromptConfig {
   List<PromptConfig> prompts;
   bool enabled;
 
-  int sequentialIdx = 0;
+  int _sequentialIdx = 0;
+  int _sequentialRepeatIdx = 0;
 
   PromptConfig({
     this.selectionMethod = 'all',
@@ -133,8 +134,12 @@ class PromptConfig {
         chosenPrompts = chosenPrompts.take(num).toList();
         break;
       case 'single_sequential':
-        chosenPrompts = [toChoosePrompts[sequentialIdx]];
-        sequentialIdx = (sequentialIdx + 1) % toChoosePrompts.length;
+        chosenPrompts = [toChoosePrompts[_sequentialIdx]];
+        _sequentialRepeatIdx++;
+        if (_sequentialRepeatIdx >= num) {
+          _sequentialIdx = (_sequentialIdx + 1) % toChoosePrompts.length;
+          _sequentialRepeatIdx = 0;
+        }
         break;
       default:
         chosenPrompts = List.from(toChoosePrompts);

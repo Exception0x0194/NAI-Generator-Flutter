@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-
 import '../models/utils.dart';
 import '../models/prompt_config.dart';
 import '../generated/l10n.dart';
@@ -69,7 +68,8 @@ class CompactPromptConfigWidgetState extends State<CompactPromptConfigWidget> {
         ret += '${S.of(context).selection_method_single} / ';
         break;
       case 'single_sequential':
-        ret += '${S.of(context).selection_method_single_sequential} / ';
+        ret +=
+            '${S.of(context).selection_method_single_sequential}${S.of(context).single_sequential_repeats(widget.config.num)} / ';
         break;
       case 'multiple_num':
         ret +=
@@ -105,7 +105,8 @@ class CompactPromptConfigWidgetState extends State<CompactPromptConfigWidget> {
         Padding(
           padding: const EdgeInsets.only(left: 20),
           child: ListTile(
-            title: Text(S.of(context).cascaded_strings),
+            title: Text(
+                '${S.of(context).cascaded_strings}: ${widget.config.strs.length}${S.of(context).items}'),
             subtitle: Text(widget.config.strs.join('\n')),
             onTap: () {
               _editStrList();
@@ -459,17 +460,25 @@ class CompactPromptConfigWidgetState extends State<CompactPromptConfigWidget> {
   }
 
   Widget _buildInputNum(Function setDialogState) {
-    return widget.config.selectionMethod == 'multiple_num'
+    final String title;
+    if (widget.config.selectionMethod == 'multiple_num') {
+      title = S.of(context).selection_num;
+    } else if (widget.config.selectionMethod == 'single_sequential') {
+      title = S.of(context).single_sequential_repeats_num;
+    } else {
+      title = '';
+    }
+    return widget.config.selectionMethod == 'multiple_num' ||
+            widget.config.selectionMethod == 'single_sequential'
         ? EditableListTile(
             leading: const Icon(Icons.question_mark),
-            title: S.of(context).selection_num,
+            title: title,
             currentValue: widget.config.num.toString(),
             onEditComplete: (value) {
               setState(() {
                 var n = int.tryParse(value);
-                if (n != null && 0 <= n) {
-                  widget.config.num = n;
-                }
+                if (n == null || n <= 0) return;
+                widget.config.num = n;
               });
               setDialogState(() {});
             },
