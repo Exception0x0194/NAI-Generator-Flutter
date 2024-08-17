@@ -489,6 +489,9 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
     // Import image into I2I config
     widget.config.setImage(bytes);
 
+    // Skip metadata reading for images > 5M
+    if (bytes.length > 5e6) return;
+
     // Try parse and import metadata
     final image = img.decodeImage(bytes);
     Map<String, dynamic>? parameters;

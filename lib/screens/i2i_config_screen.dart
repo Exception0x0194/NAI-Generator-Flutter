@@ -46,7 +46,7 @@ class I2IConfigScreenState extends State<I2IConfigScreen> {
         onTap: _addNewVibeConfig,
         child: SizedBox(
           width: 340.0,
-          height: 140.0,
+          height: 150.0,
           child: DecoratedBox(
             decoration: BoxDecoration(
               border: Border.all(color: Colors.grey.withAlpha(127), width: 2.0),
