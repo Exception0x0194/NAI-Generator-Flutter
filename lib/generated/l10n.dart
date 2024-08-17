@@ -620,6 +620,16 @@ class S {
     );
   }
 
+  /// `Drop image here or press to upload`
+  String get drag_and_drop_image_notice {
+    return Intl.message(
+      'Drop image here or press to upload',
+      name: 'drag_and_drop_image_notice',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `SMEA`
   String get sm {
     return Intl.message(

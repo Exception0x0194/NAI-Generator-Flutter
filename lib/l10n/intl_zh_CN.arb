@@ -55,6 +55,7 @@
     "available_in_settings": "也可在设置页面调整",
     "scale": "Prompt Guidance",
     "cfg_rescale": "Prompt Guidance Rescale",
+    "drag_and_drop_image_notice": "拖动图片到此，或点击上传图片…",
     "sm": "SMEA",
     "sm_dyn": "DYN",
     "sampler": "采样器",

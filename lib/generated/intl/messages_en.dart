@@ -91,6 +91,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "donation_link": MessageLookupByLibrary.simpleMessage("Donation link"),
         "donation_link_subtitle":
             MessageLookupByLibrary.simpleMessage("Buy me a coffee!"),
+        "drag_and_drop_image_notice": MessageLookupByLibrary.simpleMessage(
+            "Drop image here or press to upload"),
         "edit": MessageLookupByLibrary.simpleMessage("Edit "),
         "edit_cascaded_config_str_notice": MessageLookupByLibrary.simpleMessage(
             "Enter prompts to be picked, one line for each prompt"),

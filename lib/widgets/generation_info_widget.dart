@@ -215,7 +215,7 @@ class GenerationInfoWidget extends StatelessWidget {
     // InfoManager().i2iConfig.height = targetHeight;
     InfoManager().paramConfig.width = targetWidth;
     InfoManager().paramConfig.height = targetHeight;
-    InfoManager().i2iConfig.imgB64 = base64Encode(info.imageBytes!);
+    InfoManager().i2iConfig.setImage(info.imageBytes!);
 
     showInfoBar(context, S.of(context).i2i_conifgs_set);
   }

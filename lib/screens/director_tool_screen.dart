@@ -2,11 +2,32 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:nai_casrand/models/info_manager.dart';
+import 'package:super_drag_and_drop/super_drag_and_drop.dart';
+import "package:super_clipboard/super_clipboard.dart";
 
 import '../models/director_tool_config.dart';
+import '../models/info_manager.dart';
 import '../widgets/editable_list_tile.dart';
 import '../generated/l10n.dart';
+
+const imageFormat = SimpleFileFormat(
+  // JPG, PNG, GIF, WEBP, BMP
+  uniformTypeIdentifiers: [
+    'public.jpeg',
+    'public.png',
+    'com.compuserve.gif',
+    'org.webmproject.webp',
+    'com.microsoft.bmp'
+  ],
+  windowsFormats: ['JFIF', 'PNG', 'GIF', 'image/webp', 'image/bmp'],
+  mimeTypes: [
+    'image/jpeg',
+    'image/png',
+    'image/gif',
+    'image/webp',
+    'image/bmp'
+  ],
+);
 
 class DirectorToolScreen extends StatefulWidget {
   DirectorToolScreen({super.key});
@@ -61,8 +82,6 @@ class DirectorToolScreen extends StatefulWidget {
 }
 
 class DirectorToolScreenState extends State<DirectorToolScreen> {
-  Image? _widgetImage;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -130,30 +149,62 @@ class DirectorToolScreenState extends State<DirectorToolScreen> {
   }
 
   Widget _buildImageTile() {
+    final Widget image;
+    if (widget.config.imageB64 == null) {
+      image = Icon(Icons.add_photo_alternate_outlined,
+          size: widget.imageSize, color: Colors.grey.withAlpha(127));
+    } else {
+      image = Image.memory(
+        base64Decode(widget.config.imageB64!),
+        fit: BoxFit.contain,
+        filterQuality: FilterQuality.medium,
+      );
+    }
+    final dropArea = InkWell(
+        onTap: _addDirectorImage,
+        child: SizedBox(
+            width: widget.imageSize + 40.0,
+            height: widget.imageSize + 40.0,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                border:
+                    Border.all(color: Colors.grey.withAlpha(127), width: 2.0),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Expanded(child: image),
+                    Text(S.of(context).drag_and_drop_image_notice)
+                  ],
+                ),
+              ),
+            )));
+
     return Column(children: [
-      _widgetImage != null
-          ? Padding(
-              padding: const EdgeInsets.all(10),
-              child: SizedBox(
-                  width: widget.imageSize,
-                  height: widget.imageSize,
-                  child: _widgetImage),
-            )
-          : const SizedBox.shrink(),
+      DropRegion(
+        formats: Formats.standardFormats,
+        onDropOver: (_) => DropOperation.copy,
+        onPerformDrop: (event) async {
+          final item = event.session.items.first;
+          final reader = item.dataReader!;
+          reader.getFile(imageFormat, (file) async {
+            final data = await file.readAll();
+            widget.config.imageB64 = base64Encode(data);
+            setState(() {});
+          });
+        },
+        child: dropArea,
+      ),
       Row(
         children: [
-          Expanded(
-              child: IconButton(
-            icon: const Icon(Icons.add_photo_alternate_outlined),
-            onPressed: () => _addDirectorImage(),
-          )),
-          widget.config.imageB64 == null
-              ? const SizedBox.shrink()
-              : Expanded(
-                  child: IconButton(
-                  icon: const Icon(Icons.delete_outline),
-                  onPressed: () => _removeDirectorImage(),
-                )),
+          if (widget.config.imageB64 != null)
+            Expanded(
+                child: IconButton(
+              icon: const Icon(Icons.delete_outline),
+              onPressed: () => _removeDirectorImage(),
+            )),
         ],
       ),
     ]);
@@ -165,39 +216,12 @@ class DirectorToolScreenState extends State<DirectorToolScreen> {
     if (pickedFile == null) return;
     var bytes = await pickedFile.readAsBytes();
     widget.config.imageB64 = base64Encode(bytes);
-    _loadImage();
+    setState(() {});
   }
 
   void _removeDirectorImage() {
-    setState(() {
-      widget.config.imageB64 = null;
-      _loadImage();
-    });
-  }
-
-  void _loadImage() {
-    if (widget.config.imageB64 == null) {
-      setState(() {
-        _widgetImage = null;
-      });
-    } else {
-      var image = Image.memory(
-        base64Decode(widget.config.imageB64!),
-        filterQuality: FilterQuality.medium,
-        fit: BoxFit.contain,
-      );
-      image.image
-          .resolve(const ImageConfiguration())
-          .addListener(ImageStreamListener((ImageInfo info, bool _) {
-        setState(() {
-          widget.config.width = info.image.width;
-          widget.config.height = info.image.height;
-        });
-      }));
-      setState(() {
-        _widgetImage = image;
-      });
-    }
+    widget.config.imageB64 = null;
+    setState(() {});
   }
 
   Widget _buildEmotionSelectionTile() {

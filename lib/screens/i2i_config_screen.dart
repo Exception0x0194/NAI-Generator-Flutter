@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:super_drag_and_drop/super_drag_and_drop.dart';
 
 // import '../generated/l10n.dart';
+import '../generated/l10n.dart';
 import '../models/info_manager.dart';
 import '../models/vibe_config.dart';
 import '../widgets/i2i_config_widget.dart';
@@ -35,6 +37,33 @@ class I2IConfigScreenState extends State<I2IConfigScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final addVibeImage = Icon(
+      Icons.add_photo_alternate_outlined,
+      size: 100.0,
+      color: Colors.grey.withAlpha(127),
+    );
+    final addVibeDropArea = InkWell(
+        onTap: _addNewVibeConfig,
+        child: SizedBox(
+          width: 340.0,
+          height: 140.0,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey.withAlpha(127), width: 2.0),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  addVibeImage,
+                  Text(S.of(context).drag_and_drop_image_notice),
+                ],
+              ),
+            ),
+          ),
+        ));
+
     return Scaffold(
       body: ListView(
         children: [
@@ -48,6 +77,7 @@ class I2IConfigScreenState extends State<I2IConfigScreen> {
             leading: const Icon(Icons.photo_library_outlined),
             initiallyExpanded: true,
             children: [
+              // Added vibe configs
               ...InfoManager().vibeConfig.asMap().map((idx, config) {
                 return MapEntry(
                     idx,
@@ -66,15 +96,23 @@ class I2IConfigScreenState extends State<I2IConfigScreen> {
                           children: [VibeConfigWidget(config: config)],
                         )));
               }).values,
+              // Add more configs
               if (InfoManager().vibeConfig.length < 5)
-                Row(
-                  children: [
-                    Expanded(
-                        child: IconButton(
-                      onPressed: _addNewVibeConfig,
-                      icon: const Icon(Icons.add_photo_alternate_outlined),
-                    ))
-                  ],
+                DropRegion(
+                  formats: Formats.standardFormats,
+                  onDropOver: (_) => DropOperation.copy,
+                  onPerformDrop: (event) async {
+                    final item = event.session.items.first;
+                    final reader = item.dataReader!;
+                    reader.getFile(imageFormat, (file) async {
+                      final data = await file.readAll();
+                      InfoManager()
+                          .vibeConfig
+                          .add(VibeConfig.createWithFile(data, 1, 0.3));
+                      setState(() {});
+                    });
+                  },
+                  child: addVibeDropArea,
                 )
             ],
           ),

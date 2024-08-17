@@ -1,8 +1,11 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image/image.dart' as img;
+import 'package:super_clipboard/super_clipboard.dart';
+import 'package:super_drag_and_drop/super_drag_and_drop.dart';
 
 import '../models/info_manager.dart';
 import '../models/utils.dart';
@@ -11,9 +14,27 @@ import '../models/i2i_config.dart';
 import '../generated/l10n.dart';
 import '../utils/metadata.dart';
 
+const imageFormat = SimpleFileFormat(
+  // JPG, PNG, GIF, WEBP, BMP
+  uniformTypeIdentifiers: [
+    'public.jpeg',
+    'public.png',
+    'com.compuserve.gif',
+    'org.webmproject.webp',
+    'com.microsoft.bmp'
+  ],
+  windowsFormats: ['JFIF', 'PNG', 'GIF', 'image/webp', 'image/bmp'],
+  mimeTypes: [
+    'image/jpeg',
+    'image/png',
+    'image/gif',
+    'image/webp',
+    'image/bmp'
+  ],
+);
+
 class I2IConfigWidget extends StatefulWidget {
   final I2IConfig config;
-
   final double imageSize = 300;
 
   const I2IConfigWidget({super.key, required this.config});
@@ -23,40 +44,19 @@ class I2IConfigWidget extends StatefulWidget {
 }
 
 class I2IConfigWidgetState extends State<I2IConfigWidget> {
-  late Widget _widgetImage;
-  int _imageHeight = 0, _imageWidth = 0;
-
   @override
   void initState() {
     super.initState();
-    widget.config.addListener(_loadImage);
-    _loadImage();
+    widget.config.addListener(() => setState(() {}));
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // Image
-        _widgetImage,
-        // Buttons
-        widget.config.imgB64 != null
-            ? Row(children: [
-                Expanded(
-                    child: IconButton(
-                        onPressed: _addI2IImage,
-                        icon: const Icon(Icons.add_photo_alternate_outlined))),
-                Expanded(
-                    child: IconButton(
-                        onPressed: _removeI2IImage,
-                        icon: const Icon(Icons.delete_outline)))
-              ])
-            : Row(children: [
-                Expanded(
-                    child: IconButton(
-                        onPressed: _addI2IImage,
-                        icon: const Icon(Icons.add_photo_alternate_outlined)))
-              ]),
+        // Image and buttons
+        _buildImageWidget(),
+
         Row(children: [
           // Presets
           Expanded(
@@ -165,30 +165,24 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
     );
   }
 
-  // void _downloadI2IImage() {
-  //   saveBlob(img.encodePng(widget.config.inputImage!),
-  //       'nai-generator-I2I-${generateRandomFileName()}.png');
-  //   showInfoBar(
-  //       context, '${S.of(context).vibe_export}${S.of(context).succeed}');
-  // }
-
   Widget _buildSizeTile() {
-    var width = InfoManager().paramConfig.width;
-    var height = InfoManager().paramConfig.height;
+    final dstWidth = InfoManager().paramConfig.width;
+    final dstHeight = InfoManager().paramConfig.height;
+    final srcWidth = widget.config.width;
+    final srcHeight = widget.config.height;
     return ListTile(
       title: Text(S.of(context).image_size),
       leading: const Icon(Icons.photo_size_select_large),
-      subtitle: Text(S.of(context).i2i_image_size(
-          '$width x $height',
-          widget.config.imgB64 == null
-              ? 'N/A'
-              : '$_imageWidth x $_imageHeight')),
+      subtitle: Text(S.of(context).i2i_image_size('$dstWidth x $dstHeight',
+          widget.config.imageB64 == null ? 'N/A' : '$srcWidth x $srcHeight')),
       onTap: _showI2ISizeDialog,
     );
   }
 
   void _showI2ISizeDialog() {
-    if (widget.config.imgB64 == null) return;
+    if (widget.config.imageB64 == null) return;
+    final srcWidth = widget.config.width;
+    final srcHeight = widget.config.height;
     var widthController =
         TextEditingController(text: InfoManager().paramConfig.width.toString());
     var heightController = TextEditingController(
@@ -211,9 +205,9 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
                       Padding(
                           padding: const EdgeInsets.only(left: 20),
                           child: Column(
-                              children: getPossibleScaleFactors(
-                                      _imageWidth, _imageHeight)
-                                  .map((value) {
+                              children:
+                                  getPossibleScaleFactors(srcWidth, srcHeight)
+                                      .map((value) {
                             return ListTile(
                               title: Text('${value}x'), // 显示倍率值
                               onTap: () {
@@ -280,54 +274,13 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
     var pickedFile = await picker.pickImage(source: ImageSource.gallery);
     if (pickedFile == null) return;
     var bytes = await pickedFile.readAsBytes();
-
-    final image = img.decodeImage(bytes);
-    Map<String, dynamic>? parameters;
-    try {
-      final metadataString = await extractMetadata(image!);
-      final Map<String, dynamic> metadata = json.decode(metadataString!);
-      parameters = json.decode(metadata['Comment']);
-    } catch (err) {
-      if (!mounted) return;
-      showWarningBar(context, 'No metadta found in imported picture.');
-    }
-    if (parameters != null) {
-      _showImportMetadataDialog(parameters);
-    }
-
-    widget.config.imgB64 = base64Encode(bytes);
-    _loadImage();
+    await loadImageBytes(bytes);
+    setState(() {});
   }
 
   void _removeI2IImage() {
-    widget.config.imgB64 = null;
-    _loadImage();
-  }
-
-  void _loadImage() {
-    if (widget.config.imgB64 == null) {
-      setState(() {
-        _widgetImage = const SizedBox.shrink();
-      });
-    } else {
-      var image = Image.memory(
-        base64Decode(widget.config.imgB64!),
-        filterQuality: FilterQuality.medium,
-        fit: BoxFit.contain,
-      );
-      image.image
-          .resolve(const ImageConfiguration())
-          .addListener(ImageStreamListener((ImageInfo info, bool _) {
-        setState(() {
-          _imageWidth = info.image.width;
-          _imageHeight = info.image.height;
-        });
-      }));
-      setState(() {
-        _widgetImage = SizedBox(
-            width: widget.imageSize, height: widget.imageSize, child: image);
-      });
-    }
+    widget.config.imageB64 = null;
+    setState(() {});
   }
 
   double _getEnhancePresetValue() {
@@ -340,8 +293,10 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
   }
 
   void _setSizeByScale(BuildContext context, double scale) {
-    int targetWidth = (scale * _imageWidth / 64).ceil() * 64;
-    int targetHeight = (scale * _imageHeight / 64).ceil() * 64;
+    final srcWidth = widget.config.width;
+    final srcHeight = widget.config.height;
+    int targetWidth = (scale * srcWidth / 64).ceil() * 64;
+    int targetHeight = (scale * srcHeight / 64).ceil() * 64;
     setState(() {
       InfoManager().paramConfig.width = targetWidth;
       InfoManager().paramConfig.height = targetHeight;
@@ -402,10 +357,6 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
         }
       });
     }
-    // pasteSeed() {
-    //   InfoManager().paramConfig.loadJson({'seed': seed});
-    //   if (mounted) showInfoBar(context, 'Imported Seed.');
-    // }
 
     showDialog(
         context: context,
@@ -466,5 +417,91 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
                     child: Text(S.of(context).confirm))
               ],
             ));
+  }
+
+  Widget _buildImageWidget() {
+    // Image
+    final Widget image;
+    if (widget.config.imageB64 == null) {
+      image = Icon(Icons.add_photo_alternate_outlined,
+          size: widget.imageSize, color: Colors.grey.withAlpha(127));
+    } else {
+      image = Image.memory(
+        base64Decode(widget.config.imageB64!),
+        fit: BoxFit.contain,
+        filterQuality: FilterQuality.medium,
+      );
+    }
+    final dropArea = InkWell(
+        onTap: _addI2IImage,
+        child: SizedBox(
+            width: widget.imageSize + 40.0,
+            height: widget.imageSize + 40.0,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                border:
+                    Border.all(color: Colors.grey.withAlpha(127), width: 2.0),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Expanded(child: image),
+                    Text(S.of(context).drag_and_drop_image_notice)
+                  ],
+                ),
+              ),
+            )));
+
+    // Buttons
+    final buttons = Row(children: [
+      if (widget.config.imageB64 != null)
+        Expanded(
+            child: IconButton(
+                onPressed: _removeI2IImage,
+                icon: const Icon(Icons.delete_outline)))
+    ]);
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        DropRegion(
+          formats: Formats.standardFormats,
+          onDropOver: (_) => DropOperation.copy,
+          onPerformDrop: (event) async {
+            final item = event.session.items.first;
+            final reader = item.dataReader!;
+            reader.getFile(imageFormat, (file) async {
+              final bytes = await file.readAll();
+              await loadImageBytes(bytes);
+              setState(() {});
+            });
+          },
+          child: dropArea,
+        ),
+        buttons,
+      ],
+    );
+  }
+
+  Future<void> loadImageBytes(Uint8List bytes) async {
+    // Import image into I2I config
+    widget.config.setImage(bytes);
+
+    // Try parse and import metadata
+    final image = img.decodeImage(bytes);
+    Map<String, dynamic>? parameters;
+    try {
+      final metadataString = await extractMetadata(image!);
+      final Map<String, dynamic> metadata = json.decode(metadataString!);
+      parameters = json.decode(metadata['Comment']);
+    } catch (err) {
+      if (!mounted) return;
+      showWarningBar(context, 'No metadta found in imported picture.');
+    }
+    if (parameters != null) {
+      _showImportMetadataDialog(parameters);
+    }
   }
 }

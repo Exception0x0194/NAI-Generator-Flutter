@@ -78,6 +78,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "donation_link": MessageLookupByLibrary.simpleMessage("赞助链接"),
         "donation_link_subtitle":
             MessageLookupByLibrary.simpleMessage("赛博功德，随喜赞叹🙏"),
+        "drag_and_drop_image_notice":
+            MessageLookupByLibrary.simpleMessage("拖动图片到此，或点击上传图片…"),
         "edit": MessageLookupByLibrary.simpleMessage("编辑"),
         "edit_cascaded_config_str_notice":
             MessageLookupByLibrary.simpleMessage("输入抽取的字符串内容，每行一个"),
