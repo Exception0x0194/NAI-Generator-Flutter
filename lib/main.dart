@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -8,6 +9,7 @@ import 'package:hive/hive.dart';
 import 'package:nai_casrand/screens/director_tool_screen.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'screens/generator_screen.dart';
 import 'screens/settings_screen.dart';
@@ -60,6 +62,10 @@ class MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     _initializationFuture = _loadInitialInfo();
+    // Call welcome dialog at startup AFTER build
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (InfoManager().firstSetup) _showFirstSetupDialog();
+    });
   }
 
   @override
@@ -148,5 +154,74 @@ class MyHomePageState extends State<MyHomePage> {
         }
       },
     );
+  }
+
+  void _showFirstSetupDialog() {
+    const linkStyle =
+        TextStyle(color: Colors.blue, decoration: TextDecoration.underline);
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text(S.of(context).welcome_message_title),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text.rich(TextSpan(
+                      style: Theme.of(context).textTheme.bodyLarge,
+                      children: [
+                        TextSpan(text: S.of(context).welcome_message_para1),
+                        TextSpan(children: [
+                          TextSpan(text: S.of(context).welcome_message_para2_1),
+                          TextSpan(
+                              text: S.of(context).welcome_message_para2_2,
+                              style: linkStyle,
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  Navigator.of(context).pop();
+                                  setState(() {
+                                    _selectedIndex = 4;
+                                  });
+                                }),
+                          TextSpan(text: S.of(context).welcome_message_para2_3),
+                        ]),
+                        TextSpan(children: [
+                          TextSpan(text: S.of(context).welcome_message_para3_1),
+                          TextSpan(
+                              text: S.of(context).welcome_message_para3_2,
+                              style: linkStyle,
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  launchUrl(Uri.parse(
+                                      'https://github.com/Exception0x0194/NAI-Generator-Flutter'));
+                                }),
+                          TextSpan(text: S.of(context).welcome_message_para3_3),
+                          TextSpan(
+                              text: S.of(context).welcome_message_para3_4,
+                              style: linkStyle,
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  launchUrl(
+                                      Uri.parse('mailto:1009535916@qq.com'));
+                                }),
+                          TextSpan(text: S.of(context).welcome_message_para3_5),
+                        ])
+                      ])),
+                ],
+              ),
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      InfoManager().firstSetup = false;
+                    },
+                    child: Text(S.of(context).dont_show_again)),
+                TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text(S.of(context).confirm)),
+              ],
+            ));
   }
 }

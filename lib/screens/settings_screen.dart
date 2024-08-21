@@ -336,7 +336,7 @@ class SettingsScreenState extends State<SettingsScreen> {
 
   _showInfoPage() async {
     final packageInfo = await PackageInfo.fromPlatform();
-    const appName = 'NAI_CasRand';
+    const appName = 'NAI CasRand';
     final appVersion = packageInfo.version;
     final iconImage = Image.asset(
       'assets/appicon.png',

@@ -110,6 +110,7 @@
     "select": "选择",
     "confirm": "确认",
     "cancel": "取消",
+    "dont_show_again": "不再提示",
     "reset": "重置",
     "items": " 个项目",
     "appbar_idle": "NAI CasRand - 就绪",
@@ -118,5 +119,15 @@
     "appbar_cooldown": "暂停生成以避免 429 错误……",
     "app_info": "应用信息",
     "donation_link": "赞助链接",
-    "donation_link_subtitle": "赛博功德，随喜赞叹🙏"
+    "donation_link_subtitle": "赛博功德，随喜赞叹🙏",
+    "welcome_message_title": "欢迎使用",
+    "welcome_message_para1": "欢迎使用 NAI CasRand🥰这是一个正在开发的开源免费软件！\n\n",
+    "welcome_message_para2_1": "如果你是首次使用，",
+    "welcome_message_para2_2": "点击这里",
+    "welcome_message_para2_3": "对 API token 和代理进行配置。\n\n",
+    "welcome_message_para3_1": "如果你遇到了任何软件问题，或有改进软件的创意，可以在",
+    "welcome_message_para3_2": "项目 repository",
+    "welcome_message_para3_3": " 发布 Issue，或通过邮件联系我：",
+    "welcome_message_para3_4": "1009535916@qq.com",
+    "welcome_message_para3_5": "。"
 }

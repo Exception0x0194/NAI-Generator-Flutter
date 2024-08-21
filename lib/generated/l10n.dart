@@ -1171,6 +1171,16 @@ class S {
     );
   }
 
+  /// `Don''t show again`
+  String get dont_show_again {
+    return Intl.message(
+      'Don\'\'t show again',
+      name: 'dont_show_again',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Reset`
   String get reset {
     return Intl.message(
@@ -1256,6 +1266,106 @@ class S {
     return Intl.message(
       'Buy me a coffee!',
       name: 'donation_link_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Welcome`
+  String get welcome_message_title {
+    return Intl.message(
+      'Welcome',
+      name: 'welcome_message_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Welcome to use NAI CasRand🥰It is an open-source, free software in development!\n\n`
+  String get welcome_message_para1 {
+    return Intl.message(
+      'Welcome to use NAI CasRand🥰It is an open-source, free software in development!\n\n',
+      name: 'welcome_message_para1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `If you are new to the app, `
+  String get welcome_message_para2_1 {
+    return Intl.message(
+      'If you are new to the app, ',
+      name: 'welcome_message_para2_1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `tap here`
+  String get welcome_message_para2_2 {
+    return Intl.message(
+      'tap here',
+      name: 'welcome_message_para2_2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ` to configure API token and proxy settings first.\n\n`
+  String get welcome_message_para2_3 {
+    return Intl.message(
+      ' to configure API token and proxy settings first.\n\n',
+      name: 'welcome_message_para2_3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `If you encountered any unexpected behavior, or have any thought of improvement, create an issue in `
+  String get welcome_message_para3_1 {
+    return Intl.message(
+      'If you encountered any unexpected behavior, or have any thought of improvement, create an issue in ',
+      name: 'welcome_message_para3_1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `the GitHub repository`
+  String get welcome_message_para3_2 {
+    return Intl.message(
+      'the GitHub repository',
+      name: 'welcome_message_para3_2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `, or contact me via mail: `
+  String get welcome_message_para3_3 {
+    return Intl.message(
+      ', or contact me via mail: ',
+      name: 'welcome_message_para3_3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `1009535916@qq.com`
+  String get welcome_message_para3_4 {
+    return Intl.message(
+      '1009535916@qq.com',
+      name: 'welcome_message_para3_4',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `.`
+  String get welcome_message_para3_5 {
+    return Intl.message(
+      '.',
+      name: 'welcome_message_para3_5',
       desc: '',
       args: [],
     );

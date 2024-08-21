@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:intl/find_locale.dart';
 import 'package:nai_casrand/models/director_tool_config.dart';
 
 import 'prompt_config.dart';
@@ -25,6 +26,9 @@ class InfoManager with ChangeNotifier {
     return _instance;
   }
   InfoManager._internal();
+
+  // First setup dialog
+  bool firstSetup = true;
 
   // Generation Config
   String apiKey = 'pst-abcd';
@@ -103,6 +107,7 @@ class InfoManager with ChangeNotifier {
   Map<String, dynamic> toJson() {
     return {
       "api_key": apiKey,
+      "first_setup": firstSetup,
       "preset_requests": numberOfRequests,
       "show_info_for_img": showInfoForImg,
       "info_tile_height": infoTileHeight,
@@ -132,6 +137,8 @@ class InfoManager with ChangeNotifier {
     customMetadataEnabled = json['custom_metadata_enabled'] ?? false;
     customMetadataContent =
         json['custom_metadata_content'] ?? customMetadataContent;
+
+    firstSetup = json['first_setup']??false;
 
     final outputPath = json['output_folder'];
     if (!kIsWeb && Platform.isWindows && outputPath != null) {

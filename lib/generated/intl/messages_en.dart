@@ -91,6 +91,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "donation_link": MessageLookupByLibrary.simpleMessage("Donation link"),
         "donation_link_subtitle":
             MessageLookupByLibrary.simpleMessage("Buy me a coffee!"),
+        "dont_show_again":
+            MessageLookupByLibrary.simpleMessage("Don\'\'t show again"),
         "drag_and_drop_image_notice": MessageLookupByLibrary.simpleMessage(
             "Drop image here or press to upload"),
         "edit": MessageLookupByLibrary.simpleMessage("Edit "),
@@ -233,6 +235,25 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Use Random Seed"),
         "vibe_export":
             MessageLookupByLibrary.simpleMessage("Vibe image export "),
+        "welcome_message_para1": MessageLookupByLibrary.simpleMessage(
+            "Welcome to use NAI CasRand🥰It is an open-source, free software in development!\n\n"),
+        "welcome_message_para2_1":
+            MessageLookupByLibrary.simpleMessage("If you are new to the app, "),
+        "welcome_message_para2_2":
+            MessageLookupByLibrary.simpleMessage("tap here"),
+        "welcome_message_para2_3": MessageLookupByLibrary.simpleMessage(
+            " to configure API token and proxy settings first.\n\n"),
+        "welcome_message_para3_1": MessageLookupByLibrary.simpleMessage(
+            "If you encountered any unexpected behavior, or have any thought of improvement, create an issue in "),
+        "welcome_message_para3_2":
+            MessageLookupByLibrary.simpleMessage("the GitHub repository"),
+        "welcome_message_para3_3":
+            MessageLookupByLibrary.simpleMessage(", or contact me via mail: "),
+        "welcome_message_para3_4":
+            MessageLookupByLibrary.simpleMessage("1009535916@qq.com"),
+        "welcome_message_para3_5": MessageLookupByLibrary.simpleMessage("."),
+        "welcome_message_title":
+            MessageLookupByLibrary.simpleMessage("Welcome"),
         "width": MessageLookupByLibrary.simpleMessage("Width")
       };
 }

@@ -78,6 +78,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "donation_link": MessageLookupByLibrary.simpleMessage("赞助链接"),
         "donation_link_subtitle":
             MessageLookupByLibrary.simpleMessage("赛博功德，随喜赞叹🙏"),
+        "dont_show_again": MessageLookupByLibrary.simpleMessage("不再提示"),
         "drag_and_drop_image_notice":
             MessageLookupByLibrary.simpleMessage("拖动图片到此，或点击上传图片…"),
         "edit": MessageLookupByLibrary.simpleMessage("编辑"),
@@ -198,6 +199,23 @@ class MessageLookup extends MessageLookupByLibrary {
         "uc": MessageLookupByLibrary.simpleMessage("反向提示词"),
         "use_random_seed": MessageLookupByLibrary.simpleMessage("使用随机种子"),
         "vibe_export": MessageLookupByLibrary.simpleMessage("导出 Vibe 图片"),
+        "welcome_message_para1": MessageLookupByLibrary.simpleMessage(
+            "欢迎使用 NAI CasRand🥰这是一个正在开发的开源免费软件！\n\n"),
+        "welcome_message_para2_1":
+            MessageLookupByLibrary.simpleMessage("如果你是首次使用，"),
+        "welcome_message_para2_2": MessageLookupByLibrary.simpleMessage("点击这里"),
+        "welcome_message_para2_3":
+            MessageLookupByLibrary.simpleMessage("对 API token 和代理进行配置。\n\n"),
+        "welcome_message_para3_1":
+            MessageLookupByLibrary.simpleMessage("如果你遇到了任何软件问题，或有改进软件的创意，可以在"),
+        "welcome_message_para3_2":
+            MessageLookupByLibrary.simpleMessage("项目 repository"),
+        "welcome_message_para3_3":
+            MessageLookupByLibrary.simpleMessage(" 发布 Issue，或通过邮件联系我："),
+        "welcome_message_para3_4":
+            MessageLookupByLibrary.simpleMessage("1009535916@qq.com"),
+        "welcome_message_para3_5": MessageLookupByLibrary.simpleMessage("。"),
+        "welcome_message_title": MessageLookupByLibrary.simpleMessage("欢迎使用"),
         "width": MessageLookupByLibrary.simpleMessage("宽度")
       };
 }
