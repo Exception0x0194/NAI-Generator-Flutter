@@ -93,7 +93,7 @@ class I2IConfigScreenState extends State<I2IConfigScreen> {
                           initiallyExpanded: true,
                           controlAffinity: ListTileControlAffinity.leading,
                           title: Text('Config #$idx'),
-                          children: [VibeConfigWidget(config: config)],
+                          children: [VibeConfigWidget(key: Key(config.imageB64), config: config)],
                         )));
               }).values,
               // Add more configs
