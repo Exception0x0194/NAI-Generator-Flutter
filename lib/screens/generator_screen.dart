@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import '../generated/l10n.dart';
 import '../models/info_manager.dart';
@@ -32,13 +33,13 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           FloatingActionButton(
-            tooltip: S.of(context).generation_settings,
+            tooltip: context.tr('generation_settings'),
             onPressed: _showGenerationSettingsDialog,
             child: const Icon(Icons.construction),
           ),
           const SizedBox(height: 20),
           FloatingActionButton(
-            tooltip: S.of(context).toggle_generation,
+            tooltip: context.tr('toggle_generation'),
             onPressed: _toggleGeneration,
             child: Icon(
                 InfoManager().isGenerating ? Icons.stop : Icons.play_arrow),
@@ -122,8 +123,10 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
     if (InfoManager().isGenerating) {
       InfoManager().startGeneration();
       var n = InfoManager().numberOfRequests;
-      showInfoBar(context,
-          S.of(context).info_start_generation(n == 0 ? '∞' : n.toString()));
+      showInfoBar(
+          context,
+          context.tr('info_start_generation',
+              namedArgs: {"num": (n == 0 ? '∞' : n.toString())}));
     }
   }
 
@@ -134,11 +137,11 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setDialogState) {
             return SimpleDialog(
-              title: Text(S.of(context).generation_settings),
+              title: Text(context.tr('generation_settings')),
               children: [
                 ListTile(
                     leading: const Icon(Icons.search),
-                    title: Text(S.of(context).info_tile_height),
+                    title: Text(context.tr('info_tile_height')),
                     subtitle: Slider(
                       min: 0.3,
                       max: 1.0,
@@ -156,7 +159,7 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
                   secondary: InfoManager().showInfoForImg
                       ? const Icon(Icons.visibility_off)
                       : const Icon(Icons.visibility),
-                  title: Text(S.of(context).toggle_display_info_aside_img),
+                  title: Text(context.tr('toggle_display_info_aside_img')),
                   value: InfoManager().showInfoForImg,
                   onChanged: (value) {
                     setState(() => InfoManager().showInfoForImg = value!);
@@ -165,7 +168,7 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
                 ),
                 CheckboxListTile(
                   secondary: const Icon(Icons.shuffle),
-                  title: Text(S.of(context).use_random_seed),
+                  title: Text(context.tr('use_random_seed')),
                   value: InfoManager().paramConfig.randomSeed,
                   onChanged: (value) {
                     setDialogState(() {
@@ -177,7 +180,7 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
                   Padding(
                       padding: const EdgeInsets.only(left: 20),
                       child: EditableListTile(
-                          title: S.of(context).random_seed,
+                          title: context.tr('random_seed'),
                           currentValue:
                               InfoManager().paramConfig.seed.toString(),
                           confirmOnSubmit: true,
@@ -190,7 +193,7 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
                               })),
                 EditableListTile(
                   leading: const Icon(Icons.alarm),
-                  title: S.of(context).image_number_to_generate,
+                  title: context.tr('image_number_to_generate'),
                   currentValue: InfoManager().numberOfRequests == 0
                       ? '∞'
                       : InfoManager().numberOfRequests.toString(),
@@ -205,7 +208,7 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
                 ),
                 ListTile(
                   leading: const Icon(Icons.info_outline),
-                  title: Text(S.of(context).generate_one_prompt),
+                  title: Text(context.tr('generate_one_prompt')),
                   onTap: _generatePrompt,
                 ),
               ],
@@ -219,13 +222,14 @@ class PromptGenerationScreenState extends State<PromptGenerationScreen> {
   void _setPresetRequestNum(value) {
     var parseResult = int.tryParse(value);
     if (parseResult == null || parseResult < 0) {
-      showErrorBar(context, S.of(context).info_set_genration_number_failed);
+      showErrorBar(context, context.tr('info_set_genration_number_failed'));
       return;
     }
     InfoManager().numberOfRequests = parseResult;
     showInfoBar(
         context,
-        S.of(context).info_set_genration_number(
-            parseResult == 0 ? '∞' : parseResult.toString()));
+        context.tr('info_set_genration_number', namedArgs: {
+          "num": parseResult == 0 ? '∞' : parseResult.toString()
+        }));
   }
 }

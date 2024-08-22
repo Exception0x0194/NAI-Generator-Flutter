@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import '../generated/l10n.dart';
 
@@ -42,7 +43,7 @@ class EditableListTile extends StatelessWidget {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('${S.of(context).edit}$title'),
+          title: Text('${context.tr('edit')}$title'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.end,
@@ -65,14 +66,14 @@ class EditableListTile extends StatelessWidget {
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text(S.of(context).cancel),
+              child: Text(context.tr('cancel')),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
                 onEditComplete(controller.text);
               },
-              child: Text(S.of(context).confirm),
+              child: Text(context.tr('confirm')),
             ),
           ],
         );
@@ -116,7 +117,7 @@ class SelectableListTile extends StatelessWidget {
       context: context,
       builder: (context) {
         return SimpleDialog(
-          title: Text('${S.of(context).select}$title'),
+          title: Text('${context.tr('select')}$title'),
           children: List<Widget>.generate(options.length, (int index) {
             String displayText =
                 options_text != null && options_text!.length > index

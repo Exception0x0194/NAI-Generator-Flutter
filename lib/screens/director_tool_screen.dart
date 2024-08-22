@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:super_drag_and_drop/super_drag_and_drop.dart';
 import "package:super_clipboard/super_clipboard.dart";
+import 'package:easy_localization/easy_localization.dart';
 
 import '../models/director_tool_config.dart';
 import '../models/info_manager.dart';
@@ -107,7 +108,7 @@ class DirectorToolScreenState extends State<DirectorToolScreen> {
     return Column(children: [
       // Tool type selection
       SelectableListTile(
-          title: S.of(context).director_tool_type,
+          title: context.tr('director_tool_type'),
           leading: const Icon(Icons.handyman),
           currentValue: widget.config.type,
           options: widget.toolTypes,
@@ -176,7 +177,7 @@ class DirectorToolScreenState extends State<DirectorToolScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Expanded(child: image),
-                    Text(S.of(context).drag_and_drop_image_notice)
+                    Text(context.tr('drag_and_drop_image_notice'))
                   ],
                 ),
               ),
@@ -230,7 +231,7 @@ class DirectorToolScreenState extends State<DirectorToolScreen> {
           context: context,
           builder: (context) => StatefulBuilder(
               builder: (context, setDialogState) => AlertDialog(
-                    title: Text('${S.of(context).edit} emotions:'),
+                    title: Text('${context.tr('edit')} emotions:'),
                     content: SingleChildScrollView(
                       child: Column(
                           children: widget.emotionTypes
@@ -255,7 +256,7 @@ class DirectorToolScreenState extends State<DirectorToolScreen> {
                     actions: [
                       TextButton(
                           onPressed: Navigator.of(context).pop,
-                          child: Text(S.of(context).confirm))
+                          child: Text(context.tr('confirm')))
                     ],
                   )));
     }
@@ -271,7 +272,7 @@ class DirectorToolScreenState extends State<DirectorToolScreen> {
     return Column(
       children: [
         CheckboxListTile(
-            title: Text(S.of(context).override_random_prompts),
+            title: Text(context.tr('override_random_prompts')),
             secondary: const Icon(Icons.edit_note),
             value: widget.config.overrideEnabled,
             onChanged: (value) => setState(() {
@@ -281,7 +282,7 @@ class DirectorToolScreenState extends State<DirectorToolScreen> {
             ? Padding(
                 padding: const EdgeInsets.only(left: 20),
                 child: EditableListTile(
-                    title: S.of(context).override_prompt,
+                    title: context.tr('override_prompt'),
                     currentValue: widget.config.overridePrompt,
                     confirmOnSubmit: true,
                     onEditComplete: (value) => setState(() {

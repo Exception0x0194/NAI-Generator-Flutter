@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import '../models/vibe_config.dart';
 import '../generated/l10n.dart';
@@ -107,7 +108,7 @@ class VibeConfigWidgetState extends State<VibeConfigWidget> {
   //   saveBlob(img.encodePng(widget.config.inputImage),
   //       'nai-generator-vibe-${generateRandomFileName()}.png');
   //   showInfoBar(
-  //       context, '${S.of(context).vibe_export}${S.of(context).succeed}');
+  //       context, '${context.tr('vibe_export')}${context.tr('succeed')}');
   // }
 
   void _showEditReferenceStrengthDialog() {
@@ -128,12 +129,12 @@ class VibeConfigWidgetState extends State<VibeConfigWidget> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('${S.of(context).edit}Reference Strength'),
+          title: Text('${context.tr('edit')}Reference Strength'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text(S.of(context).notNecessarily0to1),
+              Text(context.tr('not')Necessarily0to1),
               TextField(
                 controller: controller,
                 keyboardType: const TextInputType.numberWithOptions(
@@ -150,14 +151,14 @@ class VibeConfigWidgetState extends State<VibeConfigWidget> {
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text(S.of(context).cancel),
+              child: Text(context.tr('cancel')),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
                 onEditComplete(controller.text);
               },
-              child: Text(S.of(context).confirm),
+              child: Text(context.tr('confirm')),
             ),
           ],
         );
@@ -183,12 +184,12 @@ class VibeConfigWidgetState extends State<VibeConfigWidget> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('${S.of(context).edit}Information Extracted'),
+          title: Text('${context.tr('edit')}Information Extracted'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text(S.of(context).notNecessarily0to1),
+              Text(context.tr('not')Necessarily0to1),
               TextField(
                 controller: controller,
                 keyboardType: const TextInputType.numberWithOptions(
@@ -205,14 +206,14 @@ class VibeConfigWidgetState extends State<VibeConfigWidget> {
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text(S.of(context).cancel),
+              child: Text(context.tr('cancel')),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
                 onEditComplete(controller.text);
               },
-              child: Text(S.of(context).confirm),
+              child: Text(context.tr('confirm')),
             ),
           ],
         );

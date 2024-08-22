@@ -7,6 +7,7 @@ import 'editable_list_tile.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class PromptConfigWidget extends StatefulWidget {
   final PromptConfig config;
@@ -54,9 +55,9 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
             onPressed: () {
               copyToClipboard(json.encode(widget.config.toJson()));
               showInfoBar(context,
-                  '${S.of(context).info_export_to_clipboard}${S.of(context).succeed}');
+                  '${context.tr('info_export_to_clipboard')}${context.tr('succeed')}');
             },
-            tooltip: S.of(context).export_to_clipboard,
+            tooltip: context.tr('export_to_clipboard'),
           )
         ]),
         children: [
@@ -80,7 +81,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
 
   Widget _buildSelectionMethodSelector() {
     return SelectableListTile(
-      title: S.of(context).selection_method,
+      title: context.tr('selection_method'),
       currentValue: widget.config.selectionMethod,
       options: const [
         'all',
@@ -90,11 +91,11 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
         'multiple_num'
       ],
       options_text: [
-        S.of(context).selection_method_all,
-        S.of(context).selection_method_single,
-        S.of(context).selection_method_single_sequential,
-        S.of(context).selection_method_multiple_prob,
-        S.of(context).selection_method_multiple_num
+        context.tr('selection_method_all'),
+        context.tr('selection_method_single'),
+        context.tr('selection_method_single_sequential'),
+        context.tr('selection_method_multiple_prob'),
+        context.tr('selection_method_multiple_num')
       ],
       onSelectComplete: (value) =>
           setState(() => widget.config.selectionMethod = value),
@@ -104,12 +105,12 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
 
   _buildTypeSelector({bool dense = false}) {
     return SelectableListTile(
-      title: S.of(context).cascaded_config_type,
+      title: context.tr('cascaded_config_type'),
       currentValue: widget.config.type,
       options: const ['str', 'config'],
       options_text: [
-        S.of(context).cascaded_strings,
-        S.of(context).cascaded_config_type_config
+        context.tr('cascaded_strings'),
+        context.tr('cascaded_config_type_config')
       ],
       onSelectComplete: (value) => setState(() => widget.config.type = value),
       leading: const Icon(Icons.type_specimen),
@@ -121,7 +122,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
     return widget.config.selectionMethod == 'multiple_prob'
         ? EditableListTile(
             leading: const Icon(Icons.question_mark),
-            title: S.of(context).selection_prob,
+            title: context.tr('selection_prob'),
             currentValue: widget.config.prob.toString(),
             onEditComplete: (value) => setState(() {
               var n = double.tryParse(value);
@@ -139,7 +140,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
     return widget.config.selectionMethod == 'multiple_num'
         ? EditableListTile(
             leading: const Icon(Icons.question_mark),
-            title: S.of(context).selection_num,
+            title: context.tr('selection_num'),
             currentValue: widget.config.num.toString(),
             onEditComplete: (value) => setState(() {
               var n = int.tryParse(value);
@@ -156,7 +157,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
   Widget _buildShuffled() {
     return (widget.config.selectionMethod == 'all' ||
             widget.config.selectionMethod == 'multiple_prob')
-        ? _buildSwitchTile(S.of(context).shuffled, widget.config.shuffled,
+        ? _buildSwitchTile(context.tr('shuffled'), widget.config.shuffled,
             (newValue) {
             setState(() => widget.config.shuffled = newValue);
           })
@@ -167,7 +168,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
     return widget.config.type == 'str'
         ? ExpansionTile(
             leading: const Icon(Icons.text_snippet),
-            title: Text(S.of(context).cascaded_strings),
+            title: Text(context.tr('cascaded_strings')),
             children: [
               Padding(
                   padding: const EdgeInsets.only(left: 10.0),
@@ -187,7 +188,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
         ? ExpansionTile(
             leading: const Icon(Icons.arrow_downward),
             initiallyExpanded: widget.indentLevel == 0,
-            title: Text(S.of(context).cascaded_configs),
+            title: Text(context.tr('cascaded_configs')),
             children: [
               ...widget.config.prompts.map((config) => PromptConfigWidget(
                   config: config, indentLevel: widget.indentLevel + 1)),
@@ -200,7 +201,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
   _buildRandomBrackets() {
     return ListTile(
       leading: const Icon(Icons.code),
-      title: Text(S.of(context).random_brackets),
+      title: Text(context.tr('random_brackets')),
       subtitle: Text(
           '${widget.config.randomBracketsLower.toString()} ~ ${widget.config.randomBracketsUpper.toString()}'),
       onTap: _showEditBracketsDialog,
@@ -212,14 +213,14 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text(S.of(context).select + S.of(context).random_brackets),
+            title: Text(context.tr('select') + context.tr('random_brackets')),
             content: StatefulBuilder(
               builder: (context, setDialogState) {
                 return Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Text(S.of(context).select_bracket_hint),
+                      Text(context.tr('select_bracket_hint')),
                       RangeSlider(
                           values: RangeValues(
                               widget.config.randomBracketsLower.toDouble(),
@@ -261,7 +262,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: Text(S.of(context).confirm),
+                child: Text(context.tr('confirm')),
               ),
             ],
           );
@@ -275,7 +276,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('${S.of(context).edit}${S.of(context).cascaded_strings}'),
+          title: Text('${context.tr('edit')}${context.tr('cascaded_strings')}'),
           content: TextField(
             controller: controller,
             keyboardType: TextInputType.multiline,
@@ -284,11 +285,11 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
           ),
           actions: [
             TextButton(
-              child: Text(S.of(context).cancel),
+              child: Text(context.tr('cancel')),
               onPressed: () => Navigator.of(context).pop(),
             ),
             TextButton(
-              child: Text(S.of(context).confirm),
+              child: Text(context.tr('confirm')),
               onPressed: () {
                 setState(() {
                   widget.config.strs = controller.text
@@ -313,7 +314,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
       value: currentValue,
       onChanged: onChanged,
       subtitle:
-          Text(currentValue ? S.of(context).enabled : S.of(context).disabled),
+          Text(currentValue ? context.tr('enabled') : context.tr('disabled')),
     );
   }
 
@@ -324,7 +325,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('${S.of(context).edit}${S.of(context).comment}'),
+          title: Text('${context.tr('edit')}${context.tr('comment')}'),
           content: TextField(
             controller: controller,
             keyboardType: TextInputType.text,
@@ -340,7 +341,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text(S.of(context).cancel),
+              child: Text(context.tr('cancel')),
             ),
             TextButton(
               onPressed: () {
@@ -349,7 +350,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
                   widget.config.comment = controller.text;
                 });
               },
-              child: Text(S.of(context).confirm),
+              child: Text(context.tr('confirm')),
             ),
           ],
         );
@@ -363,7 +364,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
       children: [
         Expanded(
           child: Tooltip(
-            message: S.of(context).add_new_config,
+            message: context.tr('add_new_config'),
             child: IconButton(
               icon: const Icon(Icons.add),
               onPressed: () => _addNewConfig(),
@@ -372,7 +373,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
         ),
         Expanded(
           child: Tooltip(
-            message: S.of(context).import_config_from_clipboard,
+            message: context.tr('import_config_from_clipboard'),
             child: IconButton(
               icon: const Icon(Icons.paste),
               onPressed: () async {
@@ -383,7 +384,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
         ),
         Expanded(
           child: Tooltip(
-            message: S.of(context).reorder_config,
+            message: context.tr('reorder_config'),
             child: IconButton(
               icon: const Icon(Icons.cached),
               onPressed: () => _showReorderDialog(),
@@ -392,7 +393,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
         ),
         Expanded(
           child: Tooltip(
-            message: S.of(context).delete_config,
+            message: context.tr('delete_config'),
             child: IconButton(
               icon: const Icon(Icons.remove),
               onPressed: () => _showDeleteDialog(),
@@ -435,7 +436,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
         });
       } catch (e) {
         showErrorBar(context,
-            '${S.of(context).info_import_from_clipboard}${S.of(context).failed}');
+            '${context.tr('info_import_from_clipboard')}${context.tr('failed')}');
       }
     }
   }
@@ -445,7 +446,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(S.of(context).reorder_config),
+          title: Text(context.tr('reorder_config')),
           content: SizedBox(
             width: double.maxFinite,
             height: 600,
@@ -479,7 +480,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text(S.of(context).confirm),
+              child: Text(context.tr('confirm')),
             ),
           ],
         );
@@ -492,7 +493,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(S.of(context).delete_config),
+          title: Text(context.tr('delete_config')),
           content: SizedBox(
               width: double.maxFinite,
               height: 600,
@@ -517,7 +518,7 @@ class PromptConfigWidgetState extends State<PromptConfigWidget> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text(S.of(context).confirm),
+              child: Text(context.tr('confirm')),
             ),
           ],
         );

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
+
 import '../models/info_manager.dart';
 import '../generated/l10n.dart';
 
@@ -111,16 +113,16 @@ class FlashingAppBarState extends State<FlashingAppBar>
   Widget build(BuildContext context) {
     switch (_status) {
       case AppState.idle:
-        _currentTitle = S.of(context).appbar_idle;
+        _currentTitle = context.tr('appbar_idle');
         break;
       case AppState.generatingFree:
-        _currentTitle = S.of(context).appbar_regular;
+        _currentTitle = context.tr('appbar_regular');
         break;
       case AppState.generatingCost:
-        _currentTitle = S.of(context).appbar_warning;
+        _currentTitle = context.tr('appbar_warning');
         break;
       case AppState.batchWaiting:
-        _currentTitle = S.of(context).appbar_cooldown;
+        _currentTitle = context.tr('appbar_cooldown');
         break;
     }
     final titleBar = InkWell(
@@ -181,7 +183,7 @@ class FlashingAppBarState extends State<FlashingAppBar>
                     TextButton(
                       onPressed: () =>
                           onEditComplete(context, apiPathController.text),
-                      child: Text(S.of(context).confirm),
+                      child: Text(context.tr('confirm')),
                     ),
                   ],
                 ));

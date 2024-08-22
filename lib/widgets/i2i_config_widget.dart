@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:image/image.dart' as img;
 import 'package:super_clipboard/super_clipboard.dart';
 import 'package:super_drag_and_drop/super_drag_and_drop.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import '../models/info_manager.dart';
 import '../models/utils.dart';
@@ -61,7 +62,7 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
           // Presets
           Expanded(
               child: ListTile(
-            title: Text(S.of(context).enhance_presets),
+            title: Text(context.tr('enhance_presets')),
             leading: const Icon(Icons.tune),
             subtitle: Slider(
               value: _getEnhancePresetValue(),
@@ -132,7 +133,7 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
         ),
         // SMEA override settings
         CheckboxListTile(
-            title: Text(S.of(context).enhance_override_smea),
+            title: Text(context.tr('enhance_override_smea')),
             secondary: const Icon(Icons.keyboard_double_arrow_right),
             value: widget.config.overrideSmea,
             onChanged: (value) => setState(() {
@@ -140,7 +141,7 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
                 })),
         // Prompt override settings
         CheckboxListTile(
-            title: Text(S.of(context).override_random_prompts),
+            title: Text(context.tr('override_random_prompts')),
             secondary: const Icon(Icons.edit_note),
             value: widget.config.overridePromptEnabled,
             onChanged: (value) {
@@ -152,7 +153,7 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
             ? Padding(
                 padding: const EdgeInsets.only(left: 20),
                 child: EditableListTile(
-                    title: S.of(context).override_prompt,
+                    title: context.tr('override_prompt'),
                     currentValue: widget.config.overridePrompt,
                     confirmOnSubmit: true,
                     onEditComplete: (value) {
@@ -171,9 +172,9 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
     final srcWidth = widget.config.width;
     final srcHeight = widget.config.height;
     return ListTile(
-      title: Text(S.of(context).image_size),
+      title: Text(context.tr('image_size')),
       leading: const Icon(Icons.photo_size_select_large),
-      subtitle: Text(S.of(context).i2i_image_size('$dstWidth x $dstHeight',
+      subtitle: Text(context.tr('i2i_image_size')('$dstWidth x $dstHeight',
           widget.config.imageB64 == null ? 'N/A' : '$srcWidth x $srcHeight')),
       onTap: _showI2ISizeDialog,
     );
@@ -192,14 +193,14 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
       builder: (BuildContext context) {
         return StatefulBuilder(builder: (context, setDialogState) {
           return AlertDialog(
-            title: Text(S.of(context).edit + S.of(context).image_size),
+            title: Text(context.tr('edit') + context.tr('image_size')),
             content: SingleChildScrollView(
               child: ListBody(children: [
                 Align(
                     alignment: Alignment.topRight,
-                    child: Text(S.of(context).available_in_settings)),
+                    child: Text(context.tr('available_in_settings'))),
                 ExpansionTile(
-                    title: Text(S.of(context).enhance_scale),
+                    title: Text(context.tr('enhance_scale')),
                     initiallyExpanded: true,
                     children: [
                       Padding(
@@ -218,7 +219,7 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
                           }).toList()))
                     ]),
                 ExpansionTile(
-                    title: Text(S.of(context).custom_size),
+                    title: Text(context.tr('custom_size')),
                     initiallyExpanded: true,
                     children: [
                       Padding(
@@ -227,13 +228,13 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
                             children: [
                               Expanded(
                                   child: ListTile(
-                                      title: Text(S.of(context).width),
+                                      title: Text(context.tr('width')),
                                       subtitle: TextField(
                                           controller: widthController,
                                           keyboardType: TextInputType.number))),
                               Expanded(
                                   child: ListTile(
-                                      title: Text(S.of(context).height),
+                                      title: Text(context.tr('height')),
                                       subtitle: TextField(
                                           controller: heightController,
                                           keyboardType: TextInputType.number)))
@@ -247,7 +248,7 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Text(S.of(context).cancel)),
+                  child: Text(context.tr('cancel'))),
               TextButton(
                   onPressed: () {
                     Navigator.of(context).pop();
@@ -261,7 +262,7 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
                           (heightResult / 64).round() * 64;
                     });
                   },
-                  child: Text(S.of(context).confirm))
+                  child: Text(context.tr('confirm')))
             ],
           );
         });
@@ -337,7 +338,7 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
         widget.config.overridePrompt = prompt;
         if (mounted) {
           showInfoBar(
-              context, S.of(context).pasted_parameter(S.of(context).prompt));
+              context, context.tr('pasted_parameter')(context.tr('prompt')));
         }
       });
     }
@@ -345,7 +346,7 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
     pasteUC() {
       InfoManager().paramConfig.loadJson({'negative_prompt': uc});
       if (mounted) {
-        showInfoBar(context, S.of(context).pasted_parameter(S.of(context).uc));
+        showInfoBar(context, context.tr('pasted_parameter')(context.tr('uc')));
       }
     }
 
@@ -353,7 +354,7 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
       setState(() {
         final loaded = InfoManager().paramConfig.loadJson(param);
         if (mounted) {
-          showInfoBar(context, S.of(context).loaded_parameters_count(loaded));
+          showInfoBar(context, context.tr('loaded_parameters_count')(loaded));
         }
       });
     }
@@ -361,14 +362,14 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
-              title: Text(S.of(context).metadata_found),
+              title: Text(context.tr('metadata_found')),
               content: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(S.of(context).tap_to_paste_parameters),
+                  Text(context.tr('tap_to_paste_parameters')),
                   ListTile(
-                      title: Text(S.of(context).prompt),
+                      title: Text(context.tr('prompt')),
                       subtitle: Text(
                         prompt,
                         maxLines: 5,
@@ -376,7 +377,7 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
                       ),
                       onTap: pastePrompt),
                   ListTile(
-                      title: Text(S.of(context).uc),
+                      title: Text(context.tr('uc')),
                       subtitle: Text(
                         uc,
                         maxLines: 5,
@@ -384,7 +385,7 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
                       ),
                       onTap: pasteUC),
                   ListTile(
-                      title: Text(S.of(context).parameters),
+                      title: Text(context.tr('parameters')),
                       subtitle: Text(
                         json.encode(param),
                         maxLines: 5,
@@ -409,12 +410,12 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
                       pasteUC();
                       pasteParam();
                     },
-                    child: Text(S.of(context).paste_all)),
+                    child: Text(context.tr('paste_all'))),
                 TextButton(
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
-                    child: Text(S.of(context).confirm))
+                    child: Text(context.tr('confirm')))
               ],
             ));
   }
@@ -448,7 +449,7 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Expanded(child: image),
-                    Text(S.of(context).drag_and_drop_image_notice)
+                    Text(context.tr('drag_and_drop_image_notice'))
                   ],
                 ),
               ),

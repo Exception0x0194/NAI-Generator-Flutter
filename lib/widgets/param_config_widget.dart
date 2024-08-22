@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import '../generated/l10n.dart';
 import 'editable_list_tile.dart';
@@ -23,13 +24,13 @@ class ParamConfigWidgetState extends State<ParamConfigWidget> {
         Padding(
             padding: const EdgeInsets.only(left: 20),
             child: ExpansionTile(
-                title: Text(S.of(context).custom_size),
+                title: Text(context.tr('custom_size')),
                 leading: const Icon(Icons.back_hand),
                 dense: true,
                 children: [
                   EditableListTile(
                     leading: const Icon(Icons.swap_horiz),
-                    title: S.of(context).width,
+                    title: context.tr('width'),
                     currentValue: widget.config.width.toString(),
                     confirmOnSubmit: true,
                     onEditComplete: (value) => setState(() {
@@ -41,7 +42,7 @@ class ParamConfigWidgetState extends State<ParamConfigWidget> {
                   ),
                   EditableListTile(
                     leading: const Icon(Icons.swap_vert),
-                    title: S.of(context).height,
+                    title: context.tr('height'),
                     currentValue: widget.config.height.toString(),
                     confirmOnSubmit: true,
                     onEditComplete: (value) => setState(() {
@@ -55,7 +56,7 @@ class ParamConfigWidgetState extends State<ParamConfigWidget> {
         // CFG
         EditableListTile(
           leading: const Icon(Icons.numbers),
-          title: S.of(context).scale,
+          title: context.tr('scale'),
           currentValue: widget.config.scale.toString(),
           confirmOnSubmit: true,
           onEditComplete: (value) => setState(() => widget.config.scale =
@@ -64,7 +65,7 @@ class ParamConfigWidgetState extends State<ParamConfigWidget> {
         ),
         EditableListTile(
           leading: const Icon(Icons.numbers),
-          title: S.of(context).cfg_rescale,
+          title: context.tr('cfg_rescale'),
           currentValue: widget.config.cfgRescale.toString(),
           confirmOnSubmit: true,
           onEditComplete: (value) => setState(() => widget.config.cfgRescale =
@@ -74,7 +75,7 @@ class ParamConfigWidgetState extends State<ParamConfigWidget> {
         // Sampler
         SelectableListTile(
             leading: const Icon(Icons.search),
-            title: S.of(context).sampler,
+            title: context.tr('sampler'),
             currentValue: widget.config.sampler,
             options: const [
               'k_euler',
@@ -88,10 +89,10 @@ class ParamConfigWidgetState extends State<ParamConfigWidget> {
                   })
                 }),
         // SMEA
-        _buildSwitchTile(S.of(context).sm, widget.config.sm, (newValue) {
+        _buildSwitchTile(context.tr('sm'), widget.config.sm, (newValue) {
           setState(() => widget.config.sm = newValue);
         }, const Icon(Icons.keyboard_double_arrow_right)),
-        _buildSwitchTile(S.of(context).sm_dyn, widget.config.smDyn, (newValue) {
+        _buildSwitchTile(context.tr('sm_dyn'), widget.config.smDyn, (newValue) {
           setState(() => widget.config.smDyn = newValue);
         }, const Icon(Icons.keyboard_double_arrow_right)),
         // Seed
@@ -99,7 +100,7 @@ class ParamConfigWidgetState extends State<ParamConfigWidget> {
         // UC
         EditableListTile(
           leading: const Icon(Icons.do_not_disturb),
-          title: S.of(context).uc,
+          title: context.tr('uc'),
           currentValue: widget.config.negativePrompt,
           confirmOnSubmit: true,
           onEditComplete: (value) =>
@@ -122,7 +123,7 @@ class ParamConfigWidgetState extends State<ParamConfigWidget> {
 
   Widget _buildSizeSelector() {
     return SelectableListTile(
-      title: S.of(context).image_size,
+      title: context.tr('image_size'),
       currentValue: _getSizeString(),
       options: const [
         '832 x 1216',
@@ -159,7 +160,7 @@ class ParamConfigWidgetState extends State<ParamConfigWidget> {
     return Column(
       children: [
         _buildSwitchTile(
-          S.of(context).use_random_seed,
+          context.tr('use_random_seed'),
           widget.config.randomSeed,
           (newValue) {
             setState(() {
@@ -172,7 +173,7 @@ class ParamConfigWidgetState extends State<ParamConfigWidget> {
           Padding(
               padding: const EdgeInsets.only(left: 20),
               child: (EditableListTile(
-                  title: S.of(context).random_seed,
+                  title: context.tr('random_seed'),
                   currentValue: widget.config.seed.toString(),
                   confirmOnSubmit: true,
                   onEditComplete: (value) => {

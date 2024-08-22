@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import '../generated/l10n.dart';
 import '../models/info_manager.dart';
@@ -51,7 +52,7 @@ class SettingsScreenState extends State<SettingsScreen> {
         children: [
           FloatingActionButton(
             onPressed: () => _showInfoPage(),
-            tooltip: S.of(context).app_info,
+            tooltip: context.tr('app_info'),
             child: const Icon(Icons.info),
           ),
           const SizedBox(height: 20),
@@ -59,7 +60,7 @@ class SettingsScreenState extends State<SettingsScreen> {
             onPressed: () async {
               await _loadJsonConfig();
             },
-            tooltip: S.of(context).import_settings_from_file,
+            tooltip: context.tr('import_settings_from_file'),
             child: const Icon(Icons.file_open),
           ),
           const SizedBox(height: 20),
@@ -67,7 +68,7 @@ class SettingsScreenState extends State<SettingsScreen> {
             onPressed: () async {
               await _saveJsonConfig();
             },
-            tooltip: S.of(context).export_settings_to_file,
+            tooltip: context.tr('export_settings_to_file'),
             child: const Icon(Icons.save),
           ),
         ],
@@ -85,10 +86,10 @@ class SettingsScreenState extends State<SettingsScreen> {
         try {
           InfoManager().fromJson(jsonData);
           showInfoBar(context,
-              '${S.of(context).info_import_file}${S.of(context).succeed}');
+              '${context.tr('info_import_file')}${context.tr('succeed')}');
         } catch (error) {
           showErrorBar(context,
-              '${S.of(context).info_import_file}${S.of(context).failed}: ${error.toString()}');
+              '${context.tr('info_import_file')}${context.tr('failed')}: ${error.toString()}');
         }
       });
     }
@@ -101,7 +102,7 @@ class SettingsScreenState extends State<SettingsScreen> {
 
   _buildLinkTile() {
     return ListTile(
-      title: Text(S.of(context).github_repo),
+      title: Text(context.tr('github_repo')),
       leading: const Icon(Icons.link),
       subtitle: const Text(
           'https://github.com/Exception0x0194/NAI-Generator-Flutter'),
@@ -120,7 +121,7 @@ class SettingsScreenState extends State<SettingsScreen> {
         numberOfRequests == 0 ? '∞' : numberOfRequests.toString();
     return ExpansionTile(
       leading: const Icon(Icons.schedule),
-      title: Text(S.of(context).batch_settings),
+      title: Text(context.tr('batch_settings')),
       subtitle: Text(S
           .of(context)
           .batch_settings_info(batchCount, batchInterval, numberOfRequestsStr)),
@@ -130,7 +131,7 @@ class SettingsScreenState extends State<SettingsScreen> {
           padding: const EdgeInsets.only(left: 20),
           child: EditableListTile(
               leading: const Icon(Icons.checklist),
-              title: S.of(context).batch_count,
+              title: context.tr('batch_count'),
               currentValue: batchCount.toString(),
               keyboardType: TextInputType.number,
               confirmOnSubmit: true,
@@ -146,7 +147,7 @@ class SettingsScreenState extends State<SettingsScreen> {
             padding: const EdgeInsets.only(left: 20),
             child: EditableListTile(
                 leading: const Icon(Icons.hourglass_empty),
-                title: S.of(context).batch_interval,
+                title: context.tr('batch_interval'),
                 currentValue: batchInterval.toString(),
                 keyboardType: TextInputType.number,
                 confirmOnSubmit: true,
@@ -161,7 +162,7 @@ class SettingsScreenState extends State<SettingsScreen> {
             padding: const EdgeInsets.only(left: 20),
             child: EditableListTile(
               leading: const Icon(Icons.alarm),
-              title: S.of(context).image_number_to_generate,
+              title: context.tr('image_number_to_generate'),
               currentValue:
                   numberOfRequests == 0 ? '∞' : numberOfRequests.toString(),
               editValue: numberOfRequests.toString(),
@@ -181,11 +182,11 @@ class SettingsScreenState extends State<SettingsScreen> {
 
   _buildOutputSelectionTile() {
     final outputDirPath = InfoManager().outputFolder == null
-        ? '<${S.of(context).system_document_folder}>\\nai_generated'
+        ? '<${context.tr('system_document_folder')}>\\nai_generated'
         : InfoManager().outputFolder!.path;
     return ListTile(
       leading: const Icon(Icons.folder_outlined),
-      title: Text(S.of(context).output_folder),
+      title: Text(context.tr('output_folder')),
       subtitle: Text(outputDirPath),
       onTap: () async {
         final pickResult = await FilePicker.platform.getDirectoryPath();
@@ -201,10 +202,10 @@ class SettingsScreenState extends State<SettingsScreen> {
     final proxy = InfoManager().proxy;
     return EditableListTile(
         leading: const Icon(Icons.route),
-        title: S.of(context).proxy_settings,
-        currentValue: proxy == '' ? S.of(context).proxy_settings_direct : proxy,
+        title: context.tr('proxy_settings'),
+        currentValue: proxy == '' ? context.tr('proxy_settings_direct') : proxy,
         editValue: proxy,
-        notice: S.of(context).proxy_settings_notice,
+        notice: context.tr('proxy_settings_notice'),
         confirmOnSubmit: true,
         onEditComplete: (value) {
           isValidProxy(String input) {
@@ -225,8 +226,8 @@ class SettingsScreenState extends State<SettingsScreen> {
   _buildTokenTile() {
     return EditableListTile(
         leading: const Icon(Icons.token_outlined),
-        title: S.of(context).NAI_API_key,
-        notice: S.of(context).NAI_API_key_hint,
+        title: context.tr('')NAI_API_key,
+        notice: context.tr('')NAI_API_key_hint,
         currentValue: InfoManager().apiKey,
         confirmOnSubmit: true,
         onEditComplete: (value) {
@@ -240,7 +241,7 @@ class SettingsScreenState extends State<SettingsScreen> {
     List<Widget> tiles = [
       CheckboxListTile(
           secondary: const Icon(Icons.delete_sweep),
-          title: Text(S.of(context).metadata_erase_enabled),
+          title: Text(context.tr('metadata_erase_enabled')),
           value: InfoManager().metadataEraseEnabled,
           onChanged: (value) {
             setState(() {
@@ -253,7 +254,7 @@ class SettingsScreenState extends State<SettingsScreen> {
             padding: const EdgeInsets.only(left: 20),
             child: CheckboxListTile(
                 secondary: const Icon(Icons.edit_note),
-                title: Text(S.of(context).custom_metadata_enabled),
+                title: Text(context.tr('custom_metadata_enabled')),
                 value: InfoManager().customMetadataEnabled,
                 onChanged: (value) {
                   setState(() {
@@ -266,7 +267,7 @@ class SettingsScreenState extends State<SettingsScreen> {
         ? Padding(
             padding: const EdgeInsets.only(left: 30),
             child: ListTile(
-              title: Text(S.of(context).custom_metadata_content),
+              title: Text(context.tr('custom_metadata_content')),
               subtitle: Text(
                 InfoManager().customMetadataContent,
                 maxLines: 3,
@@ -293,13 +294,13 @@ class SettingsScreenState extends State<SettingsScreen> {
         context: context,
         builder: (context) => StatefulBuilder(
             builder: (context, setDialogState) => AlertDialog(
-                  title: Text(S.of(context).edit +
-                      S.of(context).custom_metadata_content),
+                  title: Text(context.tr('edit') +
+                      context.tr('custom_metadata_content')),
                   content: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(S.of(context).edit_custom_metadata_content_hint),
+                      Text(context.tr('edit_custom_metadata_content_hint')),
                       TextField(
                         controller: textController,
                         maxLines: 10,
@@ -321,14 +322,14 @@ class SettingsScreenState extends State<SettingsScreen> {
                       const Spacer(),
                       TextButton(
                           onPressed: Navigator.of(context).pop,
-                          child: Text(S.of(context).cancel)),
+                          child: Text(context.tr('cancel'))),
                       TextButton(
                           onPressed: () {
                             setState(() {
                               onEditComplete();
                             });
                           },
-                          child: Text(S.of(context).confirm)),
+                          child: Text(context.tr('confirm'))),
                     ])
                   ],
                 )));
@@ -361,8 +362,8 @@ class SettingsScreenState extends State<SettingsScreen> {
 
   _buildDonationLink() {
     return ListTile(
-      title: Text(S.of(context).donation_link),
-      subtitle: Text(S.of(context).donation_link_subtitle),
+      title: Text(context.tr('donation_link')),
+      subtitle: Text(context.tr('donation_link_subtitle')),
       leading: const Icon(Icons.favorite_border),
       onTap: _showDonationQRCode,
     );
@@ -372,7 +373,7 @@ class SettingsScreenState extends State<SettingsScreen> {
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
-              title: Text(S.of(context).donation_link_subtitle),
+              title: Text(context.tr('donation_link_subtitle')),
               content: Row(
                 children: [
                   Image.asset(

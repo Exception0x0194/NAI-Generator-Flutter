@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import '../models/info_manager.dart';
 import '../models/utils.dart';
@@ -156,11 +157,11 @@ class GenerationInfoWidget extends StatelessWidget {
       builder: (BuildContext context) {
         return StatefulBuilder(builder: (context, setDialogState) {
           return AlertDialog(
-            title: Text(S.of(context).set_enhancement_parameters),
+            title: Text(context.tr('set_enhancement_parameters')),
             content: SingleChildScrollView(
               child: ListBody(children: [
                 ExpansionTile(
-                    title: Text(S.of(context).enhance_scale),
+                    title: Text(context.tr('enhance_scale')),
                     initiallyExpanded: true,
                     children: [
                       Padding(
@@ -180,14 +181,14 @@ class GenerationInfoWidget extends StatelessWidget {
                           }).toList()))
                     ]),
                 SwitchListTile(
-                    title: Text(S.of(context).enhance_override_prompts),
+                    title: Text(context.tr('enhance_override_prompts')),
                     dense: true,
                     value: ovverridePrompt,
                     onChanged: (value) {
                       setDialogState(() => ovverridePrompt = value);
                     }),
                 SwitchListTile(
-                    title: Text(S.of(context).enhance_override_smea),
+                    title: Text(context.tr('enhance_override_smea')),
                     dense: true,
                     value: overrideSmea,
                     onChanged: (value) {
@@ -215,6 +216,6 @@ class GenerationInfoWidget extends StatelessWidget {
     InfoManager().paramConfig.height = targetHeight;
     InfoManager().i2iConfig.setImage(info.imageBytes!);
 
-    showInfoBar(context, S.of(context).i2i_conifgs_set);
+    showInfoBar(context, context.tr('i2i_conifgs_set'));
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:super_drag_and_drop/super_drag_and_drop.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 // import '../generated/l10n.dart';
 import '../generated/l10n.dart';
@@ -57,7 +58,7 @@ class I2IConfigScreenState extends State<I2IConfigScreen> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   addVibeImage,
-                  Text(S.of(context).drag_and_drop_image_notice),
+                  Text(context.tr('drag_and_drop_image_notice')),
                 ],
               ),
             ),
@@ -93,7 +94,10 @@ class I2IConfigScreenState extends State<I2IConfigScreen> {
                           initiallyExpanded: true,
                           controlAffinity: ListTileControlAffinity.leading,
                           title: Text('Config #$idx'),
-                          children: [VibeConfigWidget(key: Key(config.imageB64), config: config)],
+                          children: [
+                            VibeConfigWidget(
+                                key: Key(config.imageB64), config: config)
+                          ],
                         )));
               }).values,
               // Add more configs

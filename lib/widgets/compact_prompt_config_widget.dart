@@ -7,6 +7,7 @@ import 'editable_list_tile.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class CompactPromptConfigWidget extends StatefulWidget {
   final PromptConfig config;
@@ -62,36 +63,36 @@ class CompactPromptConfigWidgetState extends State<CompactPromptConfigWidget> {
     // Selection method-related parameters
     switch (widget.config.selectionMethod) {
       case 'all':
-        ret += '${S.of(context).selection_method_all} / ';
+        ret += '${context.tr('selection_method_all')} / ';
         break;
       case 'single':
-        ret += '${S.of(context).selection_method_single} / ';
+        ret += '${context.tr('selection_method_single')} / ';
         break;
       case 'single_sequential':
-        ret += S.of(context).selection_method_single_sequential;
+        ret += context.tr('selection_method_single_sequential');
         if (widget.config.num > 1) {
-          ret += S.of(context).single_sequential_repeats(widget.config.num);
+          ret += context.tr('single_sequential_repeats')(widget.config.num);
         }
         ret += ' / ';
         break;
       case 'multiple_num':
         ret +=
-            '${S.of(context).selection_method_multiple_num}: ${widget.config.num} / ';
+            '${context.tr('selection_method_multiple_num')}: ${widget.config.num} / ';
         break;
       case 'multiple_prob':
         ret +=
-            '${S.of(context).selection_method_multiple_prob}: ${widget.config.prob} / ';
+            '${context.tr('selection_method_multiple_prob')}: ${widget.config.prob} / ';
     }
     if (widget.config.selectionMethod == 'all' ||
         widget.config.selectionMethod == 'multiple_prob') {
       ret +=
-          '${widget.config.shuffled ? S.of(context).is_shuffled : S.of(context).is_ordered} / ';
+          '${widget.config.shuffled ? context.tr('is_shuffled') : context.tr('is_ordered')} / ';
     }
     // Config type
     if (widget.config.type == 'str') {
-      ret += S.of(context).cascaded_config_type_str;
+      ret += context.tr('cascaded_config_type_str');
     } else {
-      ret += S.of(context).cascaded_config_type_config;
+      ret += context.tr('cascaded_config_type_config');
     }
     // Random brackets
     final lower = widget.config.randomBracketsLower;
@@ -109,7 +110,7 @@ class CompactPromptConfigWidgetState extends State<CompactPromptConfigWidget> {
           padding: const EdgeInsets.only(left: 20),
           child: ListTile(
             title: Text(
-                '${S.of(context).cascaded_strings}: ${widget.config.strs.length}${S.of(context).items}'),
+                '${context.tr('cascaded_strings')}: ${widget.config.strs.length}${context.tr('items')}'),
             subtitle: Text(widget.config.strs.join('\n')),
             onTap: () {
               _editStrList();
@@ -133,12 +134,12 @@ class CompactPromptConfigWidgetState extends State<CompactPromptConfigWidget> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('${S.of(context).edit}${S.of(context).cascaded_strings}'),
+          title: Text('${context.tr('edit')}${context.tr('cascaded_strings')}'),
           content: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(S.of(context).edit_cascaded_config_str_notice),
+              Text(context.tr('edit_cascaded_config_str_notice')),
               TextField(
                 controller: controller,
                 keyboardType: TextInputType.multiline,
@@ -149,11 +150,11 @@ class CompactPromptConfigWidgetState extends State<CompactPromptConfigWidget> {
           ),
           actions: [
             TextButton(
-              child: Text(S.of(context).cancel),
+              child: Text(context.tr('cancel')),
               onPressed: () => Navigator.of(context).pop(),
             ),
             TextButton(
-              child: Text(S.of(context).confirm),
+              child: Text(context.tr('confirm')),
               onPressed: () {
                 setState(() {
                   widget.config.strs = controller.text
@@ -176,7 +177,7 @@ class CompactPromptConfigWidgetState extends State<CompactPromptConfigWidget> {
       children: [
         Expanded(
           child: Tooltip(
-            message: S.of(context).add_new_config,
+            message: context.tr('add_new_config'),
             child: IconButton(
               icon: const Icon(Icons.add),
               onPressed: () => _addNewConfig(),
@@ -185,7 +186,7 @@ class CompactPromptConfigWidgetState extends State<CompactPromptConfigWidget> {
         ),
         Expanded(
           child: Tooltip(
-            message: S.of(context).import_config_from_clipboard,
+            message: context.tr('import_config_from_clipboard'),
             child: IconButton(
               icon: const Icon(Icons.paste),
               onPressed: () async {
@@ -196,7 +197,7 @@ class CompactPromptConfigWidgetState extends State<CompactPromptConfigWidget> {
         ),
         Expanded(
           child: Tooltip(
-            message: S.of(context).reorder_config,
+            message: context.tr('reorder_config'),
             child: IconButton(
               icon: const Icon(Icons.cached),
               onPressed: () => _showReorderDialog(),
@@ -205,7 +206,7 @@ class CompactPromptConfigWidgetState extends State<CompactPromptConfigWidget> {
         ),
         Expanded(
           child: Tooltip(
-            message: S.of(context).delete_config,
+            message: context.tr('delete_config'),
             child: IconButton(
               icon: const Icon(Icons.remove),
               onPressed: () => _showDeleteDialog(),
@@ -248,7 +249,7 @@ class CompactPromptConfigWidgetState extends State<CompactPromptConfigWidget> {
         });
       } catch (e) {
         showErrorBar(context,
-            '${S.of(context).info_import_from_clipboard}${S.of(context).failed}');
+            '${context.tr('info_import_from_clipboard')}${context.tr('failed')}');
       }
     }
   }
@@ -258,7 +259,7 @@ class CompactPromptConfigWidgetState extends State<CompactPromptConfigWidget> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(S.of(context).reorder_config),
+          title: Text(context.tr('reorder_config')),
           content: SizedBox(
             width: double.maxFinite,
             height: 600,
@@ -292,7 +293,7 @@ class CompactPromptConfigWidgetState extends State<CompactPromptConfigWidget> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text(S.of(context).confirm),
+              child: Text(context.tr('confirm')),
             ),
           ],
         );
@@ -305,7 +306,7 @@ class CompactPromptConfigWidgetState extends State<CompactPromptConfigWidget> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(S.of(context).delete_config),
+          title: Text(context.tr('delete_config')),
           content: SizedBox(
               width: double.maxFinite,
               height: 600,
@@ -330,7 +331,7 @@ class CompactPromptConfigWidgetState extends State<CompactPromptConfigWidget> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text(S.of(context).confirm),
+              child: Text(context.tr('confirm')),
             ),
           ],
         );
@@ -345,7 +346,7 @@ class CompactPromptConfigWidgetState extends State<CompactPromptConfigWidget> {
               builder: (context, setDialogState) => AlertDialog(
                 scrollable: true,
                 title: Row(children: [
-                  Text('${S.of(context).edit} ${widget.config.comment}'),
+                  Text('${context.tr('edit')} ${widget.config.comment}'),
                   const Spacer(),
                   IconButton(
                       onPressed: () => _showEditCommentDialog(setDialogState),
@@ -354,7 +355,7 @@ class CompactPromptConfigWidgetState extends State<CompactPromptConfigWidget> {
                       onPressed: () {
                         copyToClipboard(json.encode(widget.config.toJson()));
                         showInfoBar(context,
-                            '${S.of(context).info_export_to_clipboard}${S.of(context).succeed}');
+                            '${context.tr('info_export_to_clipboard')}${context.tr('succeed')}');
                       },
                       icon: const Icon(Icons.copy))
                 ]),
@@ -371,7 +372,7 @@ class CompactPromptConfigWidgetState extends State<CompactPromptConfigWidget> {
                 actions: [
                   TextButton(
                       onPressed: () => Navigator.of(context).pop(),
-                      child: Text(S.of(context).confirm))
+                      child: Text(context.tr('confirm')))
                 ],
               ),
             ));
@@ -388,7 +389,7 @@ class CompactPromptConfigWidgetState extends State<CompactPromptConfigWidget> {
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
-              title: Text(S.of(context).comment),
+              title: Text(context.tr('comment')),
               content: TextField(
                 controller: controller,
                 autofocus: true,
@@ -397,17 +398,17 @@ class CompactPromptConfigWidgetState extends State<CompactPromptConfigWidget> {
               actions: [
                 TextButton(
                     onPressed: () => Navigator.of(context).pop(),
-                    child: Text(S.of(context).cancel)),
+                    child: Text(context.tr('cancel'))),
                 TextButton(
                     onPressed: () => setComment(),
-                    child: Text(S.of(context).confirm))
+                    child: Text(context.tr('confirm')))
               ],
             ));
   }
 
   Widget _buildSelectionMethodSelector(Function setDialogState) {
     return SelectableListTile(
-      title: S.of(context).selection_method,
+      title: context.tr('selection_method'),
       currentValue: widget.config.selectionMethod,
       options: const [
         'all',
@@ -417,11 +418,11 @@ class CompactPromptConfigWidgetState extends State<CompactPromptConfigWidget> {
         'multiple_num'
       ],
       options_text: [
-        S.of(context).selection_method_all,
-        S.of(context).selection_method_single,
-        S.of(context).selection_method_single_sequential,
-        S.of(context).selection_method_multiple_prob,
-        S.of(context).selection_method_multiple_num
+        context.tr('selection_method_all'),
+        context.tr('selection_method_single'),
+        context.tr('selection_method_single_sequential'),
+        context.tr('selection_method_multiple_prob'),
+        context.tr('selection_method_multiple_num')
       ],
       onSelectComplete: (value) {
         setState(() => widget.config.selectionMethod = value);
@@ -433,12 +434,12 @@ class CompactPromptConfigWidgetState extends State<CompactPromptConfigWidget> {
 
   _buildTypeSelector(Function setDialogState) {
     return SelectableListTile(
-      title: S.of(context).cascaded_config_type,
+      title: context.tr('cascaded_config_type'),
       currentValue: widget.config.type,
       options: const ['str', 'config'],
       options_text: [
-        S.of(context).cascaded_strings,
-        S.of(context).cascaded_config_type_config
+        context.tr('cascaded_strings'),
+        context.tr('cascaded_config_type_config')
       ],
       onSelectComplete: (value) {
         setState(() => widget.config.type = value);
@@ -452,7 +453,7 @@ class CompactPromptConfigWidgetState extends State<CompactPromptConfigWidget> {
     return widget.config.selectionMethod == 'multiple_prob'
         ? EditableListTile(
             leading: const Icon(Icons.question_mark),
-            title: S.of(context).selection_prob,
+            title: context.tr('selection_prob'),
             currentValue: widget.config.prob.toString(),
             onEditComplete: (value) {
               setState(() {
@@ -472,9 +473,9 @@ class CompactPromptConfigWidgetState extends State<CompactPromptConfigWidget> {
   Widget _buildInputNum(Function setDialogState) {
     final String title;
     if (widget.config.selectionMethod == 'multiple_num') {
-      title = S.of(context).selection_num;
+      title = context.tr('selection_num');
     } else if (widget.config.selectionMethod == 'single_sequential') {
-      title = S.of(context).single_sequential_repeats_num;
+      title = context.tr('single_sequential_repeats_num');
     } else {
       title = '';
     }
@@ -502,7 +503,7 @@ class CompactPromptConfigWidgetState extends State<CompactPromptConfigWidget> {
     return (widget.config.selectionMethod == 'all' ||
             widget.config.selectionMethod == 'multiple_prob')
         ? SwitchListTile(
-            title: Text(S.of(context).shuffled),
+            title: Text(context.tr('shuffled')),
             secondary: const Icon(Icons.shuffle),
             value: widget.config.shuffled,
             onChanged: (value) {
@@ -517,7 +518,7 @@ class CompactPromptConfigWidgetState extends State<CompactPromptConfigWidget> {
       ListTile(
         leading: const Icon(Icons.code),
         title: Text(
-            '${S.of(context).random_brackets}: ${widget.config.randomBracketsLower.toString()} ~ ${widget.config.randomBracketsUpper.toString()}'),
+            '${context.tr('random_brackets')}: ${widget.config.randomBracketsLower.toString()} ~ ${widget.config.randomBracketsUpper.toString()}'),
         trailing: IconButton(
             onPressed: () {
               setState(() {
