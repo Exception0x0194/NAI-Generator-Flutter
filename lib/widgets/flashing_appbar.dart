@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:nai_casrand/widgets/editable_list_tile.dart';
 
 import '../models/info_manager.dart';
 
@@ -158,6 +159,15 @@ class FlashingAppBarState extends State<FlashingAppBar>
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
+                      // Welcome message version
+                      EditableListTile(
+                          title: 'Welcome message version',
+                          currentValue: InfoManager().welcomeMessageVersion,
+                          onEditComplete: (value) {
+                            setDialogState(() {
+                              InfoManager().welcomeMessageVersion = value;
+                            });
+                          }),
                       // Debug API Switch
                       SwitchListTile(
                           title: const Text('Enable debug API path'),
@@ -206,20 +216,26 @@ class FlashingAppBarState extends State<FlashingAppBar>
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
-              title: const Text('Select language...'),
-              content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: locales
-                      .map((l) => ListTile(
-                            title: Text(getLocaleName(l)),
-                            onTap: () {
-                              Navigator.of(context).pop();
-                              setState(() {
-                                context.setLocale(l);
-                              });
-                            },
-                          ))
-                      .toList()),
-            ));
+                title: const Text('Select language...'),
+                content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: locales
+                        .map((l) => ListTile(
+                              title: Text(getLocaleName(l)),
+                              onTap: () {
+                                Navigator.of(context).pop();
+                                setState(() {
+                                  context.setLocale(l);
+                                });
+                              },
+                            ))
+                        .toList()),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text(context.tr('confirm')))
+                ]));
   }
 }

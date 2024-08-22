@@ -71,9 +71,11 @@ class MyHomePageState extends State<MyHomePage> {
     _initializationFuture = _loadInitialInfo();
     // Call welcome dialog at startup AFTER build
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _initializationFuture;
       final info = await PackageInfo.fromPlatform();
       final version = info.version;
-      if (version != InfoManager().firstSetupVersion) {
+      final iVersion = InfoManager().welcomeMessageVersion;
+      if (version != iVersion) {
         _showFirstSetupDialog(version);
       }
     });
@@ -224,7 +226,7 @@ class MyHomePageState extends State<MyHomePage> {
                 TextButton(
                     onPressed: () {
                       Navigator.of(context).pop();
-                      InfoManager().firstSetupVersion = version;
+                      InfoManager().welcomeMessageVersion = version;
                     },
                     child: Text(context.tr('dont_show_again'))),
                 TextButton(

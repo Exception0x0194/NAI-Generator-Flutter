@@ -27,7 +27,7 @@ class InfoManager with ChangeNotifier {
   InfoManager._internal();
 
   // Welcome dialog
-  String firstSetupVersion = "";
+  String welcomeMessageVersion = "";
 
   // Generation Config
   String apiKey = 'pst-abcd';
@@ -106,7 +106,7 @@ class InfoManager with ChangeNotifier {
   Map<String, dynamic> toJson() {
     return {
       "api_key": apiKey,
-      "first_setup_version": firstSetupVersion,
+      "welcome_message_version": welcomeMessageVersion,
       "preset_requests": numberOfRequests,
       "show_info_for_img": showInfoForImg,
       "info_tile_height": infoTileHeight,
@@ -137,7 +137,7 @@ class InfoManager with ChangeNotifier {
     customMetadataContent =
         json['custom_metadata_content'] ?? customMetadataContent;
 
-    firstSetupVersion = json['first_setup_version'] ?? "";
+    welcomeMessageVersion = json['welcome_message_version'] ?? "";
 
     final outputPath = json['output_folder'];
     if (!kIsWeb && Platform.isWindows && outputPath != null) {
