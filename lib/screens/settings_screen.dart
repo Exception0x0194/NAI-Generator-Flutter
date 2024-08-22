@@ -9,7 +9,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-import '../generated/l10n.dart';
 import '../models/info_manager.dart';
 import '../widgets/param_config_widget.dart';
 import '../widgets/editable_list_tile.dart';
@@ -122,9 +121,11 @@ class SettingsScreenState extends State<SettingsScreen> {
     return ExpansionTile(
       leading: const Icon(Icons.schedule),
       title: Text(context.tr('batch_settings')),
-      subtitle: Text(S
-          .of(context)
-          .batch_settings_info(batchCount, batchInterval, numberOfRequestsStr)),
+      subtitle: Text(context.tr('batch_settings_info', namedArgs: {
+        'batch_count': batchCount.toString(),
+        'interval': batchInterval.toString(),
+        'number_of_requests': numberOfRequestsStr
+      })),
       children: [
         // Batch count
         Padding(

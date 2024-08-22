@@ -69,7 +69,7 @@
     "batch_settings": "批次设置",
     "batch_count": "每批次请求数目",
     "batch_interval": "批次间隔时间（秒）",
-    "batch_settings_info": "每批次请求数目：{batch_size}，批次间隔时间：{interval} s，生成图片总数：{number_of_requests}",
+    "batch_settings_info": "每批次请求数目：{batch_count}，批次间隔时间：{interval} s，生成图片总数：{number_of_requests}",
     "output_folder": "输出文件夹",
     "system_document_folder": "系统文档文件夹",
     "proxy_settings": "HTTP 代理",

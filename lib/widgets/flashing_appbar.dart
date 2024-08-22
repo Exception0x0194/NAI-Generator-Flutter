@@ -124,10 +124,13 @@ class FlashingAppBarState extends State<FlashingAppBar>
         _currentTitle = context.tr('appbar_cooldown');
         break;
     }
-    final titleBar = InkWell(
-      onTap: () => _showDebugDialog(context),
-      child: Text(_currentTitle),
-    );
+    final titleBar = Row(children: [
+      InkWell(
+          onTap: () => _showDebugDialog(context), child: Text(_currentTitle)),
+      const Spacer(),
+      IconButton(
+          onPressed: _showLanguageDialog, icon: const Icon(Icons.translate)),
+    ]);
     return AppBar(
       title: titleBar,
       backgroundColor: _colorAnimation?.value ??
@@ -188,5 +191,35 @@ class FlashingAppBarState extends State<FlashingAppBar>
                 ));
       },
     );
+  }
+
+  void _showLanguageDialog() {
+    final locales = context.supportedLocales;
+    String getLocaleName(Locale locale) {
+      if (locale.countryCode == null) {
+        return locale.languageCode;
+      } else {
+        return '${locale.languageCode}-${locale.countryCode}';
+      }
+    }
+
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: const Text('Select language...'),
+              content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: locales
+                      .map((l) => ListTile(
+                            title: Text(getLocaleName(l)),
+                            onTap: () {
+                              Navigator.of(context).pop();
+                              setState(() {
+                                context.setLocale(l);
+                              });
+                            },
+                          ))
+                      .toList()),
+            ));
   }
 }

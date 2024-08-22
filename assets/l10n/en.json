@@ -70,7 +70,7 @@
     "batch_settings": "Batch settings",
     "batch_count": "Request per batch",
     "batch_interval": "Interval between batches (seconds)",
-    "batch_settings_info": "Requests per batch: {batch_size}, interval between batches: {interval}s, total requests: {number_of_requests}",
+    "batch_settings_info": "Requests per batch: {batch_count}, interval between batches: {interval}s, total requests: {number_of_requests}",
     "output_folder": "Output Folder",
     "system_document_folder": "System document folder",
     "proxy_settings": "HTTP Proxy",
