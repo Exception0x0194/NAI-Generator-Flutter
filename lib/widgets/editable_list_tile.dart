@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-import '../generated/l10n.dart';
 
 class EditableListTile extends StatelessWidget {
   final String title;

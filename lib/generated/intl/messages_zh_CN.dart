@@ -20,11 +20,11 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'zh_CN';
 
-  static String m0(batch_size, interval, number_of_requests) =>
-      "每批次请求数目：${batch_size}，批次间隔时间：${interval} s，生成图片总数：${number_of_requests}";
+  static String m0(batchSize, interval, numberOfRequests) =>
+      "每批次请求数目：${batchSize}，批次间隔时间：${interval} s，生成图片总数：${numberOfRequests}";
 
-  static String m1(current_size, i2i_size) =>
-      "生成尺寸：${current_size}\n输入尺寸：${i2i_size}";
+  static String m1(currentSize, i2iSize) =>
+      "生成尺寸：${currentSize}\n输入尺寸：${i2iSize}";
 
   static String m2(num) => "设置生成 ${num} 幅图片";
 
@@ -32,7 +32,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m4(num) => "导入了 ${num} 个参数。";
 
-  static String m5(parameter_name) => "导入了${parameter_name}。";
+  static String m5(parameterName) => "导入了${parameterName}。";
 
   static String m6(num) => "，每个重复 ${num} 次";
 

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 import '../models/vibe_config.dart';
-import '../generated/l10n.dart';
 
 class VibeConfigWidget extends StatefulWidget {
   final VibeConfig config;
@@ -134,7 +133,7 @@ class VibeConfigWidgetState extends State<VibeConfigWidget> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text(context.tr('not')Necessarily0to1),
+              Text(context.tr('not_necessarily_0_to_1')),
               TextField(
                 controller: controller,
                 keyboardType: const TextInputType.numberWithOptions(
@@ -189,7 +188,7 @@ class VibeConfigWidgetState extends State<VibeConfigWidget> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text(context.tr('not')Necessarily0to1),
+              Text(context.tr('not_necessarily_0_to_1')),
               TextField(
                 controller: controller,
                 keyboardType: const TextInputType.numberWithOptions(

@@ -2,7 +2,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-import '../generated/l10n.dart';
 import '../models/info_manager.dart';
 import '../models/utils.dart';
 import '../widgets/editable_list_tile.dart';

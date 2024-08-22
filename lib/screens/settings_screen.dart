@@ -226,8 +226,8 @@ class SettingsScreenState extends State<SettingsScreen> {
   _buildTokenTile() {
     return EditableListTile(
         leading: const Icon(Icons.token_outlined),
-        title: context.tr('')NAI_API_key,
-        notice: context.tr('')NAI_API_key_hint,
+        title: context.tr('NAI_API_key'),
+        notice: context.tr('NAI_API_key_hint'),
         currentValue: InfoManager().apiKey,
         confirmOnSubmit: true,
         onEditComplete: (value) {

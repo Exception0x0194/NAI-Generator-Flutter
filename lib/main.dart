@@ -5,7 +5,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hive/hive.dart';
 import 'package:nai_casrand/screens/director_tool_screen.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -19,7 +18,6 @@ import 'screens/prompt_config_screen.dart';
 import 'screens/i2i_config_screen.dart';
 import 'widgets/flashing_appbar.dart';
 import 'models/info_manager.dart';
-import 'generated/l10n.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -12,7 +12,6 @@ import '../models/info_manager.dart';
 import '../models/utils.dart';
 import '../widgets/editable_list_tile.dart';
 import '../models/i2i_config.dart';
-import '../generated/l10n.dart';
 import '../utils/metadata.dart';
 
 const imageFormat = SimpleFileFormat(
@@ -174,8 +173,13 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
     return ListTile(
       title: Text(context.tr('image_size')),
       leading: const Icon(Icons.photo_size_select_large),
-      subtitle: Text(context.tr('i2i_image_size')('$dstWidth x $dstHeight',
-          widget.config.imageB64 == null ? 'N/A' : '$srcWidth x $srcHeight')),
+      subtitle: Text(
+        context.tr('i2i_image_size', namedArgs: {
+          'current_size': '$dstWidth x $dstHeight',
+          'i2i_size':
+              widget.config.imageB64 == null ? 'N/A' : '$srcWidth x $srcHeight'
+        }),
+      ),
       onTap: _showI2ISizeDialog,
     );
   }
@@ -338,7 +342,7 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
         widget.config.overridePrompt = prompt;
         if (mounted) {
           showInfoBar(
-              context, context.tr('pasted_parameter')(context.tr('prompt')));
+              context, context.tr('pasted_parameter') + (context.tr('prompt')));
         }
       });
     }
@@ -346,7 +350,8 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
     pasteUC() {
       InfoManager().paramConfig.loadJson({'negative_prompt': uc});
       if (mounted) {
-        showInfoBar(context, context.tr('pasted_parameter')(context.tr('uc')));
+        showInfoBar(
+            context, context.tr('pasted_parameter') + (context.tr('uc')));
       }
     }
 
@@ -354,7 +359,10 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
       setState(() {
         final loaded = InfoManager().paramConfig.loadJson(param);
         if (mounted) {
-          showInfoBar(context, context.tr('loaded_parameters_count')(loaded));
+          showInfoBar(
+              context,
+              context.tr('loaded_parameters_count',
+                  namedArgs: {'num': loaded.toString()}));
         }
       });
     }

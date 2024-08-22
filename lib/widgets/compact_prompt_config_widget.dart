@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import '../models/utils.dart';
 import '../models/prompt_config.dart';
-import '../generated/l10n.dart';
 import 'editable_list_tile.dart';
 
 import 'package:flutter/material.dart';
@@ -71,7 +70,8 @@ class CompactPromptConfigWidgetState extends State<CompactPromptConfigWidget> {
       case 'single_sequential':
         ret += context.tr('selection_method_single_sequential');
         if (widget.config.num > 1) {
-          ret += context.tr('single_sequential_repeats')(widget.config.num);
+          ret += context.tr('single_sequential_repeats',
+              namedArgs: {'num': widget.config.num.toString()});
         }
         ret += ' / ';
         break;

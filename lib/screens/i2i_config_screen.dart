@@ -4,7 +4,6 @@ import 'package:super_drag_and_drop/super_drag_and_drop.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 // import '../generated/l10n.dart';
-import '../generated/l10n.dart';
 import '../models/info_manager.dart';
 import '../models/vibe_config.dart';
 import '../widgets/i2i_config_widget.dart';

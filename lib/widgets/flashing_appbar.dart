@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 import '../models/info_manager.dart';
-import '../generated/l10n.dart';
 
 enum AppState { idle, generatingFree, generatingCost, batchWaiting }
 

@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:intl/find_locale.dart';
 import 'package:nai_casrand/models/director_tool_config.dart';
 
 import 'prompt_config.dart';

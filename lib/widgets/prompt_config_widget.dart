@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import '../models/utils.dart';
 import '../models/prompt_config.dart';
-import '../generated/l10n.dart';
 import 'editable_list_tile.dart';
 
 import 'package:flutter/material.dart';

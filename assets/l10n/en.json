@@ -82,7 +82,7 @@
     "export_to_clipboard": "Export to Clipboard",
     "info_import_file": "File import ",
     "info_export_file": "File export ",
-    "notNecessarily0to1": "... not necessarily between 0 and 1",
+    "not_necessarily_0_to_1": "... not necessarily between 0 and 1",
     "info_import_from_clipboard": "Clipboard import ",
     "info_export_to_clipboard": "Clipboard export ",
     "vibe_export": "Vibe image export ",

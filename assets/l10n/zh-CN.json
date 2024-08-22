@@ -81,7 +81,7 @@
     "export_to_clipboard": "导出到剪切板",
     "info_import_file": "导入文件",
     "info_export_file": "导出文件",
-    "notNecessarily0to1": "……不一定在 0 到 1 之间",
+    "not_necessarily_0_to_1": "……不一定在 0 到 1 之间",
     "info_import_from_clipboard": "从剪切板导入",
     "info_export_to_clipboard": "向剪切板导出",
     "vibe_export": "导出 Vibe 图片",

@@ -9,7 +9,6 @@ import 'package:easy_localization/easy_localization.dart';
 import '../models/director_tool_config.dart';
 import '../models/info_manager.dart';
 import '../widgets/editable_list_tile.dart';
-import '../generated/l10n.dart';
 
 const imageFormat = SimpleFileFormat(
   // JPG, PNG, GIF, WEBP, BMP
