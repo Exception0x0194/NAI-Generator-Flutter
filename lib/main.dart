@@ -63,8 +63,12 @@ class MyHomePageState extends State<MyHomePage> {
     super.initState();
     _initializationFuture = _loadInitialInfo();
     // Call welcome dialog at startup AFTER build
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (InfoManager().firstSetup) _showFirstSetupDialog();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final info = await PackageInfo.fromPlatform();
+      final version = info.version;
+      if (version != InfoManager().firstSetupVersion) {
+        _showFirstSetupDialog(version);
+      }
     });
   }
 

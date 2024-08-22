@@ -27,8 +27,8 @@ class InfoManager with ChangeNotifier {
   }
   InfoManager._internal();
 
-  // First setup dialog
-  bool firstSetup = true;
+  // Welcome dialog
+  String firstSetupVersion = "";
 
   // Generation Config
   String apiKey = 'pst-abcd';
@@ -107,7 +107,7 @@ class InfoManager with ChangeNotifier {
   Map<String, dynamic> toJson() {
     return {
       "api_key": apiKey,
-      "first_setup": firstSetup,
+      "first_setup_version": firstSetupVersion,
       "preset_requests": numberOfRequests,
       "show_info_for_img": showInfoForImg,
       "info_tile_height": infoTileHeight,
@@ -138,7 +138,7 @@ class InfoManager with ChangeNotifier {
     customMetadataContent =
         json['custom_metadata_content'] ?? customMetadataContent;
 
-    firstSetup = json['first_setup']??false;
+    firstSetupVersion = json['first_setup_version'] ?? "";
 
     final outputPath = json['output_folder'];
     if (!kIsWeb && Platform.isWindows && outputPath != null) {
