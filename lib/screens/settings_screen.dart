@@ -392,11 +392,13 @@ class SettingsScreenState extends State<SettingsScreen> {
         context: context,
         builder: (context) => AlertDialog(
               title: Text(context.tr('donation_link_subtitle')),
-              content: Row(
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   qrCode1,
                   const SizedBox(
                     width: 20,
+                    height:20,
                   ),
                   qrCode2,
                 ],
