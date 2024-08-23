@@ -5,9 +5,11 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:encrypt/encrypt.dart' as encrypt;
 
 import '../models/info_manager.dart';
 import '../widgets/param_config_widget.dart';
@@ -103,11 +105,9 @@ class SettingsScreenState extends State<SettingsScreen> {
     return ListTile(
       title: Text(context.tr('github_repo')),
       leading: const Icon(Icons.link),
-      subtitle: const Text(
-          'https://github.com/Exception0x0194/NAI-Generator-Flutter'),
+      subtitle: const Text(String.fromEnvironment("GITHUB_REPO_LINK")),
       onTap: () => {
-        launchUrl(Uri.parse(
-            'https://github.com/Exception0x0194/NAI-Generator-Flutter'))
+        launchUrl(Uri.parse(const String.fromEnvironment("GITHUB_REPO_LINK")))
       },
     );
   }
@@ -370,30 +370,55 @@ class SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  void _showDonationQRCode() {
+  void _showDonationQRCode() async {
+    final qrCode1Bytes = await decryptAsset('assets/qrcode1.jpg');
+    final qrCode2Bytes = await decryptAsset('assets/qrcode2.jpg');
+    if (qrCode1Bytes == null || qrCode2Bytes == null || !mounted) return;
+
+    const qrCodeSize = 200.0;
+    final qrCode1 = Image.memory(
+      qrCode1Bytes,
+      width: qrCodeSize,
+      height: qrCodeSize,
+      filterQuality: FilterQuality.medium,
+    );
+    final qrCode2 = Image.memory(
+      qrCode2Bytes,
+      width: qrCodeSize,
+      height: qrCodeSize,
+      filterQuality: FilterQuality.medium,
+    );
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
               title: Text(context.tr('donation_link_subtitle')),
               content: Row(
                 children: [
-                  Image.asset(
-                    'assets/qrcode1.jpg',
-                    width: 200,
-                    height: 200,
-                    filterQuality: FilterQuality.medium,
-                  ),
+                  qrCode1,
                   const SizedBox(
                     width: 20,
                   ),
-                  Image.asset(
-                    'assets/qrcode2.jpg',
-                    width: 200,
-                    height: 200,
-                    filterQuality: FilterQuality.medium,
-                  ),
+                  qrCode2,
                 ],
               ),
             ));
+  }
+
+  Future<Uint8List?> decryptAsset(String assetPath) async {
+    const keyBase64 = String.fromEnvironment("ASSET_KEY_BASE64");
+    const ivBase64 = String.fromEnvironment("ASSET_IV_BASE64");
+    final key = encrypt.Key.fromBase64(keyBase64);
+    final iv = encrypt.IV.fromBase64(ivBase64);
+    final encrypter = encrypt.Encrypter(encrypt.AES(key));
+    try {
+      final assetByteData = await rootBundle.load(assetPath);
+      final encryptedBase64 = assetByteData.buffer.asUint8List();
+      final decryptedBase64 =
+          encrypter.decrypt(encrypt.Encrypted(encryptedBase64), iv: iv);
+      final decryptedBytes = base64Decode(decryptedBase64);
+      return decryptedBytes;
+    } catch (exception) {
+      return null;
+    }
   }
 }

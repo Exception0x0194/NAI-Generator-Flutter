@@ -172,6 +172,8 @@ class MyHomePageState extends State<MyHomePage> {
   void _showFirstSetupDialog(String version) {
     const linkStyle =
         TextStyle(color: Colors.blue, decoration: TextDecoration.underline);
+    const link = String.fromEnvironment("GITHUB_REPO_LINK");
+    const email = String.fromEnvironment("EMAIL");
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -205,17 +207,15 @@ class MyHomePageState extends State<MyHomePage> {
                               style: linkStyle,
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
-                                  launchUrl(Uri.parse(
-                                      'https://github.com/Exception0x0194/NAI-Generator-Flutter'));
+                                  launchUrl(Uri.parse(link));
                                 }),
                           TextSpan(text: context.tr('welcome_message_para3_3')),
                           TextSpan(
-                              text: context.tr('welcome_message_para3_4'),
+                              text: email,
                               style: linkStyle,
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
-                                  launchUrl(
-                                      Uri.parse('mailto:1009535916@qq.com'));
+                                  launchUrl(Uri.parse('mailto:$email'));
                                 }),
                           TextSpan(text: context.tr('welcome_message_para3_5')),
                         ])

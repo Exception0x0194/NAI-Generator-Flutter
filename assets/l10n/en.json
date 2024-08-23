@@ -126,9 +126,8 @@
     "welcome_message_para2_1": "If you are new to the app, ",
     "welcome_message_para2_2": "tap here",
     "welcome_message_para2_3": " to configure API token and proxy settings first.\n\n",
-    "welcome_message_para3_1": "If you encountered any unexpected behavior, or have any thought of improvement, create an issue in ",
+    "welcome_message_para3_1": "If you encounter any unexpected behavior, or have any thought of improvement, create an issue in ",
     "welcome_message_para3_2": "the GitHub repository",
-    "welcome_message_para3_3": ", or contact me via mail: ",
-    "welcome_message_para3_4": "1009535916@qq.com",
+    "welcome_message_para3_3": ", or contact me via email: ",
     "welcome_message_para3_5": "."
 }
