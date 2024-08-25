@@ -9,7 +9,7 @@
             "request": "launch",
             "type": "dart",
             "args": [
-                "--dart-define-from-file=secrets.json"
+                "--dart-define-from-file=../secrets.json"
             ]
         },
         {
@@ -18,7 +18,7 @@
             "type": "dart",
             "flutterMode": "profile",
             "args": [
-                "--dart-define-from-file=secrets.json"
+                "--dart-define-from-file=../secrets.json"
             ]
         },
         {
@@ -27,7 +27,7 @@
             "type": "dart",
             "flutterMode": "release",
             "args": [
-                "--dart-define-from-file=secrets.json"
+                "--dart-define-from-file=../secrets.json"
             ]
         }
     ]

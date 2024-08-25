@@ -111,7 +111,7 @@ class DirectorToolScreenState extends State<DirectorToolScreen> {
           leading: const Icon(Icons.handyman),
           currentValue: widget.config.type,
           options: widget.toolTypes,
-          options_text: widget.displayedToolTypes,
+          optionsText: widget.displayedToolTypes,
           onSelectComplete: (value) => setState(() {
                 widget.config.type = value;
               })),

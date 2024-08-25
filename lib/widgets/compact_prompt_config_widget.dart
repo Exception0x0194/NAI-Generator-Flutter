@@ -417,7 +417,7 @@ class CompactPromptConfigWidgetState extends State<CompactPromptConfigWidget> {
         'multiple_prob',
         'multiple_num'
       ],
-      options_text: [
+      optionsText: [
         context.tr('selection_method_all'),
         context.tr('selection_method_single'),
         context.tr('selection_method_single_sequential'),
@@ -437,7 +437,7 @@ class CompactPromptConfigWidgetState extends State<CompactPromptConfigWidget> {
       title: context.tr('cascaded_config_type'),
       currentValue: widget.config.type,
       options: const ['str', 'config'],
-      options_text: [
+      optionsText: [
         context.tr('cascaded_strings'),
         context.tr('cascaded_config_type_config')
       ],

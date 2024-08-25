@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-
 class EditableListTile extends StatelessWidget {
   final String title;
   final String currentValue;
@@ -85,7 +84,7 @@ class SelectableListTile extends StatelessWidget {
   final String title;
   final String currentValue;
   final List<String> options;
-  final List<String>? options_text; // 可能为空的额外文本选项
+  final List<String>? optionsText; // 可能为空的额外文本选项
   final Function(String) onSelectComplete;
   final Icon? leading;
   final bool? dense;
@@ -98,7 +97,7 @@ class SelectableListTile extends StatelessWidget {
       super.key,
       this.leading,
       this.dense,
-      this.options_text});
+      this.optionsText});
 
   @override
   Widget build(BuildContext context) {
@@ -119,8 +118,8 @@ class SelectableListTile extends StatelessWidget {
           title: Text('${context.tr('select')}$title'),
           children: List<Widget>.generate(options.length, (int index) {
             String displayText =
-                options_text != null && options_text!.length > index
-                    ? options_text![index]
+                optionsText != null && optionsText!.length > index
+                    ? optionsText![index]
                     : options[index];
             return SimpleDialogOption(
               onPressed: () {
