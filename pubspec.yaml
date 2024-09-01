@@ -56,6 +56,9 @@ dependencies:
   super_clipboard: ^0.8.19
   easy_localization: ^3.0.7
   encrypt: ^5.0.3
+  json_serializable: ^6.8.0
+  build_runner: ^2.4.12
+  json_annotation: ^4.9.0
 
 dev_dependencies:
   flutter_test:

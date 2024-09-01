@@ -1,5 +1,10 @@
 import 'dart:math';
 
+import 'package:json_annotation/json_annotation.dart';
+
+part 'param_config.g.dart';
+
+@JsonSerializable()
 class ParamConfig {
   int width;
   int height;
@@ -8,18 +13,27 @@ class ParamConfig {
   int steps;
   bool randomSeed;
   int seed;
+  @JsonKey(name: "n_samples")
   int nSamples;
   int ucPreset;
   bool qualityToggle;
   bool sm;
+  @JsonKey(name: "sm_dyn")
   bool smDyn;
+  @JsonKey(name: "dynamic_thresholding")
   bool dynamicThresholding;
+  @JsonKey(name: "controlnet_strength")
   double controlNetStrength;
   bool legacy;
+  @JsonKey(name: "add_original_image")
   bool addOriginalImage;
+  @JsonKey(name: "uncond_scale")
   double uncondScale;
+  @JsonKey(name: "cfg_rescale")
   double cfgRescale;
+  @JsonKey(name: "noise_schdule")
   String noiseSchedule;
+  @JsonKey(name: "negative_prompt")
   String negativePrompt;
 
   ParamConfig({
