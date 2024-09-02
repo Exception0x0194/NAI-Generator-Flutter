@@ -219,8 +219,7 @@ class CompactPromptConfigWidgetState extends State<CompactPromptConfigWidget> {
   }
 
   void _addNewConfig() async {
-    var newConfig =
-        PromptConfig(comment: 'New config', depth: widget.config.depth + 1);
+    var newConfig = PromptConfig(comment: 'New config');
 
     setState(() {
       if (widget.config.prompts.isNotEmpty) {
@@ -238,7 +237,7 @@ class CompactPromptConfigWidgetState extends State<CompactPromptConfigWidget> {
     if (data != null && data.text != null) {
       try {
         final Map<String, dynamic> jsonConfig = json.decode(data.text!);
-        final newConfig = PromptConfig.fromJson(jsonConfig, 0);
+        final newConfig = PromptConfig.fromJson(jsonConfig);
 
         setState(() {
           if (widget.config.prompts.isEmpty) {

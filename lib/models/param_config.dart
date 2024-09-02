@@ -18,6 +18,8 @@ const samplers = [
   'ddim_v3'
 ];
 const noiseSchedules = ['native', 'karras', 'exponential', 'polyexponential'];
+const defaultUC =
+    'lowres, {bad}, error, fewer, extra, missing, worst quality, jpeg artifacts, bad quality, watermark, unfinished, displeasing, chromatic aberration, signature, extra digits, artistic error, username, scan, [abstract], bad anatomy, bad hands';
 
 class ParamConfig {
   int width;
@@ -31,7 +33,7 @@ class ParamConfig {
   double cfgRescale;
   bool sm;
   bool smDyn;
-  bool? varietyPlus;
+  bool varietyPlus;
 
   bool randomSeed;
   int seed;
@@ -67,9 +69,8 @@ class ParamConfig {
     this.uncondScale = 1.0,
     this.cfgRescale = 0.1,
     this.noiseSchedule = 'native',
-    this.varietyPlus,
-    this.negativePrompt =
-        'lowres, {bad}, error, fewer, extra, missing, worst quality, jpeg artifacts, bad quality, watermark, unfinished, displeasing, chromatic aberration, signature, extra digits, artistic error, username, scan, [abstract], bad anatomy, bad hands',
+    this.varietyPlus = false,
+    this.negativePrompt = defaultUC,
   });
 
   Map<String, dynamic> toJson() {
@@ -84,7 +85,7 @@ class ParamConfig {
       'qualityToggle': qualityToggle,
       'sm': sm,
       'sm_dyn': smDyn,
-      'seed': randomSeed ? Random().nextInt(1 << 32 - 1) : seed,
+      'random_seed': randomSeed,
       'dynamic_thresholding': dynamicThresholding,
       'controlnet_strength': controlNetStrength,
       'legacy': legacy,
@@ -100,13 +101,16 @@ class ParamConfig {
     };
   }
 
+  /// Different from toJson(), some fields in payload need to be calculated from other params.
   Map<String, dynamic> get payload {
     bool? preferBrownian;
+    bool? deliberateEulerAncestralBug;
     if (sampler == 'k_euler_ancestral' && noiseSchedule != 'native') {
       preferBrownian = true;
+      deliberateEulerAncestralBug = false;
     }
     double? skipCfgAboveSigma;
-    if (varietyPlus != null) {
+    if (varietyPlus) {
       final w = width / 8;
       final h = height / 8;
       final v = pow(4.0 * w * h / 63232, 0.5);
@@ -137,6 +141,7 @@ class ParamConfig {
       'reference_strength_multiple': [],
       'prefer_brownian': preferBrownian,
       'skip_cfg_above_sigma': skipCfgAboveSigma,
+      'deliberate_euler_ancestral_bug': deliberateEulerAncestralBug,
     };
     payload.removeWhere((k, v) => v == null);
     return payload;
@@ -150,12 +155,12 @@ class ParamConfig {
       sampler: json['sampler'],
       steps: json['steps'],
       nSamples: json['n_samples'],
-      ucPreset: json['ucPreset'],
-      qualityToggle: json['qualityToggle'],
+      ucPreset: json['ucPreset'] ?? 0,
+      qualityToggle: json['qualityToggle'] ?? false,
       sm: json['sm'],
       smDyn: json['sm_dyn'],
       dynamicThresholding: json['dynamic_thresholding'],
-      varietyPlus: json['prefer_brownian'],
+      varietyPlus: json['variety_plus'] ?? false,
       controlNetStrength: json['controlnet_strength'] is int
           ? (json['controlnet_strength'] as int).toDouble()
           : json['controlnet_strength'],

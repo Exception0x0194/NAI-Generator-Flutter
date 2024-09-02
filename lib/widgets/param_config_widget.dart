@@ -128,10 +128,9 @@ class ParamConfigWidgetState extends State<ParamConfigWidget> {
           setState(() => widget.config.smDyn = newValue);
         }, const Icon(Icons.keyboard_double_arrow_right)),
         // Variety+
-        _buildSwitchTile(
-            context.tr('variety_plus'), widget.config.varietyPlus ?? false,
+        _buildSwitchTile(context.tr('variety_plus'), widget.config.varietyPlus,
             (newValue) {
-          setState(() => widget.config.varietyPlus = newValue ? true : null);
+          setState(() => widget.config.varietyPlus = newValue);
         }, const Icon(Icons.add)),
         // Seed
         _buildRandomSeedTile(),

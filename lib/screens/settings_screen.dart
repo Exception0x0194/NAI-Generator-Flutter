@@ -26,27 +26,31 @@ class SettingsScreen extends StatefulWidget {
 class SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
+    final children = [
+      // Token settings
+      _buildTokenTile(),
+      // Param settings
+      Padding(
+          padding: const EdgeInsets.only(left: 20),
+          child: ParamConfigWidget(config: InfoManager().paramConfig)),
+      // Batch settings
+      _buildBatchTile(),
+      // Erase metadata / add fake metadata
+      _buildEraseMetadataTile(),
+      // Output directory selection, for windows only
+      if (!kIsWeb && Platform.isWindows) _buildOutputSelectionTile(),
+      // Proxy settings
+      if (!kIsWeb) _buildProxyTile(),
+    ]
+        .map((e) => Padding(
+              padding: const EdgeInsets.only(right: 60),
+              child: e,
+            ))
+        .toList();
     return Scaffold(
-      body: Padding(
-          padding: const EdgeInsets.only(right: 80),
-          child: ListView(
-            children: [
-              // Token settings
-              _buildTokenTile(),
-              // Param settings
-              Padding(
-                  padding: const EdgeInsets.only(left: 20),
-                  child: ParamConfigWidget(config: InfoManager().paramConfig)),
-              // Batch settings
-              _buildBatchTile(),
-              // Erase metadata / add fake metadata
-              _buildEraseMetadataTile(),
-              // Output directory selection, for windows only
-              if (!kIsWeb && Platform.isWindows) _buildOutputSelectionTile(),
-              // Proxy settings
-              if (!kIsWeb) _buildProxyTile(),
-            ],
-          )),
+      body: ListView(
+        children: children,
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
@@ -398,7 +402,7 @@ class SettingsScreenState extends State<SettingsScreen> {
                   qrCode1,
                   const SizedBox(
                     width: 20,
-                    height:20,
+                    height: 20,
                   ),
                   qrCode2,
                 ],

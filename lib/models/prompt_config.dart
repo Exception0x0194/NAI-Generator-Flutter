@@ -10,7 +10,6 @@ class PromptConfig {
   String type;
   String comment;
   String filter;
-  int depth;
   List<String> strs;
   List<PromptConfig> prompts;
   bool enabled;
@@ -28,13 +27,12 @@ class PromptConfig {
     this.type = 'str',
     this.comment = 'Unnamed config',
     this.filter = '',
-    this.depth = 0,
     this.strs = const [],
     this.prompts = const [],
     this.enabled = true,
   });
 
-  factory PromptConfig.fromJson(Map<String, dynamic> json, int depth) {
+  factory PromptConfig.fromJson(Map<String, dynamic> json) {
     int upper, lower;
     if (json['randomBrackets'] != null) {
       upper = json['randomBrackets'];
@@ -55,12 +53,11 @@ class PromptConfig {
       type: json['type'],
       comment: json['comment'],
       filter: json['filter'],
-      depth: depth,
       strs:
           (json['strs'] as List<dynamic>?)?.map((e) => e as String).toList() ??
               [],
       prompts: (json['prompts'] as List<dynamic>?)
-              ?.map((e) => PromptConfig.fromJson(e, depth + 1))
+              ?.map((e) => PromptConfig.fromJson(e))
               .toList() ??
           [],
       enabled: json['enabled'] ?? true,
@@ -78,7 +75,6 @@ class PromptConfig {
       'type': type,
       'comment': comment,
       'filter': filter,
-      'depth': depth,
       'strs': strs,
       'prompts': prompts.map((x) => x.toJson()).toList(),
       'enabled': enabled,
@@ -101,7 +97,7 @@ class PromptConfig {
     return bracketString[0] + s + bracketString[1];
   }
 
-  Map<String, String> pickPromptsFromConfig() {
+  Map<String, String> pickPromptsFromConfig({int depth = 0}) {
     String head = '', tail = '';
     String comment = '';
 
@@ -161,7 +157,7 @@ class PromptConfig {
         }
       } else if (type == 'config') {
         var subPromptConfig = p as PromptConfig;
-        var result = subPromptConfig.pickPromptsFromConfig();
+        var result = subPromptConfig.pickPromptsFromConfig(depth: depth + 1);
         if (result['head'] != null && result['head']!.isNotEmpty) {
           head = '${addRandomBrackets(result['head']!)}$sep$head';
         }

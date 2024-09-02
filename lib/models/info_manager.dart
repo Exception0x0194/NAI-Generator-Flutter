@@ -123,7 +123,7 @@ class InfoManager with ChangeNotifier {
   }
 
   fromJson(Map<String, dynamic> json) async {
-    promptConfig = PromptConfig.fromJson(json['prompt_config'], 0);
+    promptConfig = PromptConfig.fromJson(json['prompt_config']);
     paramConfig = ParamConfig.fromJson(json['param_config']);
     apiKey = json['api_key'];
     numberOfRequests = json['preset_requests'] ?? 0;
