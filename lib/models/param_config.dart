@@ -1,40 +1,51 @@
 import 'dart:math';
 
-import 'package:json_annotation/json_annotation.dart';
+const defaultSizes = [
+  '832 x 1216',
+  '1024 x 1024',
+  '1216 x 832',
+  '1024 x 1536',
+  '1472 x 1472',
+  '1536 x 1024',
+];
+const samplers = [
+  'k_euler',
+  'k_euler_ancestral',
+  'k_dpmpp_2s_ancestral',
+  'k_dpmpp_2m_sde',
+  'k_dpmpp_sde',
+  'k_dpmpp_2m',
+  'ddim_v3'
+];
+const noiseSchedules = ['native', 'karras', 'exponential', 'polyexponential'];
 
-part 'param_config.g.dart';
-
-@JsonSerializable()
 class ParamConfig {
   int width;
   int height;
-  double scale;
-  String sampler;
+  int nSamples;
+
   int steps;
+  String sampler;
+  String noiseSchedule;
+  double scale;
+  double cfgRescale;
+  bool sm;
+  bool smDyn;
+  bool? varietyPlus;
+
   bool randomSeed;
   int seed;
-  @JsonKey(name: "n_samples")
-  int nSamples;
-  int ucPreset;
-  bool qualityToggle;
-  bool sm;
-  @JsonKey(name: "sm_dyn")
-  bool smDyn;
-  @JsonKey(name: "dynamic_thresholding")
+
   bool dynamicThresholding;
-  @JsonKey(name: "controlnet_strength")
   double controlNetStrength;
-  bool legacy;
-  @JsonKey(name: "add_original_image")
-  bool addOriginalImage;
-  @JsonKey(name: "uncond_scale")
   double uncondScale;
-  @JsonKey(name: "cfg_rescale")
-  double cfgRescale;
-  @JsonKey(name: "noise_schdule")
-  String noiseSchedule;
-  @JsonKey(name: "negative_prompt")
+
+  bool qualityToggle;
+  int ucPreset;
   String negativePrompt;
+
+  bool legacy;
+  bool addOriginalImage;
 
   ParamConfig({
     this.width = 832,
@@ -56,6 +67,7 @@ class ParamConfig {
     this.uncondScale = 1.0,
     this.cfgRescale = 0.1,
     this.noiseSchedule = 'native',
+    this.varietyPlus,
     this.negativePrompt =
         'lowres, {bad}, error, fewer, extra, missing, worst quality, jpeg artifacts, bad quality, watermark, unfinished, displeasing, chromatic aberration, signature, extra digits, artistic error, username, scan, [abstract], bad anatomy, bad hands',
   });
@@ -83,8 +95,51 @@ class ParamConfig {
       'negative_prompt': negativePrompt,
       'reference_image_multiple': [],
       'reference_information_extracted_multiple': [],
-      'reference_strength_multiple': []
+      'reference_strength_multiple': [],
+      'variety_plus': varietyPlus,
     };
+  }
+
+  Map<String, dynamic> get payload {
+    bool? preferBrownian;
+    if (sampler == 'k_euler_ancestral' && noiseSchedule != 'native') {
+      preferBrownian = true;
+    }
+    double? skipCfgAboveSigma;
+    if (varietyPlus != null) {
+      final w = width / 8;
+      final h = height / 8;
+      final v = pow(4.0 * w * h / 63232, 0.5);
+      skipCfgAboveSigma = 19.0 * v;
+    }
+    var payload = {
+      'width': width,
+      'height': height,
+      'scale': scale,
+      'sampler': sampler,
+      'steps': steps,
+      'n_samples': nSamples,
+      'ucPreset': ucPreset,
+      'qualityToggle': qualityToggle,
+      'sm': sm,
+      'sm_dyn': smDyn,
+      'seed': randomSeed ? Random().nextInt(1 << 32 - 1) : seed,
+      'dynamic_thresholding': dynamicThresholding,
+      'controlnet_strength': controlNetStrength,
+      'legacy': legacy,
+      'add_original_image': addOriginalImage,
+      'uncond_scale': uncondScale,
+      'cfg_rescale': cfgRescale,
+      'noise_schedule': noiseSchedule,
+      'negative_prompt': negativePrompt,
+      'reference_image_multiple': [],
+      'reference_information_extracted_multiple': [],
+      'reference_strength_multiple': [],
+      'prefer_brownian': preferBrownian,
+      'skip_cfg_above_sigma': skipCfgAboveSigma,
+    };
+    payload.removeWhere((k, v) => v == null);
+    return payload;
   }
 
   factory ParamConfig.fromJson(Map<String, dynamic> json) {
@@ -100,6 +155,7 @@ class ParamConfig {
       sm: json['sm'],
       smDyn: json['sm_dyn'],
       dynamicThresholding: json['dynamic_thresholding'],
+      varietyPlus: json['prefer_brownian'],
       controlNetStrength: json['controlnet_strength'] is int
           ? (json['controlnet_strength'] as int).toDouble()
           : json['controlnet_strength'],

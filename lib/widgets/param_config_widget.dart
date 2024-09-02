@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 import 'editable_list_tile.dart';
+import 'slider_list_tile.dart';
 import '../models/param_config.dart';
 
 class ParamConfigWidget extends StatefulWidget {
@@ -52,39 +53,71 @@ class ParamConfigWidgetState extends State<ParamConfigWidget> {
                     keyboardType: TextInputType.number,
                   ),
                 ])),
+        // Steps
+        SliderListTile(
+            title: context.tr('sampling_steps') +
+                context.tr('colon') +
+                widget.config.steps.toString(),
+            sliderValue: widget.config.steps.toDouble(),
+            leading: const Icon(Icons.repeat),
+            min: 0,
+            max: 28,
+            divisions: 28,
+            onChanged: (value) {
+              setState(() {
+                widget.config.steps = value.toInt();
+              });
+            }),
         // CFG
-        EditableListTile(
+        SliderListTile(
+          title: context.tr('scale') +
+              context.tr('colon') +
+              widget.config.scale.toStringAsFixed(1),
+          sliderValue: widget.config.scale,
           leading: const Icon(Icons.numbers),
-          title: context.tr('scale'),
-          currentValue: widget.config.scale.toString(),
-          confirmOnSubmit: true,
-          onEditComplete: (value) => setState(() => widget.config.scale =
-              double.tryParse(value) ?? widget.config.scale),
-          keyboardType: TextInputType.number,
+          min: 0,
+          max: 10,
+          divisions: 100,
+          onChanged: (value) {
+            setState(() {
+              widget.config.scale = value;
+            });
+          },
         ),
-        EditableListTile(
+        SliderListTile(
           leading: const Icon(Icons.numbers),
-          title: context.tr('cfg_rescale'),
-          currentValue: widget.config.cfgRescale.toString(),
-          confirmOnSubmit: true,
-          onEditComplete: (value) => setState(() => widget.config.cfgRescale =
-              double.tryParse(value) ?? widget.config.cfgRescale),
-          keyboardType: TextInputType.number,
+          title: context.tr('cfg_rescale') +
+              context.tr('colon') +
+              widget.config.cfgRescale.toStringAsFixed(2),
+          min: 0,
+          max: 1,
+          divisions: 20,
+          sliderValue: widget.config.cfgRescale,
+          onChanged: (value) {
+            setState(() {
+              widget.config.cfgRescale = value;
+            });
+          },
         ),
         // Sampler
         SelectableListTile(
             leading: const Icon(Icons.search),
             title: context.tr('sampler'),
             currentValue: widget.config.sampler,
-            options: const [
-              'k_euler',
-              'k_euler_ancestral',
-              'k_dpmpp_2s_ancestral',
-              'k_dpmpp_sde'
-            ],
+            options: samplers,
             onSelectComplete: (value) => {
                   setState(() {
                     widget.config.sampler = value;
+                  })
+                }),
+        SelectableListTile(
+            leading: const Icon(Icons.search),
+            title: context.tr('noise_scheduler'),
+            currentValue: widget.config.noiseSchedule,
+            options: noiseSchedules,
+            onSelectComplete: (value) => {
+                  setState(() {
+                    widget.config.noiseSchedule = value;
                   })
                 }),
         // SMEA
@@ -94,6 +127,12 @@ class ParamConfigWidgetState extends State<ParamConfigWidget> {
         _buildSwitchTile(context.tr('sm_dyn'), widget.config.smDyn, (newValue) {
           setState(() => widget.config.smDyn = newValue);
         }, const Icon(Icons.keyboard_double_arrow_right)),
+        // Variety+
+        _buildSwitchTile(
+            context.tr('variety_plus'), widget.config.varietyPlus ?? false,
+            (newValue) {
+          setState(() => widget.config.varietyPlus = newValue ? true : null);
+        }, const Icon(Icons.add)),
         // Seed
         _buildRandomSeedTile(),
         // UC
@@ -124,14 +163,7 @@ class ParamConfigWidgetState extends State<ParamConfigWidget> {
     return SelectableListTile(
       title: context.tr('image_size'),
       currentValue: _getSizeString(),
-      options: const [
-        '832 x 1216',
-        '1024 x 1024',
-        '1216 x 832',
-        '1024 x 1536',
-        '1472 x 1472',
-        '1536 x 1024',
-      ],
+      options: defaultSizes,
       onSelectComplete: (value) => {_setSize(value)},
       leading: const Icon(Icons.photo_size_select_large),
     );

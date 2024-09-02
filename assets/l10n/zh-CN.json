@@ -58,7 +58,10 @@
     "drag_and_drop_image_notice": "拖动图片到此，或点击上传图片…",
     "sm": "SMEA",
     "sm_dyn": "DYN",
+    "variety_plus": "Variety+",
     "sampler": "采样器",
+    "sampling_steps": "采样步数",
+    "noise_scheduler": "噪音调度",
     "use_random_seed": "使用随机种子",
     "random_seed": "随机种子",
     "uc": "反向提示词",
@@ -128,5 +131,6 @@
     "welcome_message_para3_1": "如果你遇到了任何软件问题，或有改进软件的创意，可以在",
     "welcome_message_para3_2": "项目 repository",
     "welcome_message_para3_3": " 发布 Issue，或通过邮件联系我：",
-    "welcome_message_para3_5": "。"
+    "welcome_message_para3_5": "。",
+    "colon": ": "
 }

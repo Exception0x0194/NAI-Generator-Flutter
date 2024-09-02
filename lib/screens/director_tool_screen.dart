@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:nai_casrand/widgets/slider_list_tile.dart';
 import 'package:super_drag_and_drop/super_drag_and_drop.dart';
 import "package:super_clipboard/super_clipboard.dart";
 import 'package:easy_localization/easy_localization.dart';
@@ -125,26 +126,18 @@ class DirectorToolScreenState extends State<DirectorToolScreen> {
   }
 
   Widget _buildDefryTile() {
-    return Column(
-      children: [
-        ListTile(
-          title: const Text('Defry'),
-          subtitle: Text(widget.config.defry.toString()),
-          leading: const Icon(Icons.tune),
-        ),
-        Padding(
-            padding: const EdgeInsets.only(left: 40),
-            child: SizedBox(
-                height: 30,
-                child: Slider(
-                    value: widget.config.defry.toDouble(),
-                    min: 0,
-                    max: 5,
-                    divisions: 5,
-                    onChanged: (value) => setState(() {
-                          widget.config.defry = value.toInt();
-                        }))))
-      ],
+    return SliderListTile(
+      title: 'Defry${context.tr('colon')}${widget.config.defry}',
+      leading: const Icon(Icons.tune),
+      sliderValue: widget.config.defry.toDouble(),
+      min: 0,
+      max: 5,
+      divisions: 5,
+      onChanged: (value) {
+        setState(() {
+          widget.config.defry = value.toInt();
+        });
+      },
     );
   }
 

@@ -59,7 +59,10 @@
     "drag_and_drop_image_notice": "Drop image here or press to upload",
     "sm": "SMEA",
     "sm_dyn": "DYN",
+    "variety_plus": "Variety+",
     "sampler": "Sampler",
+    "sampling_steps": "Sample Steps",
+    "noise_scheduler": "Noise Scheduler",
     "use_random_seed": "Use Random Seed",
     "random_seed": "Random Seed",
     "uc": "Inverse Prompt Token",
@@ -129,5 +132,6 @@
     "welcome_message_para3_1": "If you encounter any unexpected behavior, or have any thought of improvement, file an issue in ",
     "welcome_message_para3_2": "the GitHub repository",
     "welcome_message_para3_3": ", or contact me via email: ",
-    "welcome_message_para3_5": "."
+    "welcome_message_para3_5": ".",
+    "colon": ": "
 }

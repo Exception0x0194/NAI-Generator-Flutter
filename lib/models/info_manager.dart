@@ -177,7 +177,7 @@ class InfoManager with ChangeNotifier {
     var pickedPrompts = promptConfig.pickPromptsFromConfig();
     var prompts = pickedPrompts['head']! + pickedPrompts['tail']!;
 
-    var parameters = paramConfig.toJson();
+    var parameters = paramConfig.payload;
     var action = 'generate';
 
     // Add vibe configs
