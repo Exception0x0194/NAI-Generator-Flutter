@@ -59,7 +59,10 @@
     "drag_and_drop_image_notice": "Drop image here or press to upload",
     "sm": "SMEA",
     "sm_dyn": "DYN",
+    "variety_plus": "Variety+",
     "sampler": "Sampler",
+    "sampling_steps": "Sample Steps",
+    "noise_scheduler": "Noise Scheduler",
     "use_random_seed": "Use Random Seed",
     "random_seed": "Random Seed",
     "uc": "Inverse Prompt Token",
@@ -77,8 +80,8 @@
     "proxy_settings_notice": "Example: 127.0.0.1:12345; blank → DIRECT",
     "proxy_settings_direct": "DIRECT",
     "github_repo": "GitHub Repository",
-    "import_settings_from_file": "Import Settings from File",
-    "export_settings_to_file": "Export Settings to File",
+    "import_settings_from_file": "Import settings from file",
+    "export_settings_to_file": "Export settings to file",
     "export_to_clipboard": "Export to Clipboard",
     "info_import_file": "File import ",
     "info_export_file": "File export ",
@@ -126,8 +129,9 @@
     "welcome_message_para2_1": "If you are new to the app, ",
     "welcome_message_para2_2": "tap here",
     "welcome_message_para2_3": " to configure API token and proxy settings first.\n\n",
-    "welcome_message_para3_1": "If you encounter any unexpected behavior, or have any thought of improvement, create an issue in ",
+    "welcome_message_para3_1": "If you encounter any unexpected behavior, or have any thought of improvement, file an issue in ",
     "welcome_message_para3_2": "the GitHub repository",
     "welcome_message_para3_3": ", or contact me via email: ",
-    "welcome_message_para3_5": "."
+    "welcome_message_para3_5": ".",
+    "colon": ": "
 }
