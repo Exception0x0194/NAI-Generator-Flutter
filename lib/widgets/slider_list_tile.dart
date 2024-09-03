@@ -34,6 +34,15 @@ class _SliderListTileState extends State<SliderListTile> {
   }
 
   @override
+  void didUpdateWidget(SliderListTile oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Check whether sliderValue is changed, update currentValue accordingly
+    if (oldWidget.sliderValue != widget.sliderValue) {
+      currentValue = widget.sliderValue;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
