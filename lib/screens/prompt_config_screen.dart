@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-import '../widgets/prompt_config_widget.dart';
+import '../widgets/model-widgets/prompt_config_widget.dart';
 import '../models/info_manager.dart';
 
 class PromptConfigScreen extends StatefulWidget {

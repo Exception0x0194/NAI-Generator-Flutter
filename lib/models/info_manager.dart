@@ -9,7 +9,7 @@ import 'param_config.dart';
 import 'generation_info.dart';
 import 'vibe_config.dart';
 import 'i2i_config.dart';
-import 'utils.dart';
+import '../utils/data.dart';
 import '../utils/metadata.dart';
 
 import 'package:archive/archive.dart';

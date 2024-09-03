@@ -12,9 +12,10 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
 
 import '../models/info_manager.dart';
-import '../widgets/param_config_widget.dart';
+import '../widgets/model-widgets/param_config_widget.dart';
 import '../widgets/editable_list_tile.dart';
-import '../models/utils.dart';
+import '../utils/data.dart';
+import '../utils/flushbar.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});

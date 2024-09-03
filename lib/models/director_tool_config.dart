@@ -1,5 +1,47 @@
 import 'dart:math';
 
+const toolTypes = [
+  DirectorToolType(type: 'bg-removal', name: 'Remove BG'),
+  DirectorToolType(type: 'lineart', name: 'Line Art'),
+  DirectorToolType(type: 'sketch', name: 'Sketch'),
+  DirectorToolType(type: 'colorize', name: 'Colorize'),
+  DirectorToolType(type: 'emotion', name: 'Emotion'),
+  DirectorToolType(type: 'declutter', name: 'Declutter')
+];
+const emotions = [
+  'neutral',
+  'happy',
+  'sad',
+  'angry',
+  'scared',
+  'surprised',
+  'tired',
+  'excited',
+  'nervous',
+  'thinking',
+  'confused',
+  'shy',
+  'disgusted',
+  'smug',
+  'bored',
+  'laughing',
+  'irritated',
+  'aroused',
+  'embarrassed',
+  'worried',
+  'love',
+  'determined',
+  'hurt',
+  'playful'
+];
+
+class DirectorToolType {
+  final String type;
+  final String name;
+
+  const DirectorToolType({required this.type, required this.name});
+}
+
 class DirectorToolConfig {
   String? imageB64;
 

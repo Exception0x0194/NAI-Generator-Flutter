@@ -6,8 +6,8 @@ import 'package:easy_localization/easy_localization.dart';
 // import '../generated/l10n.dart';
 import '../models/info_manager.dart';
 import '../models/vibe_config.dart';
-import '../widgets/i2i_config_widget.dart';
-import '../widgets/vibe_config_widget.dart';
+import '../widgets/model-widgets/i2i_config_widget.dart';
+import '../widgets/model-widgets/vibe_config_widget.dart';
 
 class I2IConfigScreen extends StatefulWidget {
   const I2IConfigScreen({super.key});

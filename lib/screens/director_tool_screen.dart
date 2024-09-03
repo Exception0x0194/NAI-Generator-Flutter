@@ -34,48 +34,6 @@ class DirectorToolScreen extends StatefulWidget {
   DirectorToolScreen({super.key});
 
   final DirectorToolConfig config = InfoManager().directorToolConfig;
-  final emotionTypes = [
-    'neutral',
-    'happy',
-    'sad',
-    'angry',
-    'scared',
-    'surprised',
-    'tired',
-    'excited',
-    'nervous',
-    'thinking',
-    'confused',
-    'shy',
-    'disgusted',
-    'smug',
-    'bored',
-    'laughing',
-    'irritated',
-    'aroused',
-    'embarrassed',
-    'worried',
-    'love',
-    'determined',
-    'hurt',
-    'playful'
-  ];
-  final toolTypes = [
-    'bg-removal',
-    'lineart',
-    'sketch',
-    'colorize',
-    'emotion',
-    'declutter',
-  ];
-  final displayedToolTypes = [
-    'Remove BG',
-    'Line Art',
-    'Sketch',
-    'Colorize',
-    'Emotion',
-    'Declutter',
-  ];
   final imageSize = 300.0;
 
   @override
@@ -111,8 +69,8 @@ class DirectorToolScreenState extends State<DirectorToolScreen> {
           title: context.tr('director_tool_type'),
           leading: const Icon(Icons.handyman),
           currentValue: widget.config.type,
-          options: widget.toolTypes,
-          optionsText: widget.displayedToolTypes,
+          options: toolTypes.map((e) => e.type).toList(),
+          optionsText: toolTypes.map((e) => e.name).toList(),
           onSelectComplete: (value) => setState(() {
                 widget.config.type = value;
               })),
@@ -226,7 +184,7 @@ class DirectorToolScreenState extends State<DirectorToolScreen> {
                     title: Text('${context.tr('edit')} emotions:'),
                     content: SingleChildScrollView(
                       child: Column(
-                          children: widget.emotionTypes
+                          children: emotions
                               .map((e) => CheckboxListTile(
                                   title: Text(e),
                                   value: widget.config.emotions.contains(e),

@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 import '../models/info_manager.dart';
-import '../models/utils.dart';
+import '../utils/flushbar.dart';
 import '../widgets/editable_list_tile.dart';
-import '../widgets/generation_info_widget.dart';
+import '../widgets/model-widgets/generation_info_widget.dart';
 
 class PromptGenerationScreen extends StatefulWidget {
   const PromptGenerationScreen({super.key});

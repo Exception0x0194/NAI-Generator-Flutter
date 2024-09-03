@@ -8,11 +8,13 @@ import 'package:super_clipboard/super_clipboard.dart';
 import 'package:super_drag_and_drop/super_drag_and_drop.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-import '../models/info_manager.dart';
-import '../models/utils.dart';
-import '../widgets/editable_list_tile.dart';
-import '../models/i2i_config.dart';
-import '../utils/metadata.dart';
+import '../../models/info_manager.dart';
+import '../../models/i2i_config.dart';
+import '../../utils/metadata.dart';
+import '../../utils/data.dart';
+import '../../utils/flushbar.dart';
+import '../editable_list_tile.dart';
+import '../slider_list_tile.dart';
 
 const imageFormat = SimpleFileFormat(
   // JPG, PNG, GIF, WEBP, BMP
@@ -58,78 +60,17 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
         _buildImageWidget(),
 
         Row(children: [
-          // Presets
-          Expanded(
-              child: ListTile(
-            title: Text(context.tr('enhance_presets')),
-            leading: const Icon(Icons.tune),
-            subtitle: Slider(
-              value: _getEnhancePresetValue(),
-              min: 1,
-              max: 5,
-              divisions: 4,
-              label:
-                  'Strength: ${widget.config.strength}; Noise: ${widget.config.noise}',
-              onChanged: (value) {
-                setState(() {
-                  var result = [
-                    [0.2, 0],
-                    [0.4, 0],
-                    [0.5, 0],
-                    [0.6, 0],
-                    [0.7, 0.1]
-                  ][value.toInt() - 1];
-                  widget.config.strength = result[0].toDouble();
-                  widget.config.noise = result[1].toDouble();
-                });
-              },
-            ),
-          )),
           // Size config
-          Expanded(
-            child: _buildSizeTile(),
-          )
+          Expanded(child: _buildSizeTile()),
+          // Presets
+          Expanded(child: _buildPresetTile()),
         ]),
-        Row(
-          children: [
-            // Strength
-            Expanded(
-                child: ListTile(
-                    title: Text(
-                        'Strength: ${widget.config.strength.toStringAsFixed(2)}'),
-                    leading: const Icon(Icons.grain),
-                    subtitle: Slider(
-                      value: widget.config.strength,
-                      min: 0.0,
-                      max: 1.0,
-                      divisions: 100,
-                      label: widget.config.strength.toStringAsFixed(2),
-                      onChanged: (value) {
-                        setState(() {
-                          widget.config.strength = value;
-                        });
-                      },
-                    ))),
-            // Noise
-            Expanded(
-                child: ListTile(
-                    title: Text(
-                        'Noise: ${widget.config.noise.toStringAsFixed(2)}'),
-                    leading: const Icon(Icons.water),
-                    subtitle: Slider(
-                      value: widget.config.noise,
-                      min: 0.0,
-                      max: 1.0,
-                      divisions: 100,
-                      label: widget.config.noise.toStringAsFixed(2),
-                      onChanged: (value) {
-                        setState(() {
-                          widget.config.noise = value;
-                        });
-                      },
-                    )))
-          ],
-        ),
+        Row(children: [
+          // Strength
+          Expanded(child: _buildStrengthTile()),
+          // Noise
+          Expanded(child: _buildNoiseTile()),
+        ]),
         // SMEA override settings
         CheckboxListTile(
             title: Text(context.tr('enhance_override_smea')),
@@ -170,16 +111,13 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
     final dstHeight = InfoManager().paramConfig.height;
     final srcWidth = widget.config.width;
     final srcHeight = widget.config.height;
+    final currentSize = '$dstWidth x $dstHeight';
+    final targetSize =
+        widget.config.imageB64 == null ? 'N/A' : '$srcWidth x $srcHeight';
     return ListTile(
       title: Text(context.tr('image_size')),
       leading: const Icon(Icons.photo_size_select_large),
-      subtitle: Text(
-        context.tr('i2i_image_size', namedArgs: {
-          'current_size': '$dstWidth x $dstHeight',
-          'i2i_size':
-              widget.config.imageB64 == null ? 'N/A' : '$srcWidth x $srcHeight'
-        }),
-      ),
+      subtitle: Text('$currentSize → $targetSize'),
       onTap: _showI2ISizeDialog,
     );
   }
@@ -515,5 +453,67 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
     if (parameters != null) {
       _showImportMetadataDialog(parameters);
     }
+  }
+
+  Widget _buildPresetTile() {
+    final presetLevel = _getEnhancePresetValue();
+    final presetTile = SliderListTile(
+      title: context.tr('enhance_presets') +
+          context.tr('colon') +
+          presetLevel.toInt().toString(),
+      leading: const Icon(Icons.tune),
+      sliderValue: presetLevel,
+      min: 1,
+      max: 5,
+      divisions: 4,
+      onChanged: (value) {
+        setState(() {
+          var result = [
+            [0.2, 0],
+            [0.4, 0],
+            [0.5, 0],
+            [0.6, 0],
+            [0.7, 0.1]
+          ][value.toInt() - 1];
+          widget.config.strength = result[0].toDouble();
+          widget.config.noise = result[1].toDouble();
+        });
+      },
+    );
+    return presetTile;
+  }
+
+  Widget _buildStrengthTile() {
+    return SliderListTile(
+      title:
+          'Strength${context.tr('colon')}${widget.config.strength.toStringAsFixed(2)}',
+      leading: const Icon(Icons.grain),
+      sliderValue: widget.config.strength,
+      min: 0.0,
+      max: 1.0,
+      divisions: 100,
+      onChanged: (value) {
+        setState(() {
+          widget.config.strength = value;
+        });
+      },
+    );
+  }
+
+  Widget _buildNoiseTile() {
+    return SliderListTile(
+      title:
+          'Noise${context.tr('colon')}${widget.config.noise.toStringAsFixed(2)}',
+      leading: const Icon(Icons.waves),
+      sliderValue: widget.config.noise,
+      min: 0.0,
+      max: 1.0,
+      divisions: 100,
+      onChanged: (value) {
+        setState(() {
+          widget.config.noise = value;
+        });
+      },
+    );
   }
 }
