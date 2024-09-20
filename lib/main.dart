@@ -66,6 +66,8 @@ class MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
   late Future _initializationFuture;
 
+  DateTime? _lastPressed;
+
   @override
   void initState() {
     super.initState();
@@ -125,7 +127,7 @@ class MyHomePageState extends State<MyHomePage> {
       future: _initializationFuture,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
-          return Scaffold(
+          final page = Scaffold(
             // ignore: prefer_const_constructors
             appBar: FlashingAppBar(),
             body: IndexedStack(
@@ -173,6 +175,28 @@ class MyHomePageState extends State<MyHomePage> {
               onTap: _onItemTapped,
             ),
           );
+          // Add exit confirmation
+          final scope = PopScope(
+            canPop: false,
+            onPopInvokedWithResult: (didPop, result) {
+              if (didPop) return;
+              final now = DateTime.now();
+              if (_lastPressed == null ||
+                  now.difference(_lastPressed!) > const Duration(seconds: 2)) {
+                _lastPressed = now;
+                ScaffoldMessenger.of(context)
+                  ..removeCurrentSnackBar()
+                  ..showSnackBar(SnackBar(
+                    content: Text(context.tr('press_again_to_exit')),
+                    duration: const Duration(seconds: 2),
+                  ));
+              } else {
+                SystemNavigator.pop();
+              }
+            },
+            child: page,
+          );
+          return scope;
         } else {
           return const Center(child: CircularProgressIndicator());
         }

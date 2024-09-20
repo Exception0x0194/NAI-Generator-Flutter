@@ -132,5 +132,6 @@
     "welcome_message_para3_2": "项目 repository",
     "welcome_message_para3_3": " 发布 Issue，或通过邮件联系我：",
     "welcome_message_para3_5": "。",
-    "colon": ": "
+    "colon": ": ",
+    "press_again_to_exit": "再按一次退出"
 }
