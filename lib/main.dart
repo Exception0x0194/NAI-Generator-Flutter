@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
@@ -6,7 +7,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
-import 'package:nai_casrand/screens/director_tool_screen.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
@@ -15,6 +15,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'screens/generator_screen.dart';
 import 'screens/settings_screen.dart';
 import 'screens/prompt_config_screen.dart';
+import 'screens/director_tool_screen.dart';
 import 'screens/i2i_config_screen.dart';
 import 'widgets/flashing_appbar.dart';
 import 'models/info_manager.dart';
@@ -97,9 +98,19 @@ class MyHomePageState extends State<MyHomePage> {
   }
 
   Future _loadInitialInfo() async {
+    Directory dir;
     if (!kIsWeb) {
-      final dir = await getApplicationCacheDirectory();
+      // New hive box directory
+      dir = await getApplicationDocumentsDirectory();
       Hive.init(dir.path);
+
+      // Migrate box from cache dir to document dir
+      final oldDir = await getApplicationCacheDirectory();
+      final oldBoxPath = '${oldDir.path}/savedBox.hive';
+      final newBoxPath = '${dir.path}/savedBox.hive';
+      if (await File(oldBoxPath).exists()) {
+        await File(oldBoxPath).rename(newBoxPath);
+      }
     }
     InfoManager().saveBox = await Hive.openBox('savedBox');
     var jsonData = InfoManager().saveBox.get('savedConfig');
