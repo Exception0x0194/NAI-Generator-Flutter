@@ -111,7 +111,7 @@ class MyHomePageState extends State<MyHomePage> {
       final oldBoxPath = '${oldDir.path}/savedBox.hive';
       final newBoxPath = '${dir.path}/savedBox.hive';
       if (await File(oldBoxPath).exists()) {
-        await File(oldBoxPath).rename(newBoxPath);
+        await File(oldBoxPath).copy(newBoxPath);
       }
     }
     InfoManager().saveBox = await Hive.openBox('savedBox');
