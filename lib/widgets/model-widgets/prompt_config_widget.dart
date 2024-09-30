@@ -136,18 +136,20 @@ class CompactPromptConfigWidgetState extends State<CompactPromptConfigWidget> {
       builder: (context) {
         return AlertDialog(
           title: Text('${context.tr('edit')}${context.tr('cascaded_strings')}'),
-          content: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(context.tr('edit_cascaded_config_str_notice')),
-              TextField(
-                controller: controller,
-                keyboardType: TextInputType.multiline,
-                maxLines: null, // 允许无限行
-                autofocus: true,
-              )
-            ],
+          content: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(context.tr('edit_cascaded_config_str_notice')),
+                TextField(
+                  controller: controller,
+                  keyboardType: TextInputType.multiline,
+                  maxLines: null, // 允许无限行
+                  autofocus: true,
+                )
+              ],
+            ),
           ),
           actions: [
             TextButton(
