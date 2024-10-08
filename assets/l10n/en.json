@@ -125,14 +125,7 @@
     "donation_link": "Donation link",
     "donation_link_subtitle": "Buy me a coffee!",
     "welcome_message_title": "Welcome",
-    "welcome_message_para1": "Welcome to use NAI CasRand🥰It is an open-source, free software in development!\n\n",
-    "welcome_message_para2_1": "If you are new to the app, ",
-    "welcome_message_para2_2": "tap here",
-    "welcome_message_para2_3": " to configure API token and proxy settings first.\n\n",
-    "welcome_message_para3_1": "If you encounter any unexpected behavior, or have any thought of improvement, file an issue in ",
-    "welcome_message_para3_2": "the GitHub repository",
-    "welcome_message_para3_3": ", or contact me via email: ",
-    "welcome_message_para3_5": ".",
+    "welcome_message_markdown": "Welcome to NAI CasRand🥰It is an open-source, free software in development!\n\nIf you are new to the app, [tap here](#) to configure API token and proxy settings first.\n\nIf you encounter any unexpected behavior, or have any thought of improvement, file an issue in [the GitHub repository]({{link}}), or contact me via email: [{{email}}]({{email}}).",
     "colon": ": ",
     "press_again_to_exit": "Press again to exit"
 }

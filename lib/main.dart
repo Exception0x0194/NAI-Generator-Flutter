@@ -3,9 +3,9 @@ import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:hive/hive.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
@@ -205,57 +205,32 @@ class MyHomePageState extends State<MyHomePage> {
   }
 
   void _showFirstSetupDialog(String version) {
-    const linkStyle =
-        TextStyle(color: Colors.blue, decoration: TextDecoration.underline);
     const link = String.fromEnvironment("GITHUB_REPO_LINK");
     const email = String.fromEnvironment("EMAIL");
+    final markdownMessage = context
+        .tr("welcome_message_markdown")
+        .replaceAll('{{link}}', link)
+        .replaceAll('{{email}}', email);
+    jumpToConfig() {
+      Navigator.of(context).pop();
+      setState(() {
+        _selectedIndex = 4;
+      });
+    }
+
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
               title: Text(context.tr('welcome_message_title')),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text.rich(TextSpan(
-                      style: Theme.of(context).textTheme.bodyLarge,
-                      children: [
-                        TextSpan(text: context.tr('welcome_message_para1')),
-                        TextSpan(children: [
-                          TextSpan(text: context.tr('welcome_message_para2_1')),
-                          TextSpan(
-                              text: context.tr('welcome_message_para2_2'),
-                              style: linkStyle,
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  Navigator.of(context).pop();
-                                  setState(() {
-                                    _selectedIndex = 4;
-                                  });
-                                }),
-                          TextSpan(text: context.tr('welcome_message_para2_3')),
-                        ]),
-                        TextSpan(children: [
-                          TextSpan(text: context.tr('welcome_message_para3_1')),
-                          TextSpan(
-                              text: context.tr('welcome_message_para3_2'),
-                              style: linkStyle,
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  launchUrl(Uri.parse(link));
-                                }),
-                          TextSpan(text: context.tr('welcome_message_para3_3')),
-                          TextSpan(
-                              text: email,
-                              style: linkStyle,
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  launchUrl(Uri.parse('mailto:$email'));
-                                }),
-                          TextSpan(text: context.tr('welcome_message_para3_5')),
-                        ])
-                      ])),
-                ],
+              content: MarkdownBody(
+                data: markdownMessage,
+                onTapLink: (text, href, title) {
+                  if (href == '#') {
+                    jumpToConfig();
+                  } else if (href != null) {
+                    launchUrl(Uri.parse(href));
+                  }
+                },
               ),
               actions: [
                 TextButton(
