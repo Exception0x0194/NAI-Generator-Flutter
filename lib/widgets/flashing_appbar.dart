@@ -132,10 +132,20 @@ class FlashingAppBarState extends State<FlashingAppBar>
       IconButton(
           onPressed: _showLanguageDialog, icon: const Icon(Icons.translate)),
     ]);
-    return AppBar(
-      title: titleBar,
-      backgroundColor: _colorAnimation?.value ??
-          _staticColor, // Use static color for default
+    return Container(
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            color: Colors.grey.shade200, // 添加右边框线
+            width: 2.0,
+          ),
+        ),
+      ),
+      child: AppBar(
+        title: titleBar,
+        backgroundColor: _colorAnimation?.value ??
+            _staticColor, // Use static color for default
+      ),
     );
   }
 

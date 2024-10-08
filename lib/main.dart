@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'dart:convert';
 import 'dart:io';
 
@@ -68,6 +70,29 @@ class MyHomePageState extends State<MyHomePage> {
 
   DateTime? _lastPressed;
 
+  final List<Map<String, dynamic>> _navItems = [
+    {
+      'icon': Icons.create,
+      'label': 'generation', // 使用 l10n 中的 key
+    },
+    {
+      'icon': Icons.visibility,
+      'label': 'prompt_config',
+    },
+    {
+      'icon': Icons.screen_rotation,
+      'label': 'i2i_config',
+    },
+    {
+      'icon': Icons.open_in_new,
+      'label': 'Director Tool',
+    },
+    {
+      'icon': Icons.settings,
+      'label': 'settings',
+    },
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -127,55 +152,76 @@ class MyHomePageState extends State<MyHomePage> {
       future: _initializationFuture,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
-          final page = Scaffold(
-            // ignore: prefer_const_constructors
-            appBar: FlashingAppBar(),
-            body: IndexedStack(
-              index: _selectedIndex,
-              children: [
-                Consumer<InfoManager>(builder: (context, manager, child) {
-                  // ignore: prefer_const_constructors
-                  return PromptGenerationScreen();
-                }),
-                // ignore: prefer_const_constructors
-                PromptConfigScreen(),
-                // ignore: prefer_const_constructors
-                I2IConfigScreen(),
-                // ignore: prefer_const_constructors
-                DirectorToolScreen(),
-                // ignore: prefer_const_constructors
-                SettingsScreen(),
-              ],
-            ),
-            bottomNavigationBar: BottomNavigationBar(
-              items: <BottomNavigationBarItem>[
-                BottomNavigationBarItem(
-                  icon: const Icon(Icons.create),
-                  label: context.tr('generation'),
-                ),
-                BottomNavigationBarItem(
-                  icon: const Icon(Icons.visibility),
-                  label: context.tr('prompt_config'),
-                ),
-                BottomNavigationBarItem(
-                  icon: const Icon(Icons.screen_rotation),
-                  label: context.tr('i2i_config'),
-                ),
-                const BottomNavigationBarItem(
-                  icon: Icon(Icons.open_in_new),
-                  label: 'Director Tool',
-                ),
-                BottomNavigationBarItem(
-                  icon: const Icon(Icons.settings),
-                  label: context.tr('settings'),
-                )
-              ],
-              currentIndex: _selectedIndex,
-              type: BottomNavigationBarType.fixed,
-              onTap: _onItemTapped,
-            ),
+          final bodyContent = IndexedStack(
+            index: _selectedIndex,
+            children: [
+              Consumer<InfoManager>(builder: (context, manager, child) {
+                return PromptGenerationScreen();
+              }),
+              PromptConfigScreen(),
+              I2IConfigScreen(),
+              DirectorToolScreen(),
+              SettingsScreen(),
+            ],
           );
-          // Add exit confirmation
+
+          final page = LayoutBuilder(
+            builder: (context, constraints) {
+              if (constraints.maxWidth <= 640) {
+                // Use BottomNavigationBar for narrow screens
+                return Scaffold(
+                  appBar: FlashingAppBar(),
+                  body: bodyContent,
+                  bottomNavigationBar: BottomNavigationBar(
+                    items: _navItems.map((item) {
+                      return BottomNavigationBarItem(
+                        icon: Icon(item['icon']),
+                        label: context.tr(item['label']),
+                      );
+                    }).toList(),
+                    currentIndex: _selectedIndex,
+                    type: BottomNavigationBarType.fixed,
+                    onTap: _onItemTapped,
+                  ),
+                );
+              } else {
+                // Use NavigationRail for wider screens
+                return Scaffold(
+                  appBar: FlashingAppBar(),
+                  body: Row(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border(
+                            right: BorderSide(
+                              color: Colors.grey.shade200, // 添加右边框线
+                              width: 2.0,
+                            ),
+                          ),
+                        ),
+                        child: NavigationRail(
+                          selectedIndex: _selectedIndex,
+                          onDestinationSelected: _onItemTapped,
+                          labelType: NavigationRailLabelType.all,
+                          groupAlignment: -1.0, // 控制项目的对齐
+                          destinations: _navItems.map((item) {
+                            return NavigationRailDestination(
+                              icon: Icon(item['icon']),
+                              label: Text(context.tr(item['label'])),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                      Expanded(
+                        child: bodyContent, // Main content
+                      ),
+                    ],
+                  ),
+                );
+              }
+            },
+          );
+
           final scope = PopScope(
             canPop: false,
             onPopInvokedWithResult: (didPop, result) {
@@ -196,6 +242,7 @@ class MyHomePageState extends State<MyHomePage> {
             },
             child: page,
           );
+
           return scope;
         } else {
           return const Center(child: CircularProgressIndicator());
