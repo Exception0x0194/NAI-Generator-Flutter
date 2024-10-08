@@ -2,6 +2,7 @@
     "generation": "图片生成",
     "prompt_config": "Prompt 设置",
     "i2i_config": "图生图设置",
+    "director_tool": "Director Tools",
     "settings": "参数设置",
     "toggle_generation": "开始/停止生成",
     "generation_settings": "设置",
@@ -124,14 +125,7 @@
     "donation_link": "赞助链接",
     "donation_link_subtitle": "赛博功德，随喜赞叹🙏",
     "welcome_message_title": "欢迎使用",
-    "welcome_message_para1": "欢迎使用 NAI CasRand🥰这是一个正在开发的开源免费软件！\n\n",
-    "welcome_message_para2_1": "如果你是首次使用，",
-    "welcome_message_para2_2": "点击这里",
-    "welcome_message_para2_3": "对 API token 和代理进行配置。\n\n",
-    "welcome_message_para3_1": "如果你遇到了任何软件问题，或有改进软件的创意，可以在",
-    "welcome_message_para3_2": "项目 repository",
-    "welcome_message_para3_3": " 发布 Issue，或通过邮件联系我：",
-    "welcome_message_para3_5": "。",
+    "welcome_message_markdown": "欢迎使用 NAI CasRand🥰这是一个正在开发的开源免费软件！\n\n如果你是首次使用，[点击这里](#) 对 API token 和代理进行配置。\n\n如果你遇到了任何软件问题，或有改进软件的创意，可以在[项目 repository]({{link}}) 发布 Issue，或通过邮件联系我：[{{email}}](mailto:{{email}})。",
     "colon": ": ",
     "press_again_to_exit": "再按一次退出"
 }
