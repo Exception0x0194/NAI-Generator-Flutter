@@ -42,7 +42,6 @@ dependencies:
   provider: ^6.1.2
   http: ^1.2.1
   universal_html: ^2.2.4
-  another_flushbar: ^1.12.30
   image_picker: ^1.1.2
   hive: ^2.2.3
   saver_gallery: ^3.0.5

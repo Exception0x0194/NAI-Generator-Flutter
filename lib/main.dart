@@ -21,6 +21,7 @@ import 'screens/director_tool_screen.dart';
 import 'screens/i2i_config_screen.dart';
 import 'widgets/flashing_appbar.dart';
 import 'models/info_manager.dart';
+import 'utils/flushbar.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -85,7 +86,7 @@ class MyHomePageState extends State<MyHomePage> {
     },
     {
       'icon': Icons.open_in_new,
-      'label': 'Director Tool',
+      'label': 'director_tool',
     },
     {
       'icon': Icons.settings,
@@ -172,16 +173,18 @@ class MyHomePageState extends State<MyHomePage> {
                 return Scaffold(
                   appBar: FlashingAppBar(),
                   body: bodyContent,
-                  bottomNavigationBar: BottomNavigationBar(
-                    items: _navItems.map((item) {
-                      return BottomNavigationBarItem(
+                  bottomNavigationBar: NavigationBar(
+                    selectedIndex: _selectedIndex,
+                    onDestinationSelected: _onItemTapped,
+                    labelBehavior:
+                        NavigationDestinationLabelBehavior.onlyShowSelected,
+                    height: 64.0,
+                    destinations: _navItems.map((item) {
+                      return NavigationDestination(
                         icon: Icon(item['icon']),
                         label: context.tr(item['label']),
                       );
                     }).toList(),
-                    currentIndex: _selectedIndex,
-                    type: BottomNavigationBarType.fixed,
-                    onTap: _onItemTapped,
                   ),
                 );
               } else {
@@ -190,27 +193,31 @@ class MyHomePageState extends State<MyHomePage> {
                   appBar: FlashingAppBar(),
                   body: Row(
                     children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border(
-                            right: BorderSide(
-                              color: Colors.grey.shade200, // 添加右边框线
-                              width: 2.0,
+                      LayoutBuilder(builder: (context, constraints) {
+                        return SingleChildScrollView(
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(
+                                minHeight: constraints.maxHeight),
+                            child: IntrinsicHeight(
+                              child: NavigationRail(
+                                selectedIndex: _selectedIndex,
+                                onDestinationSelected: _onItemTapped,
+                                labelType: NavigationRailLabelType.all,
+                                groupAlignment: -1.0, // 控制项目的对齐
+                                destinations: _navItems.map((item) {
+                                  return NavigationRailDestination(
+                                    icon: Icon(item['icon']),
+                                    label: Text(context.tr(item['label'])),
+                                  );
+                                }).toList(),
+                              ),
                             ),
                           ),
-                        ),
-                        child: NavigationRail(
-                          selectedIndex: _selectedIndex,
-                          onDestinationSelected: _onItemTapped,
-                          labelType: NavigationRailLabelType.all,
-                          groupAlignment: -1.0, // 控制项目的对齐
-                          destinations: _navItems.map((item) {
-                            return NavigationRailDestination(
-                              icon: Icon(item['icon']),
-                              label: Text(context.tr(item['label'])),
-                            );
-                          }).toList(),
-                        ),
+                        );
+                      }),
+                      VerticalDivider(
+                        thickness: 2.0,
+                        color: Colors.grey.shade200,
                       ),
                       Expanded(
                         child: bodyContent, // Main content
@@ -230,12 +237,7 @@ class MyHomePageState extends State<MyHomePage> {
               if (_lastPressed == null ||
                   now.difference(_lastPressed!) > const Duration(seconds: 2)) {
                 _lastPressed = now;
-                ScaffoldMessenger.of(context)
-                  ..removeCurrentSnackBar()
-                  ..showSnackBar(SnackBar(
-                    content: Text(context.tr('press_again_to_exit')),
-                    duration: const Duration(seconds: 2),
-                  ));
+                showInfoBar(context, context.tr("press_again_to_exit"));
               } else {
                 SystemNavigator.pop();
               }
