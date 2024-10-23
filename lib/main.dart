@@ -132,14 +132,20 @@ class MyHomePageState extends State<MyHomePage> {
       dir = await getApplicationDocumentsDirectory();
       Hive.init(dir.path);
 
-      // Migrate box from cache dir to document dir
-      final oldDir = await getApplicationCacheDirectory();
-      final oldBoxPath = '${oldDir.path}/savedBox.hive';
+      // Check if the box exists in the document directory
       final newBoxPath = '${dir.path}/savedBox.hive';
-      if (await File(oldBoxPath).exists()) {
-        await File(oldBoxPath).copy(newBoxPath);
+      bool newBoxExists = await File(newBoxPath).exists();
+
+      // If the box does not exist, migrate from cache directory
+      if (!newBoxExists) {
+        final oldDir = await getApplicationCacheDirectory();
+        final oldBoxPath = '${oldDir.path}/savedBox.hive';
+        if (await File(oldBoxPath).exists()) {
+          await File(oldBoxPath).copy(newBoxPath);
+        }
       }
     }
+
     InfoManager().saveBox = await Hive.openBox('savedBox');
     var jsonData = InfoManager().saveBox.get('savedConfig');
     jsonData =
