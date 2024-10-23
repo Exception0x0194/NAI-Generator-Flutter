@@ -3,6 +3,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -46,14 +47,19 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.pinkAccent),
-          useMaterial3: true),
-      localizationsDelegates: context.localizationDelegates,
-      supportedLocales: context.supportedLocales,
-      locale: context.locale,
-      home: const MyHomePage(),
+    return AdaptiveTheme(
+      light: ThemeData.light(useMaterial3: true),
+      dark: ThemeData.dark(useMaterial3: true),
+      initial: InfoManager().isDark
+          ? AdaptiveThemeMode.dark
+          : AdaptiveThemeMode.light,
+      builder: (theme, darkTheme) => MaterialApp(
+        theme: theme,
+        localizationsDelegates: context.localizationDelegates,
+        supportedLocales: context.supportedLocales,
+        locale: context.locale,
+        home: const MyHomePage(),
+      ),
     );
   }
 }
@@ -221,10 +227,6 @@ class MyHomePageState extends State<MyHomePage> {
                           ),
                         );
                       }),
-                      VerticalDivider(
-                        thickness: 2.0,
-                        color: Colors.grey.shade200,
-                      ),
                       Expanded(
                         child: bodyContent, // Main content
                       ),

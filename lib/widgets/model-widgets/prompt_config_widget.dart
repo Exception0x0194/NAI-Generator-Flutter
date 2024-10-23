@@ -27,8 +27,9 @@ class CompactPromptConfigWidget extends StatefulWidget {
 class CompactPromptConfigWidgetState extends State<CompactPromptConfigWidget> {
   @override
   Widget build(BuildContext context) {
-    final backgroundColor =
-        widget.config.enabled ? null : Colors.black.withAlpha(30);
+    final backgroundColor = widget.config.enabled
+        ? null
+        : Theme.of(context).disabledColor.withAlpha(30);
     return Padding(
         padding: EdgeInsets.only(left: widget.indentLevel == 0 ? 0 : 20),
         child: ExpansionTile(

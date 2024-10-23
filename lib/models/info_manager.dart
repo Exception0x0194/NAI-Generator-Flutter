@@ -71,6 +71,9 @@ class InfoManager with ChangeNotifier {
   bool showInfoForImg = true;
   double infoTileHeight = 1.0;
 
+  // Dark theme
+  bool isDark = false;
+
   // Batch settings
   int batchCount = 10;
   int batchIntervalSec = 10;
@@ -110,6 +113,7 @@ class InfoManager with ChangeNotifier {
       "preset_requests": numberOfRequests,
       "show_info_for_img": showInfoForImg,
       "info_tile_height": infoTileHeight,
+      "is_dark": isDark,
       "batch_count": batchCount,
       "batch_interval": batchIntervalSec,
       "output_folder": outputFolder?.path,
@@ -129,6 +133,7 @@ class InfoManager with ChangeNotifier {
     numberOfRequests = json['preset_requests'] ?? 0;
     showInfoForImg = json['show_info_for_img'] ?? true;
     infoTileHeight = (json['info_tile_height']?.toDouble() ?? 1.0);
+    isDark = json['is_dark'] ?? false;
     batchCount = json['batch_count'] ?? 10;
     batchIntervalSec = json['batch_interval'] ?? 10;
 

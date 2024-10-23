@@ -1,3 +1,4 @@
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:nai_casrand/widgets/editable_list_tile.dart';
@@ -130,6 +131,11 @@ class FlashingAppBarState extends State<FlashingAppBar>
           onTap: () => _showDebugDialog(context), child: Text(_currentTitle)),
       const Spacer(),
       IconButton(
+          onPressed: _toggleDarkMode,
+          icon: InfoManager().isDark
+              ? const Icon(Icons.dark_mode)
+              : const Icon(Icons.light_mode)),
+      IconButton(
           onPressed: _showLanguageDialog, icon: const Icon(Icons.translate)),
     ]);
     return Container(
@@ -247,5 +253,14 @@ class FlashingAppBarState extends State<FlashingAppBar>
                       },
                       child: Text(context.tr('confirm')))
                 ]));
+  }
+
+  void _toggleDarkMode() {
+    InfoManager().isDark = !InfoManager().isDark;
+    if (InfoManager().isDark) {
+      AdaptiveTheme.of(context).setDark();
+    } else {
+      AdaptiveTheme.of(context).setLight();
+    }
   }
 }
