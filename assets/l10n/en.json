@@ -49,7 +49,7 @@
     "toggle_compact_view": "Toggle Compact View",
     "NAI_API_key": "NAI API Token",
     "NAI_API_key_hint": "Available at: Home Page → Settings → Account → Get Persistent API Token",
-    "image_size": "Image Size",
+    "image_size": "Image Size (W × H)",
     "custom_size": "Custom Size",
     "height": "Height",
     "width": "Width",

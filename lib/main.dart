@@ -48,8 +48,18 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AdaptiveTheme(
-      light: ThemeData.light(useMaterial3: true),
-      dark: ThemeData.dark(useMaterial3: true),
+      light: ThemeData(
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.pinkAccent,
+            brightness: Brightness.light,
+          ),
+          useMaterial3: true),
+      dark: ThemeData(
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.pinkAccent,
+            brightness: Brightness.dark,
+          ),
+          useMaterial3: true),
       initial: InfoManager().isDark
           ? AdaptiveThemeMode.dark
           : AdaptiveThemeMode.light,

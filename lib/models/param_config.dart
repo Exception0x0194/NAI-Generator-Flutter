@@ -1,12 +1,12 @@
 import 'dart:math';
 
 const defaultSizes = [
-  '832 x 1216',
-  '1024 x 1024',
-  '1216 x 832',
-  '1024 x 1536',
-  '1472 x 1472',
-  '1536 x 1024',
+  GenerationSize(width: 832, height: 1216),
+  GenerationSize(width: 1024, height: 1024),
+  GenerationSize(width: 1216, height: 832),
+  GenerationSize(width: 1024, height: 1536),
+  GenerationSize(width: 1472, height: 1472),
+  GenerationSize(width: 1536, height: 1024)
 ];
 const samplers = [
   'k_euler',
@@ -21,9 +21,37 @@ const noiseSchedules = ['native', 'karras', 'exponential', 'polyexponential'];
 const defaultUC =
     'lowres, {bad}, error, fewer, extra, missing, worst quality, jpeg artifacts, bad quality, watermark, unfinished, displeasing, chromatic aberration, signature, extra digits, artistic error, username, scan, [abstract], bad anatomy, bad hands';
 
+class GenerationSize {
+  final int width;
+  final int height;
+
+  const GenerationSize({
+    required this.width,
+    required this.height,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {"width": width, "height": height};
+  }
+
+  factory GenerationSize.fromJson(Map<String, dynamic> json) {
+    return GenerationSize(
+        width: json["width"] ?? 1024, height: json["height"] ?? 1024);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! GenerationSize) return false;
+    return other.width == width && other.height == height;
+  }
+
+  @override
+  int get hashCode => Object.hash(width, height);
+}
+
 class ParamConfig {
-  int width;
-  int height;
+  List<GenerationSize> sizes;
   int nSamples;
 
   int steps;
@@ -50,8 +78,7 @@ class ParamConfig {
   bool addOriginalImage;
 
   ParamConfig({
-    this.width = 832,
-    this.height = 1216,
+    this.sizes = const [GenerationSize(height: 1216, width: 832)],
     this.scale = 6.5,
     this.sampler = 'k_euler_ancestral',
     this.steps = 28,
@@ -75,8 +102,7 @@ class ParamConfig {
 
   Map<String, dynamic> toJson() {
     return {
-      'width': width,
-      'height': height,
+      'sizes': sizes.map((elem) => elem.toJson()).toList(),
       'scale': scale,
       'sampler': sampler,
       'steps': steps,
@@ -110,6 +136,9 @@ class ParamConfig {
       deliberateEulerAncestralBug = false;
     }
     double? skipCfgAboveSigma;
+    final selectedSize = sizes[Random().nextInt(sizes.length)];
+    final width = selectedSize.width;
+    final height = selectedSize.height;
     if (varietyPlus) {
       final w = width / 8;
       final h = height / 8;
@@ -149,8 +178,10 @@ class ParamConfig {
 
   factory ParamConfig.fromJson(Map<String, dynamic> json) {
     return ParamConfig(
-      width: json['width'],
-      height: json['height'],
+      sizes: (json['sizes'] as List<dynamic>?)
+              ?.map((elem) => GenerationSize.fromJson(elem))
+              .toList() ??
+          const [GenerationSize(height: 1216, width: 832)],
       scale: json['scale'],
       sampler: json['sampler'],
       steps: json['steps'],
@@ -179,13 +210,11 @@ class ParamConfig {
 
   int loadJson(Map<String, dynamic> json) {
     int loadCount = 0;
-    if (json.containsKey('width')) {
-      width = json['width'];
-      loadCount++;
-    }
-    if (json.containsKey('height')) {
-      height = json['height'];
-      loadCount++;
+    if (json.containsKey('width') && json.containsKey('height')) {
+      final width = json['width'];
+      final height = json['height'];
+      sizes = [GenerationSize(width: width, height: height)];
+      loadCount += 2;
     }
     if (json.containsKey('scale')) {
       scale = json['scale'];

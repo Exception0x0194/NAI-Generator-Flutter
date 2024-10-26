@@ -65,8 +65,12 @@ class FlashingAppBarState extends State<FlashingAppBar>
   void refreshDisplay() {
     AppState newState;
     if (InfoManager().isGenerating) {
-      int width = InfoManager().paramConfig.width;
-      int height = InfoManager().paramConfig.height;
+      final width = InfoManager().cachedPayload?['body']?['parameters']
+              ?['width'] ??
+          InfoManager().cachedPayload?['body']?['width']!;
+      final height = InfoManager().cachedPayload?['body']?['height']
+              ?['height'] ??
+          InfoManager().cachedPayload?['body']?['height']!;
       const int freePixels = 1024 * 1024;
       if (width * height > freePixels) {
         newState = AppState.generatingCost;

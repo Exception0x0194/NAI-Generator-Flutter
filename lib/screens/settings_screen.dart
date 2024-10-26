@@ -30,16 +30,21 @@ class SettingsScreenState extends State<SettingsScreen> {
     final children = [
       // Token settings
       _buildTokenTile(),
+      const Divider(),
       // Param settings
-      Padding(
-          padding: const EdgeInsets.only(left: 20),
-          child: ParamConfigWidget(config: InfoManager().paramConfig)),
+      ParamConfigWidget(config: InfoManager().paramConfig),
+      const Divider(),
       // Batch settings
       _buildBatchTile(),
+      const Divider(),
       // Erase metadata / add fake metadata
       _buildEraseMetadataTile(),
+      const Divider(),
       // Output directory selection, for windows only
-      if (!kIsWeb && Platform.isWindows) _buildOutputSelectionTile(),
+      if (!kIsWeb && Platform.isWindows) ...[
+        _buildOutputSelectionTile(),
+        const Divider(),
+      ],
       // Proxy settings
       if (!kIsWeb) _buildProxyTile(),
     ]

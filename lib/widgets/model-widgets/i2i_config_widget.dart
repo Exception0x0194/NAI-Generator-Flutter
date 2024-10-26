@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image/image.dart' as img;
+import 'package:nai_casrand/models/param_config.dart';
 import 'package:super_clipboard/super_clipboard.dart';
 import 'package:super_drag_and_drop/super_drag_and_drop.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -107,12 +108,15 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
   }
 
   Widget _buildSizeTile() {
-    final dstWidth = InfoManager().paramConfig.width;
-    final dstHeight = InfoManager().paramConfig.height;
+    final sizes = InfoManager()
+        .paramConfig
+        .sizes
+        .map((elem) => '${elem.width} x ${elem.height}')
+        .join(" || ");
     final srcWidth = widget.config.width;
     final srcHeight = widget.config.height;
-    final currentSize = '$dstWidth x $dstHeight';
-    final targetSize =
+    final targetSize = '[$sizes]';
+    final currentSize =
         widget.config.imageB64 == null ? 'N/A' : '$srcWidth x $srcHeight';
     return ListTile(
       title: Text(context.tr('image_size')),
@@ -126,10 +130,8 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
     if (widget.config.imageB64 == null) return;
     final srcWidth = widget.config.width;
     final srcHeight = widget.config.height;
-    var widthController =
-        TextEditingController(text: InfoManager().paramConfig.width.toString());
-    var heightController = TextEditingController(
-        text: InfoManager().paramConfig.height.toString());
+    var widthController = TextEditingController(text: '0');
+    var heightController = TextEditingController(text: '0');
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -169,17 +171,17 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
                           child: Row(
                             children: [
                               Expanded(
-                                  child: ListTile(
-                                      title: Text(context.tr('width')),
-                                      subtitle: TextField(
-                                          controller: widthController,
-                                          keyboardType: TextInputType.number))),
+                                  child: TextField(
+                                      controller: widthController,
+                                      keyboardType: TextInputType.number)),
+                              const Padding(
+                                padding: EdgeInsets.only(left: 16, right: 16),
+                                child: Text('×'),
+                              ),
                               Expanded(
-                                  child: ListTile(
-                                      title: Text(context.tr('height')),
-                                      subtitle: TextField(
-                                          controller: heightController,
-                                          keyboardType: TextInputType.number)))
+                                  child: TextField(
+                                      controller: heightController,
+                                      keyboardType: TextInputType.number))
                             ],
                           ))
                     ])
@@ -198,10 +200,11 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
                       int? widthResult = int.tryParse(widthController.text);
                       int? heightResult = int.tryParse(heightController.text);
                       if (widthResult == null || heightResult == null) return;
-                      InfoManager().paramConfig.width =
-                          (widthResult / 64).round() * 64;
-                      InfoManager().paramConfig.height =
-                          (heightResult / 64).round() * 64;
+                      final width = (widthResult / 64).round() * 64;
+                      final height = (heightResult / 64).round() * 64;
+                      InfoManager().paramConfig.sizes = [
+                        GenerationSize(width: width, height: height)
+                      ];
                     });
                   },
                   child: Text(context.tr('confirm')))
@@ -241,8 +244,9 @@ class I2IConfigWidgetState extends State<I2IConfigWidget> {
     int targetWidth = (scale * srcWidth / 64).ceil() * 64;
     int targetHeight = (scale * srcHeight / 64).ceil() * 64;
     setState(() {
-      InfoManager().paramConfig.width = targetWidth;
-      InfoManager().paramConfig.height = targetHeight;
+      InfoManager().paramConfig.sizes = [
+        GenerationSize(width: targetWidth, height: targetHeight)
+      ];
     });
   }
 

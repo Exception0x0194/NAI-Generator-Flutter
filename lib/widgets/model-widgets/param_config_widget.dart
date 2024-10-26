@@ -20,39 +20,6 @@ class ParamConfigWidgetState extends State<ParamConfigWidget> {
     return Column(
       children: [
         _buildSizeSelector(),
-        // Manual Size
-        Padding(
-            padding: const EdgeInsets.only(left: 20),
-            child: ExpansionTile(
-                title: Text(context.tr('custom_size')),
-                leading: const Icon(Icons.back_hand),
-                dense: true,
-                children: [
-                  EditableListTile(
-                    leading: const Icon(Icons.swap_horiz),
-                    title: context.tr('width'),
-                    currentValue: widget.config.width.toString(),
-                    confirmOnSubmit: true,
-                    onEditComplete: (value) => setState(() {
-                      int? result = int.tryParse(value);
-                      if (result == null) return;
-                      widget.config.width = (result / 64).round() * 64;
-                    }),
-                    keyboardType: TextInputType.number,
-                  ),
-                  EditableListTile(
-                    leading: const Icon(Icons.swap_vert),
-                    title: context.tr('height'),
-                    currentValue: widget.config.height.toString(),
-                    confirmOnSubmit: true,
-                    onEditComplete: (value) => setState(() {
-                      int? result = int.tryParse(value);
-                      if (result == null) return;
-                      widget.config.height = (result / 64).round() * 64;
-                    }),
-                    keyboardType: TextInputType.number,
-                  ),
-                ])),
         // Steps
         SliderListTile(
             title: context.tr('sampling_steps') +
@@ -159,31 +126,14 @@ class ParamConfigWidgetState extends State<ParamConfigWidget> {
   }
 
   Widget _buildSizeSelector() {
-    return SelectableListTile(
-      title: context.tr('image_size'),
-      currentValue: _getSizeString(),
-      options: defaultSizes,
-      onSelectComplete: (value) => {_setSize(value)},
+    return ListTile(
+      title: Text(context.tr('image_size')),
+      subtitle: Text(widget.config.sizes
+          .map((elem) => '${elem.width} x ${elem.height}')
+          .join(' || ')),
       leading: const Icon(Icons.photo_size_select_large),
+      onTap: _showSizeSelectionDialog,
     );
-  }
-
-  String _getSizeString() {
-    return '${widget.config.width.toString()} x ${widget.config.height.toString()}';
-  }
-
-  void _setSize(String value) {
-    List<String> parts = value.split(' x ');
-    if (parts.length == 2) {
-      int? width = int.tryParse(parts[0]);
-      int? height = int.tryParse(parts[1]);
-      if (width != null && height != null) {
-        setState(() {
-          widget.config.width = width;
-          widget.config.height = height;
-        });
-      }
-    }
   }
 
   Widget _buildRandomSeedTile() {
@@ -213,6 +163,103 @@ class ParamConfigWidgetState extends State<ParamConfigWidget> {
                         })
                       })))
       ],
+    );
+  }
+
+  void _showSizeSelectionDialog() {
+    final widthController = TextEditingController();
+    final heightController = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialogState) {
+          return AlertDialog(
+            title: Text(tr('edit') + tr('image_size')),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(bottom: 8),
+                  child: Text('Selected:'),
+                ),
+                Wrap(
+                  spacing: 4,
+                  runSpacing: 4,
+                  children: widget.config.sizes
+                      .map((elem) => Chip(
+                            label: Text('${elem.width} x ${elem.height}'),
+                            onDeleted: () {
+                              if (widget.config.sizes.length <= 1) return;
+                              widget.config.sizes.remove(elem);
+                              setDialogState(() {});
+                              setState(() {});
+                            },
+                          ))
+                      .toList(),
+                ),
+                const Divider(),
+                const Padding(
+                  padding: EdgeInsets.only(bottom: 8),
+                  child: Text('Defaults:'),
+                ),
+                Wrap(
+                  spacing: 4,
+                  runSpacing: 4,
+                  children: defaultSizes
+                      .map((elem) => OutlinedButton(
+                            onPressed: () {
+                              if (widget.config.sizes.contains(elem)) return;
+                              widget.config.sizes.add(elem);
+                              setDialogState(() {});
+                              setState(() {});
+                            },
+                            child: Text('${elem.width} x ${elem.height}'),
+                          ))
+                      .toList(),
+                ),
+                const Divider(),
+                const Text('Manual:'),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: widthController,
+                        keyboardType: const TextInputType.numberWithOptions(),
+                      ),
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.only(left: 16, right: 16),
+                      child: Text('×'),
+                    ),
+                    Expanded(
+                        child: TextField(
+                      controller: heightController,
+                      keyboardType: const TextInputType.numberWithOptions(),
+                    )),
+                    const SizedBox(width: 16),
+                    IconButton(
+                        onPressed: () {
+                          var width = int.tryParse(widthController.text);
+                          var height = int.tryParse(heightController.text);
+                          if (width == null || height == null) return;
+                          width = (width / 64).ceil() * 64;
+                          height = (height / 64).ceil() * 64;
+                          final size =
+                              GenerationSize(width: width, height: height);
+                          if (widget.config.sizes.contains(size)) return;
+                          widget.config.sizes.add(size);
+                          setDialogState(() {});
+                          setState(() {});
+                        },
+                        icon: const Icon(Icons.add))
+                  ],
+                )
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }

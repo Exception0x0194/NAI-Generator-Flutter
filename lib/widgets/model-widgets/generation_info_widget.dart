@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:nai_casrand/models/param_config.dart';
 
 import '../../models/info_manager.dart';
 import '../../models/generation_info.dart';
@@ -210,10 +211,9 @@ class GenerationInfoWidget extends StatelessWidget {
     }
     int targetWidth = (scale * info.width! / 64).ceil() * 64;
     int targetHeight = (scale * info.height! / 64).ceil() * 64;
-    // InfoManager().i2iConfig.width = targetWidth;
-    // InfoManager().i2iConfig.height = targetHeight;
-    InfoManager().paramConfig.width = targetWidth;
-    InfoManager().paramConfig.height = targetHeight;
+    InfoManager().paramConfig.sizes = [
+      GenerationSize(width: targetWidth, height: targetHeight)
+    ];
     InfoManager().i2iConfig.setImage(info.imageBytes!);
 
     showInfoBar(context, context.tr('i2i_conifgs_set'));

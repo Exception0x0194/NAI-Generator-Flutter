@@ -48,7 +48,7 @@
     "toggle_compact_view": "切换紧凑视图",
     "NAI_API_key": "NAI API Token",
     "NAI_API_key_hint": "可以从主页 → 设置 → Account → Get Persistent API Token 获取",
-    "image_size": "图像尺寸",
+    "image_size": "图像尺寸（宽 × 高）",
     "custom_size": "手动调整尺寸",
     "height": "高度",
     "width": "宽度",
