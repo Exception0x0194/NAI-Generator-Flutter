@@ -10,10 +10,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:hive/hive.dart';
+import 'package:nai_casrand/data/services/config_service.dart';
+import 'package:nai_casrand/ui/navigation/navigation_view.dart';
+import 'package:nai_casrand/ui/navigation/navigation_viewmodel.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:get_it/get_it.dart';
 
 import 'screens/generator_screen.dart';
 import 'screens/settings_screen.dart';
@@ -27,6 +31,9 @@ import 'utils/flushbar.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
+
+  GetIt.instance.registerLazySingleton<ConfigService>(() => ConfigService());
+  await GetIt.instance<ConfigService>().loadConfig();
 
   final app = ChangeNotifierProvider(
     create: (context) => InfoManager(),
@@ -68,7 +75,7 @@ class MyApp extends StatelessWidget {
         localizationsDelegates: context.localizationDelegates,
         supportedLocales: context.supportedLocales,
         locale: context.locale,
-        home: const MyHomePage(),
+        home: NavigationView(viewmodel: NavigationViewModel()),
       ),
     );
   }

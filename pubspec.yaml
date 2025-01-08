@@ -57,6 +57,7 @@ dependencies:
   encrypt: ^5.0.3
   flutter_markdown: ^0.7.3+2
   adaptive_theme: ^3.6.0
+  get_it: ^8.0.3
 
 dev_dependencies:
   flutter_test:

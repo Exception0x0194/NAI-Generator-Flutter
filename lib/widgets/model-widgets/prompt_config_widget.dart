@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import '../editable_list_tile.dart';
-import '../../models/prompt_config.dart';
+import '../../data/models/prompt_config.dart';
 import '../../utils/data.dart';
 import '../../utils/flushbar.dart';
 

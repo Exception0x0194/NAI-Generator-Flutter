@@ -3,7 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 
 import '../editable_list_tile.dart';
 import '../slider_list_tile.dart';
-import '../../models/param_config.dart';
+import '../../data/models/param_config.dart';
 
 class ParamConfigWidget extends StatefulWidget {
   final ParamConfig config;

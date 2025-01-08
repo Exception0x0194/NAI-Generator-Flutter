@@ -4,8 +4,8 @@ import 'dart:io';
 
 import 'package:nai_casrand/models/director_tool_config.dart';
 
-import 'prompt_config.dart';
-import 'param_config.dart';
+import '../data/models/prompt_config.dart';
+import '../data/models/param_config.dart';
 import 'generation_info.dart';
 import 'vibe_config.dart';
 import 'i2i_config.dart';
@@ -170,17 +170,17 @@ class InfoManager with ChangeNotifier {
         // Prompt is overritten in tool config
         comment += '<Prompt overritten>';
       } else {
-        var pickedPrompts = promptConfig.pickPromptsFromConfig();
-        var prompts = pickedPrompts['head']! + pickedPrompts['tail']!;
+        final promptResult = promptConfig.getPrompt();
+        var prompts = promptResult.prompt;
         directorToolPayload['prompt'] += prompts;
-        comment += pickedPrompts['comment'] ?? '';
+        comment += promptResult.comment;
       }
       return {'body': directorToolPayload, 'comment': comment};
     }
 
     // I2I config
-    var pickedPrompts = promptConfig.pickPromptsFromConfig();
-    var prompts = pickedPrompts['head']! + pickedPrompts['tail']!;
+    var promptResult = promptConfig.getPrompt();
+    var prompts = promptResult.prompt;
 
     var parameters = paramConfig.payload;
     var action = 'generate';
@@ -208,7 +208,7 @@ class InfoManager with ChangeNotifier {
         "action": action,
         "parameters": parameters,
       },
-      "comment": pickedPrompts['comment']
+      "comment": promptResult.comment
     };
   }
 

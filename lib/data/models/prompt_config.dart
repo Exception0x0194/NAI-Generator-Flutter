@@ -1,5 +1,15 @@
 import 'dart:math';
 
+class PromptResult {
+  String prompt;
+  String comment;
+
+  PromptResult({
+    required this.prompt,
+    required this.comment,
+  });
+}
+
 class PromptConfig {
   String selectionMethod;
   bool shuffled;
@@ -97,7 +107,7 @@ class PromptConfig {
     return bracketString[0] + s + bracketString[1];
   }
 
-  Map<String, String> pickPromptsFromConfig({int depth = 0}) {
+  Map<String, String> _pickPromptsFromConfig({int depth = 0}) {
     String head = '', tail = '';
     String comment = '';
 
@@ -157,7 +167,7 @@ class PromptConfig {
         }
       } else if (type == 'config') {
         var subPromptConfig = p as PromptConfig;
-        var result = subPromptConfig.pickPromptsFromConfig(depth: depth + 1);
+        var result = subPromptConfig._pickPromptsFromConfig(depth: depth + 1);
         if (result['head'] != null && result['head']!.isNotEmpty) {
           head = '${addRandomBrackets(result['head']!)}$sep$head';
         }
@@ -175,5 +185,12 @@ class PromptConfig {
     }
 
     return {'head': head, 'tail': tail, 'comment': comment};
+  }
+
+  PromptResult getPrompt() {
+    final prompts = _pickPromptsFromConfig();
+    return PromptResult(
+        prompt: '${prompts['head']}${prompts['tail']}',
+        comment: prompts['comment'] ?? '');
   }
 }

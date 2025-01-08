@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:nai_casrand/models/param_config.dart';
+import 'package:nai_casrand/data/models/param_config.dart';
 
 import '../../models/info_manager.dart';
 import '../../models/generation_info.dart';
