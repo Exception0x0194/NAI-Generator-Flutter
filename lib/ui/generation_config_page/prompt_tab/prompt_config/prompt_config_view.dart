@@ -54,13 +54,18 @@ class PromptConfigView extends StatelessWidget {
     PromptConfigViewModel viewModel,
     BuildContext context,
   ) {
+    final title = ChangeNotifierProvider.value(
+      value: viewModel,
+      child: Consumer<PromptConfigViewModel>(
+          builder: (context, viewModel, child) => Text(context.tr('edit') +
+              context.tr('colon') +
+              viewModel.config.comment)),
+    );
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: Row(children: [
-          Text(context.tr('edit') +
-              context.tr('colon') +
-              viewModel.config.comment),
+          title,
           const Spacer(),
           IconButton(
               onPressed: () => _showEditCommentDialog(viewModel, context),

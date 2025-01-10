@@ -1,5 +1,7 @@
 {
-    "api_key": "pst-abc",
+    "settings": {
+        "api_key": "pst-abc"
+    },
     "prompt_config": {
         "selectionMethod": "all",
         "shuffled": false,
@@ -197,29 +199,15 @@
                 "prob": 0,
                 "num": 1,
                 "randomBrackets": 0,
-                "type": "config",
+                "type": "str",
                 "comment": "示例角色 2",
                 "filter": "",
                 "depth": 0,
-                "strs": [],
-                "prompts": [
-                    {
-                        "selectionMethod": "single",
-                        "shuffled": false,
-                        "prob": 0,
-                        "num": 1,
-                        "randomBrackets": 0,
-                        "type": "str",
-                        "comment": "角色",
-                        "filter": "",
-                        "depth": 1,
-                        "strs": [
-                            "[[murasaki shion]]",
-                            "[[ganyu (genshin impact)]]"
-                        ],
-                        "prompts": []
-                    }
-                ]
+                "strs": [
+                    "[[murasaki shion]]",
+                    "[[ganyu (genshin impact)]]"
+                ],
+                "prompts": []
             },
             "negativePrompt": ""
         }

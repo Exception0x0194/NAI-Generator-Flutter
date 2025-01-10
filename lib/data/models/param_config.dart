@@ -77,6 +77,10 @@ class ParamConfig {
   bool legacy;
   bool addOriginalImage;
 
+  String model = 'nai-diffusion-4-curated-preview';
+
+  var useCoords;
+
   ParamConfig({
     this.sizes = const [GenerationSize(height: 1216, width: 832)],
     this.scale = 6.5,
@@ -128,7 +132,7 @@ class ParamConfig {
   }
 
   /// Different from toJson(), some fields in payload need to be calculated from other params.
-  Map<String, dynamic> get payload {
+  Map<String, dynamic> getPayload() {
     bool? preferBrownian;
     bool? deliberateEulerAncestralBug;
     if (sampler == 'k_euler_ancestral' && noiseSchedule != 'native') {
@@ -145,32 +149,63 @@ class ParamConfig {
       final v = pow(4.0 * w * h / 63232, 0.5);
       skipCfgAboveSigma = 19.0 * v;
     }
+    // var payload = {
+    //   'width': width,
+    //   'height': height,
+    //   'scale': scale,
+    //   'sampler': sampler,
+    //   'steps': steps,
+    //   'n_samples': nSamples,
+    //   'ucPreset': ucPreset,
+    //   'qualityToggle': qualityToggle,
+    //   'sm': sm,
+    //   'sm_dyn': smDyn,
+    //   'seed': randomSeed ? Random().nextInt(1 << 32 - 1) : seed,
+    //   'dynamic_thresholding': dynamicThresholding,
+    //   'controlnet_strength': controlNetStrength,
+    //   'legacy': legacy,
+    //   'add_original_image': addOriginalImage,
+    //   'uncond_scale': uncondScale,
+    //   'cfg_rescale': cfgRescale,
+    //   'noise_schedule': noiseSchedule,
+    //   'negative_prompt': negativePrompt,
+    //   'reference_image_multiple': [],
+    //   'reference_information_extracted_multiple': [],
+    //   'reference_strength_multiple': [],
+    //   'prefer_brownian': preferBrownian,
+    //   'skip_cfg_above_sigma': skipCfgAboveSigma,
+    //   'deliberate_euler_ancestral_bug': deliberateEulerAncestralBug,
+    // };
     var payload = {
-      'width': width,
-      'height': height,
-      'scale': scale,
-      'sampler': sampler,
-      'steps': steps,
-      'n_samples': nSamples,
-      'ucPreset': ucPreset,
-      'qualityToggle': qualityToggle,
+      "params_version": 3,
+      "width": 1216,
+      "height": 832,
+      "scale": 5,
+      "sampler": sampler,
+      "steps": steps,
+      "n_samples": nSamples,
+      "ucPreset": ucPreset,
+      "qualityToggle": qualityToggle,
       'sm': sm,
       'sm_dyn': smDyn,
-      'seed': randomSeed ? Random().nextInt(1 << 32 - 1) : seed,
-      'dynamic_thresholding': dynamicThresholding,
-      'controlnet_strength': controlNetStrength,
-      'legacy': legacy,
-      'add_original_image': addOriginalImage,
-      'uncond_scale': uncondScale,
-      'cfg_rescale': cfgRescale,
-      'noise_schedule': noiseSchedule,
-      'negative_prompt': negativePrompt,
-      'reference_image_multiple': [],
-      'reference_information_extracted_multiple': [],
-      'reference_strength_multiple': [],
-      'prefer_brownian': preferBrownian,
-      'skip_cfg_above_sigma': skipCfgAboveSigma,
-      'deliberate_euler_ancestral_bug': deliberateEulerAncestralBug,
+      "dynamic_thresholding": dynamicThresholding,
+      "controlnet_strength": controlNetStrength,
+      "legacy": legacy,
+      "add_original_image": true,
+      "cfg_rescale": 0,
+      "noise_schedule": noiseSchedule,
+      "skip_cfg_above_sigma": skipCfgAboveSigma,
+      "use_coords": true,
+      "seed": randomSeed ? Random().nextInt(1 << 32 - 1) : seed,
+      "characterPrompts": [],
+      "v4_prompt": {},
+      "v4_negative_prompt": {},
+      "negative_prompt": negativePrompt,
+      "reference_image_multiple": [],
+      "reference_information_extracted_multiple": [],
+      "reference_strength_multiple": [],
+      "deliberate_euler_ancestral_bug": deliberateEulerAncestralBug,
+      "prefer_brownian": preferBrownian
     };
     payload.removeWhere((k, v) => v == null);
     return payload;

@@ -26,7 +26,7 @@ class ParametersTabView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider.value(
+    final content = ChangeNotifierProvider.value(
         value: viewmodel,
         child: Consumer<ParametersTabViewmodel>(
             builder: (context, viewmodel, child) {
@@ -115,6 +115,9 @@ class ParametersTabView extends StatelessWidget {
             ],
           );
         }));
+    return SingleChildScrollView(
+      child: content,
+    );
   }
 
   Widget _buildSizeSelector(BuildContext context) {

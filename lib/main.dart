@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:hive/hive.dart';
+import 'package:nai_casrand/data/models/payload_config.dart';
 import 'package:nai_casrand/data/services/config_service.dart';
 import 'package:nai_casrand/ui/navigation/navigation_view.dart';
 import 'package:nai_casrand/ui/navigation/navigation_viewmodel.dart';
@@ -33,7 +34,12 @@ void main() async {
   await EasyLocalization.ensureInitialized();
 
   GetIt.instance.registerLazySingleton<ConfigService>(() => ConfigService());
-  await GetIt.instance<ConfigService>().loadConfig();
+  final configService = GetIt.instance<ConfigService>();
+  configService.packageInfo = await PackageInfo.fromPlatform();
+  final defaultPayloadConfig = await configService.loadDefaultPayloadConfig();
+
+  GetIt.instance.registerLazySingleton<PayloadConfig>(
+      () => PayloadConfig.fromJson(defaultPayloadConfig));
 
   final app = ChangeNotifierProvider(
     create: (context) => InfoManager(),

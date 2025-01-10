@@ -40,7 +40,7 @@ class I2iTabView extends StatelessWidget {
           ),
         ));
 
-    return ChangeNotifierProvider.value(
+    final content = ChangeNotifierProvider.value(
         value: viewmodel,
         child: Consumer<I2iTabViewmodel>(builder: (context, viewmodel, child) {
           return Column(
@@ -78,5 +78,9 @@ class I2iTabView extends StatelessWidget {
             ],
           );
         }));
+
+    return SingleChildScrollView(
+      child: content,
+    );
   }
 }

@@ -31,18 +31,18 @@ class GenerationConfigPageView extends StatelessWidget {
           body: TabBarView(
             children: [
               PromptTabView(
-                  viewModel: PromptTabViewmodel(
-                promptConfig: viewmodel.configService.rootPromptConfig,
+                  viewmodel: PromptTabViewmodel(
+                promptConfig: viewmodel.payloadConfig.rootPromptConfig,
                 characterConfigList:
-                    viewmodel.configService.characterConfigList,
+                    viewmodel.payloadConfig.characterConfigList,
               )),
               I2iTabView(
                 viewmodel: I2iTabViewmodel(
-                    vibeConfigList: viewmodel.configService.vibeConfigList),
+                    vibeConfigList: viewmodel.payloadConfig.vibeConfigList),
               ),
               ParametersTabView(
                 viewmodel: ParametersTabViewmodel(
-                    config: viewmodel.configService.paramConfig),
+                    config: viewmodel.payloadConfig.paramConfig),
               ),
             ],
           )),

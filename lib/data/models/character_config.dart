@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:nai_casrand/data/models/prompt_config.dart';
 
 class CharacterPromptResult {
-  Point<double> center;
+  Point<int> center;
   String caption;
   String uc;
   String comment;
@@ -31,27 +31,24 @@ class CharacterConfig {
     final random = Random();
     final promptResult = positivePromptConfig.getPrompt();
     final Point<int> positionAsInt;
-    const Map<int, double> mapping = {
-      0: 0.0,
-      1: 0.1,
-      2: 0.3,
-      3: 0.5,
-      4: 0.7,
-      5: 0.9
-    };
-    if (positions.isEmpty) {
+    if (positions.isNotEmpty) {
       positionAsInt = positions[random.nextInt(positions.length)];
     } else {
       positionAsInt = const Point(0, 0);
     }
-    final positionAsDouble =
-        Point(mapping[positionAsInt.x]!, mapping[positionAsInt.y]!);
     return CharacterPromptResult(
-      center: positionAsDouble,
+      center: positionAsInt,
       caption: promptResult.prompt,
       uc: negativePrompt,
       comment: promptResult.comment,
     );
+  }
+
+  factory CharacterConfig.fromEmpty() {
+    return CharacterConfig(
+        positions: [],
+        positivePromptConfig: PromptConfig(),
+        negativePrompt: '');
   }
 
   factory CharacterConfig.fromJson(Map<String, dynamic> json) {

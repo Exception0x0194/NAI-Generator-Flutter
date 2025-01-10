@@ -182,7 +182,7 @@ class InfoManager with ChangeNotifier {
     var promptResult = promptConfig.getPrompt();
     var prompts = promptResult.prompt;
 
-    var parameters = paramConfig.payload;
+    var parameters = paramConfig.getPayload();
     var action = 'generate';
 
     // Add vibe configs

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
@@ -11,25 +13,32 @@ class EditableListTile extends StatelessWidget {
   final bool? confirmOnSubmit;
   final String? editValue;
   final String? notice;
+  final int? maxLines;
 
-  const EditableListTile(
-      {super.key,
-      required this.title,
-      required this.currentValue,
-      required this.onEditComplete,
-      this.keyboardType = TextInputType.text, // 默认为文本输入
-      this.leading,
-      this.dense,
-      this.confirmOnSubmit,
-      this.editValue,
-      this.notice});
+  const EditableListTile({
+    super.key,
+    required this.title,
+    required this.currentValue,
+    required this.onEditComplete,
+    this.keyboardType = TextInputType.text, // 默认为文本输入
+    this.leading,
+    this.dense,
+    this.confirmOnSubmit,
+    this.editValue,
+    this.notice,
+    this.maxLines,
+  });
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
       leading: leading,
       title: Text(title),
-      subtitle: Text(currentValue),
+      subtitle: Text(
+        currentValue,
+        maxLines: maxLines,
+        overflow: TextOverflow.ellipsis,
+      ),
       onTap: () => _showEditDialog(context),
       dense: dense,
     );

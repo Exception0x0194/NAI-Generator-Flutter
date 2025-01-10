@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:nai_casrand/data/models/character_config.dart';
 
@@ -14,18 +16,11 @@ class CharacterConfigViewmodel extends ChangeNotifier {
       4: 'D',
       5: 'E',
     };
-    const Map<int, String> yMapping = {
-      1: '1',
-      2: '2',
-      3: '3',
-      4: '4',
-      5: '5',
-    };
     List<String> ret = [];
     for (final point in config.positions) {
       String pt = '';
       pt += xMapping[point.x] ?? '';
-      pt += yMapping[point.y] ?? '';
+      pt += point.y.toString();
       ret.add(pt);
     }
 
@@ -34,6 +29,15 @@ class CharacterConfigViewmodel extends ChangeNotifier {
 
   void setNegativePrompt(String value) {
     config.negativePrompt = value;
+    notifyListeners();
+  }
+
+  void switchPosition(Point<int> pt) {
+    if (config.positions.contains(pt)) {
+      config.positions.remove(pt);
+    } else {
+      config.positions.add(pt);
+    }
     notifyListeners();
   }
 }
