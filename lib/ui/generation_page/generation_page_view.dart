@@ -20,7 +20,7 @@ class GenerationPageView extends StatelessWidget {
       value: viewmodel,
       builder: (context, child) => Consumer<GenerationPageViewmodel>(
         builder: (context, value, child) {
-          final itemCount = viewmodel.infoCardContentList.length;
+          final itemCount = viewmodel.commandList.length;
           return ListView.builder(
             scrollDirection: Axis.horizontal,
             controller: _scrollController,
@@ -85,7 +85,7 @@ class GenerationPageView extends StatelessWidget {
   }
 
   Widget _buildCardColumn(int colIndex) {
-    final itemCount = viewmodel.infoCardContentList.length;
+    final itemCount = viewmodel.commandList.length;
     final startIndex = itemCount - 1 - colIndex * viewmodel.cardsPerCol;
     final endIndex = max(
       itemCount - (colIndex + 1) * viewmodel.cardsPerCol,
@@ -93,8 +93,8 @@ class GenerationPageView extends StatelessWidget {
     );
     List<Widget> cards = [];
     for (int index = startIndex; index >= endIndex; index--) {
-      cards.add(Expanded(
-          child: InfoCard(content: viewmodel.infoCardContentList[index])));
+      cards.add(
+          Expanded(child: InfoCard(command: viewmodel.commandList[index])));
     }
     return Column(children: cards);
   }

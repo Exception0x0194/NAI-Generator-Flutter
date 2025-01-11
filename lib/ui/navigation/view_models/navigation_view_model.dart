@@ -4,8 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
 
+enum AppState { idle, generating, coolingDown }
+
 class NavigationViewModel extends ChangeNotifier {
   int currentPageIndex = 0;
+
+  ValueNotifier<AppState> appState = ValueNotifier(AppState.idle);
 
   void changeIndex(value) {
     currentPageIndex = value;

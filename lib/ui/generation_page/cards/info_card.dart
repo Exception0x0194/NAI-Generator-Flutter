@@ -3,63 +3,56 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:nai_casrand/data/models/info_chip_content.dart';
 import 'package:nai_casrand/ui/utils/flushbar.dart';
+import 'package:flutter_command/flutter_command.dart';
 
 class InfoCard extends StatelessWidget {
-  final InfoCardContent content;
+  final Command<void, InfoCardContent> command;
 
-  const InfoCard({super.key, required this.content});
+  const InfoCard({super.key, required this.command});
 
   @override
   Widget build(BuildContext context) {
-    final cardBody = content.imageBytes == null
-        ? //Widhout image
-        SingleChildScrollView(
-            child: ListTile(
-            titleAlignment: ListTileTitleAlignment.top,
-            leading: Icon(Icons.info_outline),
-            title: Text(content.title),
-            subtitle: Text(
-              content.info,
-              maxLines: null,
-              softWrap: true,
-            ),
-          ))
-        : // With image
-        Column(
-            mainAxisSize: MainAxisSize.min,
+    final cardBody = ListenableBuilder(
+      listenable: command.isExecuting,
+      builder: (context, child) {
+        if (command.isExecuting.value) {
+          // Loading
+          return const Column(
             children: [
               ListTile(
-                titleAlignment: ListTileTitleAlignment.top,
-                leading: Icon(Icons.photo_outlined),
-                title: Text(content.title),
+                leading: Icon(Icons.hourglass_top),
+                title: Text('Requesting...'),
               ),
-              Expanded(
-                  child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8.0),
-                      child: Image.memory(
-                        fit: BoxFit.contain,
-                        content.imageBytes!,
-                        filterQuality: FilterQuality.medium,
-                      ))),
+              CircularProgressIndicator(),
             ],
           );
+        } else {
+          // Result
+          return _buildCardContentBody(context, command.value);
+        }
+      },
+    );
 
     return Card(
       clipBehavior: Clip.hardEdge,
       child: InkWell(
         onTap: () => _showDetailedInfoDialog(context),
         child: ConstrainedBox(
-            constraints: BoxConstraints.loose(Size(
-              // Make bigger cards for images?
-              content.imageBytes == null ? 500.0 : 500.0,
+          constraints: BoxConstraints.loose(
+            const Size(
+              500.0,
               double.maxFinite,
-            )),
-            child: cardBody),
+            ),
+          ),
+          child: SingleChildScrollView(child: cardBody),
+        ),
       ),
     );
   }
 
   void _showDetailedInfoDialog(BuildContext context) {
+    if (command.isExecuting.value) return;
+    final content = command.value;
     List<Widget> contents = [
       buildInfoTile(
         'Title',
@@ -118,5 +111,40 @@ class InfoCard extends StatelessWidget {
     await Clipboard.setData(ClipboardData(text: content));
     if (!context.mounted) return;
     showInfoBar(context, '${tr('info_export_to_clipboard')}${tr('succeed')}');
+  }
+
+  Widget _buildCardContentBody(BuildContext context, InfoCardContent content) {
+    return content.imageBytes == null
+        ? //Without image
+        Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: Icon(Icons.info_outline),
+                title: Text(content.title),
+              ),
+              ListTile(
+                subtitle: Text(content.info, softWrap: true),
+              )
+            ],
+          )
+        : // With image
+        Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: Icon(Icons.photo_outlined),
+                title: Text(content.title),
+              ),
+              Expanded(
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8.0),
+                      child: Image.memory(
+                        fit: BoxFit.contain,
+                        content.imageBytes!,
+                        filterQuality: FilterQuality.medium,
+                      ))),
+            ],
+          );
   }
 }

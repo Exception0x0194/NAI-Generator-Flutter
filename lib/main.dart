@@ -12,8 +12,8 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:hive/hive.dart';
 import 'package:nai_casrand/data/models/payload_config.dart';
 import 'package:nai_casrand/data/services/config_service.dart';
-import 'package:nai_casrand/ui/navigation/navigation_view.dart';
-import 'package:nai_casrand/ui/navigation/navigation_viewmodel.dart';
+import 'package:nai_casrand/ui/navigation/widgets/navigation_view.dart';
+import 'package:nai_casrand/ui/navigation/view_models/navigation_view_model.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
@@ -81,7 +81,7 @@ class MyApp extends StatelessWidget {
         localizationsDelegates: context.localizationDelegates,
         supportedLocales: context.supportedLocales,
         locale: context.locale,
-        home: NavigationView(viewmodel: NavigationViewModel()),
+        home: NavigationView(viewModel: NavigationViewModel()),
       ),
     );
   }

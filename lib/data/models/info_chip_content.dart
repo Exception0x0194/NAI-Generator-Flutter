@@ -13,4 +13,10 @@ class InfoCardContent {
     required this.additionalInfo,
     this.imageBytes,
   });
+
+  factory InfoCardContent.fromEmpty() => const InfoCardContent(
+        title: '',
+        info: '',
+        additionalInfo: {},
+      );
 }

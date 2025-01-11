@@ -59,6 +59,7 @@ dependencies:
   adaptive_theme: ^3.6.0
   get_it: ^8.0.3
   lorem_ipsum: ^0.0.3
+  flutter_command: ^7.2.2
 
 dev_dependencies:
   flutter_test:
