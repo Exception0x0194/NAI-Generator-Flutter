@@ -2,7 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:nai_casrand/data/models/info_card_content.dart';
-import 'package:nai_casrand/ui/utils/flushbar.dart';
+import 'package:nai_casrand/ui/core/utils/flushbar.dart';
 import 'package:flutter_command/flutter_command.dart';
 
 class InfoCard extends StatelessWidget {
@@ -32,15 +32,7 @@ class InfoCard extends StatelessWidget {
       clipBehavior: Clip.hardEdge,
       child: InkWell(
         onTap: () => _showDetailedInfoDialog(context),
-        child: ConstrainedBox(
-          constraints: BoxConstraints.loose(
-            const Size(
-              500.0,
-              double.maxFinite,
-            ),
-          ),
-          child: cardBody,
-        ),
+        child: cardBody,
       ),
     );
   }
@@ -111,8 +103,7 @@ class InfoCard extends StatelessWidget {
   Widget _buildCardContentBody(BuildContext context, InfoCardContent content) {
     return content.imageBytes == null
         ? //Without image
-        SingleChildScrollView(
-            child: Column(
+        Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
@@ -120,26 +111,32 @@ class InfoCard extends StatelessWidget {
                 title: Text(content.title),
               ),
               ListTile(
-                subtitle: Text(content.info, softWrap: true),
+                subtitle: Text(
+                  content.info,
+                  maxLines: 20,
+                  softWrap: true,
+                  overflow: TextOverflow.ellipsis,
+                ),
               )
             ],
-          ))
+          )
         : // With image
         Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
                 leading: Icon(Icons.photo_outlined),
-                title: Text(content.title),
+                title: Text(
+                  content.title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
-              Expanded(
-                  child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8.0),
-                      child: Image.memory(
-                        fit: BoxFit.contain,
-                        content.imageBytes!,
-                        filterQuality: FilterQuality.medium,
-                      ))),
+              Image.memory(
+                fit: BoxFit.contain,
+                content.imageBytes!,
+                filterQuality: FilterQuality.medium,
+              ),
             ],
           );
   }

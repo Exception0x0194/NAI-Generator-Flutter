@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:nai_casrand/ui/settings_page/settings_page_viewmodel.dart';
-import 'package:nai_casrand/ui/widgets/editable_list_tile.dart';
+import 'package:nai_casrand/ui/settings_page/view_models/settings_page_viewmodel.dart';
+import 'package:nai_casrand/ui/core/widgets/editable_list_tile.dart';
 import 'package:provider/provider.dart';
 
 class SettingsPageView extends StatelessWidget {
@@ -150,7 +150,7 @@ class SettingsPageView extends StatelessWidget {
   }
 
   Widget _buildOutputSelectionTile() {
-    if (kIsWeb || Platform.isWindows) return const SizedBox.shrink();
+    if (kIsWeb || Platform.isAndroid) return const SizedBox.shrink();
     final outputDirPath = viewmodel.settings.outputFolderPath == ''
         ? '<${tr('system_document_folder')}>\\nai_generated'
         : viewmodel.settings.outputFolderPath;

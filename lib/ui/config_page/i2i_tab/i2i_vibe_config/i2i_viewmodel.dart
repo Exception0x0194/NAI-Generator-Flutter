@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:image/image.dart' as img;
 import 'package:nai_casrand/core/constants/image_formats.dart';
 import 'package:nai_casrand/data/models/param_config.dart';
-import 'package:nai_casrand/utils/metadata.dart';
+import 'package:nai_casrand/data/services/postprocess_service.dart';
 import 'package:super_drag_and_drop/super_drag_and_drop.dart';
 
 import 'package:nai_casrand/data/models/i2i_config.dart';
@@ -69,7 +69,7 @@ class I2iVibeViewmodel extends ChangeNotifier {
     final image = img.decodeImage(bytes);
     Map<String, dynamic>? parameters;
     try {
-      final metadataString = await extractMetadata(image!);
+      final metadataString = await PostprocessService().extractMetadata(image!);
       final Map<String, dynamic> metadata = json.decode(metadataString!);
       parameters = json.decode(metadata['Comment']);
     } catch (err) {
@@ -123,5 +123,21 @@ class I2iVibeViewmodel extends ChangeNotifier {
   void setNoise(double value) {
     config.noise = value;
     notifyListeners();
+  }
+
+  List<double> getPossibleScaleFactors(int width, int height,
+      {double step = 0.25}) {
+    List<double> ret = [];
+    const maxPixels = 2048 * 1536;
+    for (double f = 1.0;; f += step) {
+      int w = (f * width / 64).ceil() * 64;
+      int h = (f * height / 64).ceil() * 64;
+      if (w * h <= maxPixels) {
+        ret.add(f);
+      } else {
+        break;
+      }
+    }
+    return ret;
   }
 }

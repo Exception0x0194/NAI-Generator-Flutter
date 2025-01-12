@@ -5,6 +5,7 @@ import 'package:get_it/get_it.dart';
 import 'package:nai_casrand/data/models/command_status.dart';
 import 'package:nai_casrand/data/services/config_service.dart';
 import 'package:nai_casrand/ui/navigation/view_models/navigation_view_model.dart';
+import 'package:nai_casrand/ui/navigation/widgets/debug_settings_view.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class NavigationAppBar extends StatefulWidget implements PreferredSizeWidget {
@@ -115,7 +116,10 @@ class NavigationAppBarState extends State<NavigationAppBar>
     }
     final titleBar = Row(
       children: [
-        Text(_currentTitle),
+        InkWell(
+          child: Text(_currentTitle),
+          onTap: () => _showDebugDialog(context),
+        ),
         Spacer(),
         IconButton(
           onPressed: () => _toggleDark(context),
@@ -265,5 +269,21 @@ class NavigationAppBarState extends State<NavigationAppBar>
     } else {
       AdaptiveTheme.of(context).setLight();
     }
+  }
+
+  void _showDebugDialog(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text('Debug Settings'),
+              content: DebugSettingsView(),
+              actions: [
+                TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: Text(
+                      tr('confirm'),
+                    ))
+              ],
+            ));
   }
 }

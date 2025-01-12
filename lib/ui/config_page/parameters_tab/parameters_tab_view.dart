@@ -2,8 +2,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nai_casrand/data/models/param_config.dart';
 import 'package:nai_casrand/ui/config_page/parameters_tab/parameters_tab_viewmodel.dart';
-import 'package:nai_casrand/ui/widgets/editable_list_tile.dart';
-import 'package:nai_casrand/ui/widgets/slider_list_tile.dart';
+import 'package:nai_casrand/ui/core/widgets/editable_list_tile.dart';
+import 'package:nai_casrand/ui/core/widgets/slider_list_tile.dart';
 import 'package:provider/provider.dart';
 
 const samplers = [

@@ -5,8 +5,8 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:nai_casrand/data/models/payload_config.dart';
 import 'package:nai_casrand/data/models/settings.dart';
-import 'package:nai_casrand/ui/utils/flushbar.dart';
-import 'package:nai_casrand/utils/data.dart';
+import 'package:nai_casrand/data/services/file_service.dart';
+import 'package:nai_casrand/ui/core/utils/flushbar.dart';
 
 class SettingsPageViewmodel extends ChangeNotifier {
   PayloadConfig payloadConfig;
@@ -97,11 +97,13 @@ class SettingsPageViewmodel extends ChangeNotifier {
     }
   }
 
-  saveJsonConfig() {
+  void saveJsonConfig() {
     final configJson = payloadConfig.toJson();
-    saveStringToFile(
+    final filename =
+        'nai-generator-config-${FileService().generateRandomString()}.json';
+    FileService().saveStringToFile(
       json.encode(configJson),
-      'nai-generator-config-${generateRandomFileName()}.json',
+      filename,
     );
   }
 }

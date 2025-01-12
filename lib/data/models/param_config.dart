@@ -178,9 +178,9 @@ class ParamConfig {
     // };
     var payload = {
       "params_version": 3,
-      "width": 1216,
-      "height": 832,
-      "scale": 5,
+      "width": width,
+      "height": height,
+      "scale": scale,
       "sampler": sampler,
       "steps": steps,
       "n_samples": nSamples,
@@ -192,7 +192,7 @@ class ParamConfig {
       "controlnet_strength": controlNetStrength,
       "legacy": legacy,
       "add_original_image": true,
-      "cfg_rescale": 0,
+      "cfg_rescale": cfgRescale,
       "noise_schedule": noiseSchedule,
       "skip_cfg_above_sigma": skipCfgAboveSigma,
       "use_coords": true,

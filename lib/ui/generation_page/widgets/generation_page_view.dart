@@ -5,7 +5,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:nai_casrand/ui/generation_page/widgets/info_card.dart';
 import 'package:nai_casrand/ui/generation_page/view_models/generation_page_viewmodel.dart';
-import 'package:nai_casrand/ui/widgets/slider_list_tile.dart';
+import 'package:nai_casrand/ui/core/widgets/slider_list_tile.dart';
+import 'package:waterfall_flow/waterfall_flow.dart';
 
 class GenerationPageView extends StatelessWidget {
   final GenerationPageViewmodel viewmodel;
@@ -22,32 +23,17 @@ class GenerationPageView extends StatelessWidget {
       ]),
       builder: (context, child) {
         final itemCount = viewmodel.commandList.length;
-        return ListView.builder(
-          scrollDirection: Axis.horizontal,
-          controller: _scrollController,
-          itemCount: (itemCount / viewmodel.cardsPerCol.value).ceil(),
-          itemBuilder: (context, index) => Padding(
-            padding: EdgeInsets.only(bottom: 20.0),
-            child: _buildCardColumn(index),
+        return WaterfallFlow.builder(
+          gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
+              crossAxisCount: viewmodel.cardsPerCol.value),
+          padding: EdgeInsets.all(8.0),
+          itemCount: itemCount,
+          itemBuilder: (context, index) => InfoCard(
+            command: viewmodel.commandList[itemCount - 1 - index],
           ),
         );
       },
     );
-    final scroll = Scrollbar(
-        controller: _scrollController,
-        thickness: 20,
-        radius: const Radius.circular(10),
-        child: Listener(
-            onPointerSignal: (pointerSignal) {
-              if (pointerSignal is PointerScrollEvent) {
-                _scrollController.animateTo(
-                  _scrollController.offset + pointerSignal.scrollDelta.dy,
-                  duration: const Duration(milliseconds: 50),
-                  curve: Curves.linear,
-                );
-              }
-            },
-            child: content));
     final buttons = Column(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
@@ -67,9 +53,9 @@ class GenerationPageView extends StatelessWidget {
           onPressed: () => viewmodel.toggleBatch(),
           tooltip: tr('toggle_generation'),
           child: ListenableBuilder(
-            listenable: viewmodel.batchStatus.isBatchActive,
+            listenable: viewmodel.commandStatus.isBatchActive,
             builder: (context, child) => Icon(
-                viewmodel.batchStatus.isBatchActive.value
+                viewmodel.commandStatus.isBatchActive.value
                     ? Icons.stop
                     : Icons.play_arrow),
           ),
@@ -77,7 +63,7 @@ class GenerationPageView extends StatelessWidget {
       ],
     );
     return Scaffold(
-      body: scroll,
+      body: content,
       floatingActionButton: buttons,
     );
   }

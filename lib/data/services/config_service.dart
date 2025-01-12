@@ -20,4 +20,8 @@ class ConfigService {
 
     return jsonData;
   }
+
+  Future<void> saveConfig() async {
+    // TODO: Save config to local
+  }
 }

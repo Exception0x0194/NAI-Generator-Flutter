@@ -8,8 +8,8 @@ import 'package:nai_casrand/ui/generation_page/widgets/generation_page_view.dart
 import 'package:nai_casrand/ui/generation_page/view_models/generation_page_viewmodel.dart';
 import 'package:nai_casrand/ui/navigation/view_models/navigation_view_model.dart';
 import 'package:nai_casrand/ui/navigation/widgets/navigation_appbar.dart';
-import 'package:nai_casrand/ui/settings_page/settings_page_view.dart';
-import 'package:nai_casrand/ui/settings_page/settings_page_viewmodel.dart';
+import 'package:nai_casrand/ui/settings_page/widgets/settings_page_view.dart';
+import 'package:nai_casrand/ui/settings_page/view_models/settings_page_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 class NavigationView extends StatelessWidget {

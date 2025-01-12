@@ -5,21 +5,25 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_command/flutter_command.dart';
 import 'package:get_it/get_it.dart';
+import 'package:nai_casrand/data/models/api_request.dart';
 import 'package:nai_casrand/data/models/command_status.dart';
 import 'package:nai_casrand/data/models/info_card_content.dart';
 import 'package:nai_casrand/data/models/payload_config.dart';
 import 'package:lorem_ipsum/lorem_ipsum.dart';
+import 'package:nai_casrand/data/services/api_service.dart';
+import 'package:nai_casrand/data/services/file_service.dart';
+import 'package:nai_casrand/data/services/postprocess_service.dart';
 
 const infoCardContentListLength = 200;
 
 class GenerationPageViewmodel extends ChangeNotifier {
   PayloadConfig payloadConfig;
-  ValueNotifier<int> cardsPerCol = ValueNotifier(1);
+  ValueNotifier<int> cardsPerCol = ValueNotifier(2);
 
-  CommandStatus get batchStatus => GetIt.instance<CommandStatus>();
+  CommandStatus get commandStatus => GetIt.instance<CommandStatus>();
   List<Command<void, InfoCardContent>> get commandList =>
-      batchStatus.commandList;
-  ValueNotifier<int> get commandIdx => batchStatus.commandIdx;
+      commandStatus.commandList;
+  ValueNotifier<int> get commandIdx => commandStatus.commandIdx;
 
   Command<void, InfoCardContent>? currentCommand;
 
@@ -75,18 +79,7 @@ class GenerationPageViewmodel extends ChangeNotifier {
     // Sync command but wrapped as async
     commandFunc() async {
       final payloadResult = payloadConfig.getPayload();
-      final additionalInfo = payloadResult.payload;
-      final additionalInfoParam =
-          additionalInfo['parameters']! as Map<String, dynamic>;
-      for (final key in [
-        'reference_image_multiple',
-        'reference_information_extracted_multiple',
-        'reference_strength_multiple'
-      ]) {
-        additionalInfoParam.remove(key);
-      }
-      additionalInfo.remove('parameters');
-      additionalInfo.addAll(additionalInfoParam);
+      final additionalInfo = digestPayloadResult(payloadResult);
       return InfoCardContent(
           title: 'Test Prompt',
           info: payloadResult.comment,
@@ -103,30 +96,59 @@ class GenerationPageViewmodel extends ChangeNotifier {
 
   void nextCommand() {
     // Stop if batch is inactive or cooling down
-    if (!batchStatus.isBatchActive.value) return;
-    if (batchStatus.isCoolingDown.value) return;
+    if (!commandStatus.isBatchActive.value) return;
+    if (commandStatus.isCoolingDown.value) return;
 
     // Skip if active command exists
     if (currentCommand != null && currentCommand!.isExecuting.value) return;
 
-    // Async function that generates result
+    // Generate, postprocess and save image
     commandFunc() async {
-      await Future.delayed(Duration(milliseconds: 500));
-      final random = Random();
-      final bytes =
-          Uint8List.sublistView(await rootBundle.load('assets/appicon.png'));
-      return InfoCardContent(
-        title: '#${commandIdx.value}: ${loremIpsum(
-          words: random.nextInt(3) + 3,
-          initWithLorem: true,
-        )}',
-        info: loremIpsum(
-          words: random.nextInt(300),
-          initWithLorem: true,
-        ),
-        additionalInfo: {"Random Seed": random.nextInt(1 << 31)},
-        imageBytes: random.nextInt(2) == 1 ? null : bytes,
+      final endpoint = payloadConfig.settings.debugApiEnabled
+          ? payloadConfig.settings.debugApiPath
+          : 'https://image.novelai.net/ai/generate-image';
+      final payloadResult = payloadConfig.getPayload();
+      final request = ApiRequest(
+        endpoint: endpoint,
+        proxy: payloadConfig.settings.proxy,
+        headers: payloadConfig.getHeaders(),
+        payload: payloadResult.payload,
       );
+      try {
+        final response = await ApiService().fetchData(request);
+        // Even if response status is not 2xx, postprocess could throw correct exception.
+        var imageBytes = PostprocessService().processResponse(response.data);
+        // Add custom metadata
+        if (payloadConfig.settings.metadataEraseEnabled) {
+          final metadataString = payloadConfig.settings.customMetadataEnabled
+              ? payloadConfig.settings.customMetadataContent
+              : '';
+          imageBytes = await PostprocessService()
+              .embedMetadata(imageBytes, metadataString);
+        }
+        // Save image
+        final fileName = 'nai-generated-'
+            '${FileService().generateTimestampString(commandStatus.batchTimestamp)}-'
+            '${commandStatus.currentTotalCount}-'
+            '${FileService().generateRandomString()}.png';
+        FileService().savePictureToFile(
+          imageBytes,
+          fileName,
+          payloadConfig.settings.outputFolderPath,
+        );
+        return InfoCardContent(
+          title: fileName,
+          info: payloadResult.comment,
+          additionalInfo: digestPayloadResult(payloadResult),
+          imageBytes: imageBytes,
+        );
+      } catch (e) {
+        return InfoCardContent(
+          title: 'Error occurred in generation process.',
+          info: e.toString(),
+          additionalInfo: {},
+        );
+      }
     }
 
     // Create command and attach post-command operations
@@ -138,14 +160,14 @@ class GenerationPageViewmodel extends ChangeNotifier {
       // Only update after execution
       if (command.isExecuting.value) return;
 
-      batchStatus.currentBatchCount++;
-      batchStatus.currentTotalCount++;
-      if (batchStatus.currentTotalCount >=
+      commandStatus.currentBatchCount++;
+      commandStatus.currentTotalCount++;
+      if (commandStatus.currentTotalCount >=
               payloadConfig.settings.numberOfRequests &&
           payloadConfig.settings.numberOfRequests != 0) {
         stopBatch();
         return;
-      } else if (batchStatus.currentBatchCount >=
+      } else if (commandStatus.currentBatchCount >=
           payloadConfig.settings.batchCount) {
         setCooldown();
         return;
@@ -160,33 +182,50 @@ class GenerationPageViewmodel extends ChangeNotifier {
   }
 
   void startBatch() {
-    batchStatus.currentBatchCount = 0;
-    batchStatus.currentTotalCount = 0;
-    batchStatus.isBatchActive.value = true;
+    commandStatus.currentBatchCount = 0;
+    commandStatus.currentTotalCount = 0;
+    commandStatus.isBatchActive.value = true;
     nextCommand();
   }
 
   void stopBatch() {
-    batchStatus.isBatchActive.value = false;
+    commandStatus.isBatchActive.value = false;
   }
 
   void setCooldown() {
-    batchStatus.isCoolingDown.value = true;
+    commandStatus.isCoolingDown.value = true;
     Timer(
       Duration(seconds: payloadConfig.settings.batchIntervalSec),
       () {
-        batchStatus.isCoolingDown.value = false;
-        batchStatus.currentBatchCount = 0;
+        commandStatus.isCoolingDown.value = false;
+        commandStatus.currentBatchCount = 0;
         nextCommand();
       },
     );
   }
 
   void toggleBatch() {
-    if (batchStatus.isBatchActive.value) {
+    if (commandStatus.isBatchActive.value) {
       stopBatch();
     } else {
       startBatch();
     }
+  }
+
+  /// Make PayloadResult into readable Map<String, dynamic> for better visualization
+  Map<String, dynamic> digestPayloadResult(PayloadResult payloadResult) {
+    final additionalInfo = payloadResult.payload;
+    final additionalInfoParam =
+        additionalInfo['parameters']! as Map<String, dynamic>;
+    for (final key in [
+      'reference_image_multiple',
+      'reference_information_extracted_multiple',
+      'reference_strength_multiple'
+    ]) {
+      additionalInfoParam.remove(key);
+    }
+    additionalInfo.remove('parameters');
+    additionalInfo.addAll(additionalInfoParam);
+    return additionalInfo;
   }
 }
