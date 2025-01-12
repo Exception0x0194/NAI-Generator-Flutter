@@ -1,12 +1,9 @@
-import 'dart:convert';
-
-import 'package:flutter/services.dart';
 import 'package:nai_casrand/data/models/character_config.dart';
 import 'package:nai_casrand/data/models/i2i_config.dart';
 import 'package:nai_casrand/data/models/param_config.dart';
 import 'package:nai_casrand/data/models/prompt_config.dart';
 import 'package:nai_casrand/data/models/settings.dart';
-import 'package:nai_casrand/models/vibe_config.dart';
+import 'package:nai_casrand/data/models/vibe_config.dart';
 
 class PayloadResult {
   final String comment;

@@ -2,14 +2,16 @@ import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:get_it/get_it.dart';
+import 'package:nai_casrand/data/models/command_status.dart';
 import 'package:nai_casrand/data/services/config_service.dart';
 import 'package:nai_casrand/ui/navigation/view_models/navigation_view_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class NavigationAppBar extends StatefulWidget implements PreferredSizeWidget {
+  final CommandStatus commandStatus = GetIt.instance();
   final NavigationViewModel viewModel;
 
-  const NavigationAppBar({super.key, required this.viewModel});
+  NavigationAppBar({super.key, required this.viewModel});
 
   @override
   NavigationAppBarState createState() => NavigationAppBarState();
@@ -51,7 +53,9 @@ class NavigationAppBarState extends State<NavigationAppBar>
         }
       });
 
-    widget.viewModel.appState.addListener(refreshDisplay); // 在生成状态变化时改变样式
+    // 在生成状态变化时改变样式
+    widget.commandStatus.isBatchActive.addListener(refreshDisplay);
+    widget.commandStatus.isCoolingDown.addListener(refreshDisplay);
     refreshDisplay(); // 初始化状态
   }
 
@@ -62,7 +66,14 @@ class NavigationAppBarState extends State<NavigationAppBar>
   }
 
   void refreshDisplay() {
-    AppState newState = widget.viewModel.appState.value;
+    AppState newState;
+    if (widget.commandStatus.isCoolingDown.value) {
+      newState = AppState.coolingDown;
+    } else if (widget.commandStatus.isBatchActive.value) {
+      newState = AppState.generating;
+    } else {
+      newState = AppState.idle;
+    }
 
     // Change display only on status is changed
     if (newState == _state) return;

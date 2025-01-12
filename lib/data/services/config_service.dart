@@ -12,4 +12,12 @@ class ConfigService {
 
     return jsonData;
   }
+
+  Future<Map<String, dynamic>> loadSavedConfig() async {
+    // TODO: Read from saved data
+    Map<String, dynamic> jsonData =
+        json.decode(await rootBundle.loadString('assets/json/example.json'));
+
+    return jsonData;
+  }
 }
