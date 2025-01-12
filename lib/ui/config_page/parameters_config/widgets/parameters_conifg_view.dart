@@ -1,37 +1,26 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:nai_casrand/data/models/param_config.dart';
-import 'package:nai_casrand/ui/config_page/parameters_tab/parameters_tab_viewmodel.dart';
+import 'package:nai_casrand/core/constants/parameters.dart';
+import 'package:nai_casrand/ui/config_page/parameters_config/view_models/parameters_config_viewmodel.dart';
 import 'package:nai_casrand/ui/core/widgets/editable_list_tile.dart';
 import 'package:nai_casrand/ui/core/widgets/slider_list_tile.dart';
 import 'package:provider/provider.dart';
 
-const samplers = [
-  'k_euler',
-  'k_euler_ancestral',
-  'k_dpmpp_2s_ancestral',
-  'k_dpmpp_2m_sde',
-  'k_dpmpp_sde',
-  'k_dpmpp_2m',
-  'ddim_v3'
-];
-const noiseSchedules = ['native', 'karras', 'exponential', 'polyexponential'];
-const defaultUC =
-    'lowres, {bad}, error, fewer, extra, missing, worst quality, jpeg artifacts, bad quality, watermark, unfinished, displeasing, chromatic aberration, signature, extra digits, artistic error, username, scan, [abstract], bad anatomy, bad hands';
+class ParametersConfigView extends StatelessWidget {
+  final ParametersConfigViewmodel viewmodel;
 
-class ParametersTabView extends StatelessWidget {
-  final ParametersTabViewmodel viewmodel;
-
-  const ParametersTabView({super.key, required this.viewmodel});
+  const ParametersConfigView({super.key, required this.viewmodel});
 
   @override
   Widget build(BuildContext context) {
+    // TODO: AI's positon selection
     final content = ChangeNotifierProvider.value(
         value: viewmodel,
-        child: Consumer<ParametersTabViewmodel>(
+        child: Consumer<ParametersConfigViewmodel>(
             builder: (context, viewmodel, child) {
           return Column(
             children: [
+              _buildModelSelector(context),
               _buildSizeSelector(context),
               // Steps
               SliderListTile(
@@ -72,13 +61,13 @@ class ParametersTabView extends StatelessWidget {
                   leading: const Icon(Icons.search),
                   title: context.tr('sampler'),
                   currentValue: viewmodel.config.sampler,
-                  options: samplers,
+                  options: viewmodel.isV4 ? samplersV4 : samplers,
                   onSelectComplete: (value) => viewmodel.setSampler(value)),
               SelectableListTile(
                   leading: const Icon(Icons.search),
                   title: context.tr('noise_scheduler'),
                   currentValue: viewmodel.config.noiseSchedule,
-                  options: noiseSchedules,
+                  options: viewmodel.isV4 ? noiseSchedulesV4 : noiseSchedules,
                   onSelectComplete: (value) =>
                       viewmodel.setNoiseScheduler(value)),
               // SMEA
@@ -175,10 +164,20 @@ class ParametersTabView extends StatelessWidget {
               ],
             ));
   }
+
+  _buildModelSelector(BuildContext context) {
+    return SelectableListTile(
+      title: tr('generation_model'),
+      leading: Icon(Icons.auto_awesome_outlined),
+      currentValue: viewmodel.config.model,
+      options: models,
+      onSelectComplete: (value) => viewmodel.setModel(value),
+    );
+  }
 }
 
 class SizeSelectionView extends StatelessWidget {
-  final ParametersTabViewmodel viewmodel;
+  final ParametersConfigViewmodel viewmodel;
 
   const SizeSelectionView({super.key, required this.viewmodel});
 
@@ -188,7 +187,7 @@ class SizeSelectionView extends StatelessWidget {
     final heightController = TextEditingController();
     return ChangeNotifierProvider.value(
       value: viewmodel,
-      child: Consumer<ParametersTabViewmodel>(
+      child: Consumer<ParametersConfigViewmodel>(
           builder: (context, viewmodel, child) => Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,

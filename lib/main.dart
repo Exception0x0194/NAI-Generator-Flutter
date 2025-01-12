@@ -16,10 +16,10 @@ void main() async {
   GetIt.instance.registerLazySingleton<ConfigService>(() => ConfigService());
   final configService = GetIt.instance<ConfigService>();
   configService.packageInfo = await PackageInfo.fromPlatform();
-  final defaultPayloadConfig = await configService.loadDefaultPayloadConfig();
+  final savedConfig = await configService.loadSavedConfig();
 
   GetIt.instance.registerLazySingleton<PayloadConfig>(
-      () => PayloadConfig.fromJson(defaultPayloadConfig));
+      () => PayloadConfig.fromJson(savedConfig));
 
   GetIt.instance.registerLazySingleton<CommandStatus>(() => CommandStatus());
 

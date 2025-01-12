@@ -8,6 +8,8 @@ import 'package:nai_casrand/ui/navigation/view_models/navigation_view_model.dart
 import 'package:nai_casrand/ui/navigation/widgets/debug_settings_view.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+enum AppState { idle, generating, coolingDown }
+
 class NavigationAppBar extends StatefulWidget implements PreferredSizeWidget {
   final CommandStatus commandStatus = GetIt.instance();
   final NavigationViewModel viewModel;

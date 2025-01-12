@@ -1,23 +1,5 @@
 import 'dart:math';
 
-const defaultSizes = [
-  GenerationSize(width: 832, height: 1216),
-  GenerationSize(width: 1024, height: 1024),
-  GenerationSize(width: 1216, height: 832),
-  GenerationSize(width: 1024, height: 1536),
-  GenerationSize(width: 1472, height: 1472),
-  GenerationSize(width: 1536, height: 1024)
-];
-const samplers = [
-  'k_euler',
-  'k_euler_ancestral',
-  'k_dpmpp_2s_ancestral',
-  'k_dpmpp_2m_sde',
-  'k_dpmpp_sde',
-  'k_dpmpp_2m',
-  'ddim_v3'
-];
-const noiseSchedules = ['native', 'karras', 'exponential', 'polyexponential'];
 const defaultUC =
     'lowres, {bad}, error, fewer, extra, missing, worst quality, jpeg artifacts, bad quality, watermark, unfinished, displeasing, chromatic aberration, signature, extra digits, artistic error, username, scan, [abstract], bad anatomy, bad hands';
 

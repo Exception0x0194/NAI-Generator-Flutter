@@ -19,13 +19,13 @@ class GenerationPageView extends StatelessWidget {
     final content = AnimatedBuilder(
       animation: Listenable.merge([
         viewmodel.commandIdx,
-        viewmodel.cardsPerCol,
+        viewmodel.colNum,
       ]),
       builder: (context, child) {
         final itemCount = viewmodel.commandList.length;
         return WaterfallFlow.builder(
           gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
-              crossAxisCount: viewmodel.cardsPerCol.value),
+              crossAxisCount: viewmodel.colNum.value),
           padding: EdgeInsets.all(8.0),
           itemCount: itemCount,
           itemBuilder: (context, index) => InfoCard(
@@ -45,7 +45,7 @@ class GenerationPageView extends StatelessWidget {
         SizedBox(height: 20.0),
         FloatingActionButton(
           onPressed: () => viewmodel.addTestPromptInfoCardContent(),
-          tooltip: tr('add_info'),
+          tooltip: tr('generate_one_prompt'),
           child: const Icon(Icons.add),
         ),
         SizedBox(height: 20.0),
@@ -84,9 +84,9 @@ class GenerationPageView extends StatelessWidget {
 
   Widget _buildCardColumn(int colIndex) {
     final itemCount = viewmodel.commandList.length;
-    final startIndex = itemCount - 1 - colIndex * viewmodel.cardsPerCol.value;
+    final startIndex = itemCount - 1 - colIndex * viewmodel.colNum.value;
     final endIndex = max(
-      itemCount - (colIndex + 1) * viewmodel.cardsPerCol.value,
+      itemCount - (colIndex + 1) * viewmodel.colNum.value,
       0,
     );
     List<Widget> cards = [];
@@ -106,14 +106,14 @@ class DisplaySettingsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
-      listenable: viewmodel.cardsPerCol,
+      listenable: viewmodel.colNum,
       builder: (context, child) => Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           SliderListTile(
             title:
-                '${tr('cards_per_col')}: ${viewmodel.cardsPerCol.value.toString()}',
-            sliderValue: viewmodel.cardsPerCol.value.toDouble(),
+                '${tr('column_number')}: ${viewmodel.colNum.value.toString()}',
+            sliderValue: viewmodel.colNum.value.toDouble(),
             min: 1.0,
             max: 5.0,
             divisions: 4,

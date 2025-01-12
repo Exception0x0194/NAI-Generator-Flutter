@@ -128,5 +128,11 @@
     "welcome_message_title": "Welcome",
     "welcome_message_markdown": "Welcome to NAI CasRand🥰It is an open-source, free software in development!\n\nIf you are new to the app, [tap here](#) to configure API token and proxy settings first.\n\nIf you encounter any unexpected behavior, or have any thought of improvement, file an issue in [the GitHub repository]({{link}}), or contact me via email: [{{email}}]({{email}}).",
     "colon": ": ",
-    "press_again_to_exit": "Press again to exit"
+    "press_again_to_exit": "Press again to exit",
+    "rearrange_characters": "Rearrange characters",
+    "characters": "Characters",
+    "character_position": "Character Position",
+    "add_character": "Add character",
+    "generation_model": "Generation model",
+    "column_number": "Number of columns"
 }

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:nai_casrand/ui/config_page/generation_config_page_viewmodel.dart';
 import 'package:nai_casrand/ui/config_page/i2i_tab/i2i_tab_view.dart';
 import 'package:nai_casrand/ui/config_page/i2i_tab/i2i_tab_viewmodel.dart';
-import 'package:nai_casrand/ui/config_page/parameters_tab/parameters_tab_view.dart';
-import 'package:nai_casrand/ui/config_page/parameters_tab/parameters_tab_viewmodel.dart';
+import 'package:nai_casrand/ui/config_page/parameters_config/widgets/parameters_conifg_view.dart';
+import 'package:nai_casrand/ui/config_page/parameters_config/view_models/parameters_config_viewmodel.dart';
 import 'package:nai_casrand/ui/config_page/prompt_tab/prompt_tab_view.dart';
 import 'package:nai_casrand/ui/config_page/prompt_tab/prompt_tab_viewmodel.dart';
 
@@ -40,9 +40,8 @@ class GenerationConfigPageView extends StatelessWidget {
                 viewmodel: I2iTabViewmodel(
                     vibeConfigList: viewmodel.payloadConfig.vibeConfigList),
               ),
-              ParametersTabView(
-                viewmodel: ParametersTabViewmodel(
-                    config: viewmodel.payloadConfig.paramConfig),
+              ParametersConfigView(
+                viewmodel: ParametersConfigViewmodel(),
               ),
             ],
           )),

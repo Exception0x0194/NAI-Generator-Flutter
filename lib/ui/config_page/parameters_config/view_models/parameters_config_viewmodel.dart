@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:nai_casrand/data/models/param_config.dart';
+import 'package:nai_casrand/data/models/payload_config.dart';
 
-class ParametersTabViewmodel extends ChangeNotifier {
-  ParamConfig config;
+class ParametersConfigViewmodel extends ChangeNotifier {
+  ParamConfig config = GetIt.instance<PayloadConfig>().paramConfig;
 
-  ParametersTabViewmodel({required this.config});
+  ParametersConfigViewmodel();
 
   setSteps(double value) {
     config.steps = value.toInt();
@@ -92,4 +94,11 @@ class ParametersTabViewmodel extends ChangeNotifier {
     config.sizes = list;
     notifyListeners();
   }
+
+  void setModel(String value) {
+    config.model = value;
+    notifyListeners();
+  }
+
+  bool get isV4 => config.model.contains('-4-');
 }

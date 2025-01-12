@@ -18,7 +18,7 @@ const infoCardContentListLength = 200;
 
 class GenerationPageViewmodel extends ChangeNotifier {
   PayloadConfig payloadConfig;
-  ValueNotifier<int> cardsPerCol = ValueNotifier(2);
+  ValueNotifier<int> colNum = ValueNotifier(2);
 
   CommandStatus get commandStatus => GetIt.instance<CommandStatus>();
   List<Command<void, InfoCardContent>> get commandList =>
@@ -30,7 +30,7 @@ class GenerationPageViewmodel extends ChangeNotifier {
   GenerationPageViewmodel({required this.payloadConfig});
 
   void setCardsPerCol(int value) {
-    cardsPerCol.value = value;
+    colNum.value = value;
   }
 
   void addAndRunCommand(Command<void, InfoCardContent> command) {
