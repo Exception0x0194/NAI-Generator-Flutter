@@ -133,5 +133,8 @@
     "character_position": "角色位置",
     "add_character": "添加角色",
     "generation_model": "图像生成模型",
-    "column_number": "瀑布流列数"
+    "column_number": "瀑布流列数",
+    "auto_position": "由 AI 选择角色位置",
+    "vibe_transfer": "Vibe Transfer",
+    "generation_parameters": "生成参数"
 }

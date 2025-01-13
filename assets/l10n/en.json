@@ -134,5 +134,8 @@
     "character_position": "Character Position",
     "add_character": "Add character",
     "generation_model": "Generation model",
-    "column_number": "Number of columns"
+    "column_number": "Number of columns",
+    "auto_position": "Let AI decide characters' positions",
+    "vibe_transfer": "Vibe Transfer",
+    "generation_parameters": "Generation Parameters"
 }
