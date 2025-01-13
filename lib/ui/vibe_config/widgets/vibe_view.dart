@@ -1,13 +1,13 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:nai_casrand/ui/config_page/i2i_tab/i2i_vibe_config/vibe_viewmodel.dart';
+import 'package:nai_casrand/ui/vibe_config/view_models/vibe_viewmodel.dart';
 import 'package:provider/provider.dart';
 
-class VibeView extends StatelessWidget {
-  final VibeViewmodel viewmodel;
+class VibeConfigView extends StatelessWidget {
+  final VibeConfigViewmodel viewmodel;
 
-  const VibeView({super.key, required this.viewmodel});
+  const VibeConfigView({super.key, required this.viewmodel});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,8 @@ class VibeView extends StatelessWidget {
     );
     return ChangeNotifierProvider.value(
         value: viewmodel,
-        child: Consumer<VibeViewmodel>(builder: (context, viewmodel, child) {
+        child:
+            Consumer<VibeConfigViewmodel>(builder: (context, viewmodel, child) {
           return Row(
             children: [
               widgetImage,

@@ -101,4 +101,10 @@ class ParametersConfigViewmodel extends ChangeNotifier {
   }
 
   bool get isV4 => config.model.contains('-4-');
+
+  void setAutoPosition(bool? value) {
+    if (value == null) return;
+    config.autoPosition = value;
+    notifyListeners();
+  }
 }

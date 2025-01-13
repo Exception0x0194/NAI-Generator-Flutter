@@ -1,7 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nai_casrand/core/constants/parameters.dart';
-import 'package:nai_casrand/ui/config_page/parameters_config/view_models/parameters_config_viewmodel.dart';
+import 'package:nai_casrand/ui/parameters_config/view_models/parameters_config_viewmodel.dart';
 import 'package:nai_casrand/ui/core/widgets/editable_list_tile.dart';
 import 'package:nai_casrand/ui/core/widgets/slider_list_tile.dart';
 import 'package:provider/provider.dart';
@@ -13,7 +13,6 @@ class ParametersConfigView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: AI's positon selection
     final content = ChangeNotifierProvider.value(
         value: viewmodel,
         child: Consumer<ParametersConfigViewmodel>(
@@ -21,6 +20,7 @@ class ParametersConfigView extends StatelessWidget {
           return Column(
             children: [
               _buildModelSelector(context),
+              if (viewmodel.isV4) _buildAutoPositionTile(context),
               _buildSizeSelector(context),
               // Steps
               SliderListTile(
@@ -165,13 +165,22 @@ class ParametersConfigView extends StatelessWidget {
             ));
   }
 
-  _buildModelSelector(BuildContext context) {
+  Widget _buildModelSelector(BuildContext context) {
     return SelectableListTile(
       title: tr('generation_model'),
       leading: Icon(Icons.auto_awesome_outlined),
       currentValue: viewmodel.config.model,
       options: models,
       onSelectComplete: (value) => viewmodel.setModel(value),
+    );
+  }
+
+  Widget _buildAutoPositionTile(BuildContext context) {
+    return CheckboxListTile(
+      title: Text(tr('auto_position')),
+      secondary: Icon(Icons.not_listed_location_outlined),
+      value: viewmodel.config.autoPosition,
+      onChanged: (value) => viewmodel.setAutoPosition(value),
     );
   }
 }

@@ -1,8 +1,8 @@
 import 'package:nai_casrand/data/models/payload_config.dart';
 import 'package:nai_casrand/data/services/config_service.dart';
 
-class GenerationConfigPageViewmodel {
+class ConfigPageViewmodel {
   PayloadConfig payloadConfig;
 
-  GenerationConfigPageViewmodel({required this.payloadConfig});
+  ConfigPageViewmodel({required this.payloadConfig});
 }

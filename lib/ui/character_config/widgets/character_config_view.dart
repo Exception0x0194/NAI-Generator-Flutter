@@ -2,9 +2,9 @@ import 'dart:math';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:nai_casrand/ui/config_page/prompt_tab/character_config/character_config_viewmodel.dart';
-import 'package:nai_casrand/ui/config_page/prompt_tab/prompt_config/prompt_config_view.dart';
-import 'package:nai_casrand/ui/config_page/prompt_tab/prompt_config/prompt_config_viewmodel.dart';
+import 'package:nai_casrand/ui/character_config/view_models/character_config_viewmodel.dart';
+import 'package:nai_casrand/ui/prompt_config/widgets/prompt_config_view.dart';
+import 'package:nai_casrand/ui/prompt_config/view_models/prompt_config_viewmodel.dart';
 import 'package:nai_casrand/ui/core/widgets/editable_list_tile.dart';
 import 'package:provider/provider.dart';
 

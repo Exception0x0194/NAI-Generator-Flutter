@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nai_casrand/ui/config_page/prompt_tab/prompt_config/prompt_config_viewmodel.dart';
+import 'package:nai_casrand/ui/prompt_config/view_models/prompt_config_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 class PromptConfigReorderView extends StatelessWidget {

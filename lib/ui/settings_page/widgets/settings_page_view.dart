@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:nai_casrand/data/models/settings.dart';
 import 'package:nai_casrand/ui/settings_page/view_models/settings_page_viewmodel.dart';
 import 'package:nai_casrand/ui/core/widgets/editable_list_tile.dart';
 import 'package:provider/provider.dart';
@@ -21,7 +23,7 @@ class SettingsPageView extends StatelessWidget {
           children: [
             _buildApiKeyTile(),
             _buildBatchTile(),
-            _buildEraseMetadataTile(),
+            _buildEraseMetadataTile(context),
             if (!kIsWeb && Platform.isWindows) _buildOutputSelectionTile(),
             if (!kIsWeb) _buildProxyTile(),
           ],
@@ -116,7 +118,7 @@ class SettingsPageView extends StatelessWidget {
     );
   }
 
-  Widget _buildEraseMetadataTile() {
+  Widget _buildEraseMetadataTile(BuildContext context) {
     List<Widget> tiles = [
       CheckboxListTile(
           secondary: const Icon(Icons.delete_sweep),
@@ -134,14 +136,18 @@ class SettingsPageView extends StatelessWidget {
               onChanged: (value) =>
                   viewmodel.setCustomMetadataEnabled(value))));
     }
-    if (viewmodel.settings.customMetadataEnabled) {
+    if (viewmodel.settings.metadataEraseEnabled &&
+        viewmodel.settings.customMetadataEnabled) {
       tiles.add(Padding(
           padding: const EdgeInsets.only(left: 30),
-          child: EditableListTile(
-            title: tr('custom_metadata_content'),
-            currentValue: viewmodel.settings.customMetadataContent,
-            onEditComplete: (value) =>
-                viewmodel.setCustomMetadataContent(value),
+          child: ListTile(
+            title: Text(tr('custom_metadata_content')),
+            subtitle: Text(
+              viewmodel.settings.customMetadataContent,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            onTap: () => _showEditCustomMetadataDialog(context),
           )));
     }
     return Column(
@@ -174,5 +180,54 @@ class SettingsPageView extends StatelessWidget {
       confirmOnSubmit: true,
       onEditComplete: (value) => viewmodel.setProxy(value),
     );
+  }
+
+  void _showEditCustomMetadataDialog(context) {
+    final controller =
+        TextEditingController(text: viewmodel.settings.customMetadataContent);
+    submit() {
+      viewmodel.setCustomMetadataContent(controller.text);
+      Navigator.of(context).pop();
+    }
+
+    showDialog(
+        context: context,
+        builder: (context) => StatefulBuilder(
+              builder: (context, setState) => AlertDialog(
+                title: Text(
+                    tr('edit') + tr('colon') + tr('custom_metadata_content')),
+                content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(tr('edit_custom_metadata_content_hint')),
+                      TextField(
+                        maxLines: null,
+                        autofocus: true,
+                        controller: controller,
+                        onSubmitted: (_) => submit(),
+                      )
+                    ]),
+                actions: [
+                  Row(
+                    children: [
+                      TextButton(
+                          onPressed: () => setState(
+                              () => controller.text = defaultWatermarkContent),
+                          child: Text('👻')),
+                      Spacer(),
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: Text(tr('cancel')),
+                      ),
+                      TextButton(
+                        onPressed: () => submit(),
+                        child: Text(tr('confirm')),
+                      )
+                    ],
+                  ),
+                ],
+              ),
+            ));
   }
 }

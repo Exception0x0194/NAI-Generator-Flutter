@@ -1,8 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:nai_casrand/ui/config_page/i2i_tab/i2i_tab_viewmodel.dart';
-import 'package:nai_casrand/ui/config_page/i2i_tab/i2i_vibe_config/vibe_view.dart';
-import 'package:nai_casrand/ui/config_page/i2i_tab/i2i_vibe_config/vibe_viewmodel.dart';
+import 'package:nai_casrand/ui/i2i_tab/view_models/i2i_tab_viewmodel.dart';
+import 'package:nai_casrand/ui/vibe_config/widgets/vibe_view.dart';
+import 'package:nai_casrand/ui/vibe_config/view_models/vibe_viewmodel.dart';
 import 'package:provider/provider.dart';
 import 'package:super_drag_and_drop/super_drag_and_drop.dart';
 
@@ -60,9 +60,9 @@ class I2iTabView extends StatelessWidget {
                           controlAffinity: ListTileControlAffinity.leading,
                           title: Text('Config #$idx'),
                           children: [
-                            VibeView(
+                            VibeConfigView(
                                 key: Key(config.imageB64),
-                                viewmodel: VibeViewmodel(config: config))
+                                viewmodel: VibeConfigViewmodel(config: config))
                           ],
                         )));
               }).values,

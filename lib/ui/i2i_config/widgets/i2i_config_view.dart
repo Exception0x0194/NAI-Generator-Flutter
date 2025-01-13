@@ -2,16 +2,16 @@ import 'dart:convert';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:nai_casrand/ui/config_page/i2i_tab/i2i_vibe_config/i2i_viewmodel.dart';
+import 'package:nai_casrand/ui/i2i_config/view_models/i2i_config_viewmodel.dart';
 import 'package:nai_casrand/ui/core/utils/flushbar.dart';
 import 'package:nai_casrand/ui/core/widgets/editable_list_tile.dart';
 import 'package:nai_casrand/ui/core/widgets/slider_list_tile.dart';
 import 'package:super_drag_and_drop/super_drag_and_drop.dart';
 
-class I2iView extends StatelessWidget {
+class I2iConfigView extends StatelessWidget {
   final I2iVibeViewmodel viewmodel;
 
-  I2iView({required this.viewmodel});
+  I2iConfigView({required this.viewmodel});
 
   @override
   Widget build(BuildContext context) {
