@@ -90,7 +90,7 @@ class PayloadConfig {
         'base_caption': basePromptResult.prompt,
         'char_captions': v4CharPosCaptions,
       },
-      'use_coords': paramConfig.useCoords,
+      'use_coords': !paramConfig.autoPosition,
       'use_order': true,
     };
     final v4NegPrompt = {
@@ -98,7 +98,7 @@ class PayloadConfig {
         'base_caption': paramConfig.negativePrompt,
         'char_captions': v4CharNegCaptions,
       },
-      'use_coords': paramConfig.useCoords,
+      'use_coords': !paramConfig.autoPosition,
       'use_order': true,
     };
     paramPayload['v4_prompt'] = v4Prompt;

@@ -61,9 +61,10 @@ class ParamConfig {
 
   String model = 'nai-diffusion-4-curated-preview';
 
-  var useCoords;
+  bool autoPosition;
 
   ParamConfig({
+    this.model = 'nai-diffusion-4-curated-preview',
     this.sizes = const [GenerationSize(height: 1216, width: 832)],
     this.scale = 6.5,
     this.sampler = 'k_euler_ancestral',
@@ -84,10 +85,12 @@ class ParamConfig {
     this.noiseSchedule = 'native',
     this.varietyPlus = false,
     this.negativePrompt = defaultUC,
+    this.autoPosition = false,
   });
 
   Map<String, dynamic> toJson() {
     return {
+      'model': model,
       'sizes': sizes.map((elem) => elem.toJson()).toList(),
       'scale': scale,
       'sampler': sampler,
@@ -110,6 +113,7 @@ class ParamConfig {
       'reference_information_extracted_multiple': [],
       'reference_strength_multiple': [],
       'variety_plus': varietyPlus,
+      'auto_position': autoPosition,
     };
   }
 
@@ -195,6 +199,7 @@ class ParamConfig {
 
   factory ParamConfig.fromJson(Map<String, dynamic> json) {
     return ParamConfig(
+      model: json['model'] ?? 'nai-diffusion-4-curated-preview',
       sizes: (json['sizes'] as List<dynamic>?)
               ?.map((elem) => GenerationSize.fromJson(elem))
               .toList() ??
@@ -222,6 +227,7 @@ class ParamConfig {
           : json['cfg_rescale'],
       noiseSchedule: json['noise_schedule'],
       negativePrompt: json['negative_prompt'],
+      autoPosition: json['auto_position'] ?? false,
     );
   }
 
