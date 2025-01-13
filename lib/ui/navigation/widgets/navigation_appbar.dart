@@ -4,7 +4,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:get_it/get_it.dart';
 import 'package:nai_casrand/data/models/command_status.dart';
 import 'package:nai_casrand/data/services/config_service.dart';
-import 'package:nai_casrand/ui/navigation/view_models/navigation_view_model.dart';
+import 'package:nai_casrand/data/services/file_service.dart';
 import 'package:nai_casrand/ui/navigation/widgets/debug_settings_view.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -12,9 +12,8 @@ enum AppState { idle, generating, coolingDown }
 
 class NavigationAppBar extends StatefulWidget implements PreferredSizeWidget {
   final CommandStatus commandStatus = GetIt.instance();
-  final NavigationViewModel viewModel;
 
-  NavigationAppBar({super.key, required this.viewModel});
+  NavigationAppBar({super.key});
 
   @override
   NavigationAppBarState createState() => NavigationAppBarState();
@@ -225,10 +224,8 @@ class NavigationAppBarState extends State<NavigationAppBar>
   }
 
   void _showDonationQRCode(BuildContext context) async {
-    final qrCode1Bytes =
-        await widget.viewModel.decryptAsset('assets/qrcode1.jpg');
-    final qrCode2Bytes =
-        await widget.viewModel.decryptAsset('assets/qrcode2.jpg');
+    final qrCode1Bytes = await FileService().decryptAsset('assets/qrcode1.jpg');
+    final qrCode2Bytes = await FileService().decryptAsset('assets/qrcode2.jpg');
     if (qrCode1Bytes == null || qrCode2Bytes == null || !context.mounted) {
       return;
     }

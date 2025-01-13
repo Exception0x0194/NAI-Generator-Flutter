@@ -4,10 +4,12 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:universal_html/html.dart' as html;
+import 'package:encrypt/encrypt.dart' as encrypt;
 import 'package:saver_gallery/saver_gallery.dart';
 
 class FileService {
@@ -91,6 +93,24 @@ class FileService {
         '${time.hour.toString().padLeft(2, '0')}'
         '${time.minute.toString().padLeft(2, '0')}'
         '${time.second.toString().padLeft(2, '0')}';
+  }
+
+  Future<Uint8List?> decryptAsset(String assetPath) async {
+    const keyBase64 = String.fromEnvironment("ASSET_KEY_BASE64");
+    const ivBase64 = String.fromEnvironment("ASSET_IV_BASE64");
+    final key = encrypt.Key.fromBase64(keyBase64);
+    final iv = encrypt.IV.fromBase64(ivBase64);
+    final encrypter = encrypt.Encrypter(encrypt.AES(key));
+    try {
+      final assetByteData = await rootBundle.load(assetPath);
+      final encryptedBase64 = assetByteData.buffer.asUint8List();
+      final decryptedBase64 =
+          encrypter.decrypt(encrypt.Encrypted(encryptedBase64), iv: iv);
+      final decryptedBytes = base64Decode(decryptedBase64);
+      return decryptedBytes;
+    } catch (exception) {
+      return null;
+    }
   }
 
   Future<bool> _requestAlbumPermission() async {
