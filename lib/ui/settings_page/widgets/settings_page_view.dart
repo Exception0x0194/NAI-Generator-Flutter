@@ -25,6 +25,7 @@ class SettingsPageView extends StatelessWidget {
             _buildBatchTile(),
             _buildEraseMetadataTile(context),
             if (!kIsWeb && Platform.isWindows) _buildOutputSelectionTile(),
+            _buildPrefixKeyTile(),
             if (!kIsWeb) _buildProxyTile(),
           ],
         ),
@@ -229,5 +230,20 @@ class SettingsPageView extends StatelessWidget {
                 ],
               ),
             ));
+  }
+
+  Widget _buildPrefixKeyTile() {
+    final shownPrefix = viewmodel.settings.fileNamePrefixKey.isNotEmpty
+        ? viewmodel.settings.fileNamePrefixKey
+        : 'nai-generated';
+    return EditableListTile(
+      leading: const Icon(Icons.description),
+      title: tr('output_file_name_prefix'),
+      notice: tr('output_file_name_prefix_hint'),
+      editValue: viewmodel.settings.fileNamePrefixKey,
+      currentValue: shownPrefix,
+      confirmOnSubmit: true,
+      onEditComplete: (value) => viewmodel.setFileNamePrefixKey(value),
+    );
   }
 }

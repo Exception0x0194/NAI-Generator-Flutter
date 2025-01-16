@@ -29,19 +29,24 @@ class Settings {
   // Number of requests
   int numberOfRequests;
 
-  Settings(
-      {required this.welcomeMessageVersion,
-      required this.apiKey,
-      required this.outputFolderPath,
-      required this.proxy,
-      required this.debugApiEnabled,
-      required this.debugApiPath,
-      required this.metadataEraseEnabled,
-      required this.customMetadataEnabled,
-      required this.customMetadataContent,
-      required this.batchCount,
-      required this.batchIntervalSec,
-      required this.numberOfRequests});
+  // File name prefix key
+  String fileNamePrefixKey;
+
+  Settings({
+    required this.welcomeMessageVersion,
+    required this.apiKey,
+    required this.outputFolderPath,
+    required this.proxy,
+    required this.debugApiEnabled,
+    required this.debugApiPath,
+    required this.metadataEraseEnabled,
+    required this.customMetadataEnabled,
+    required this.customMetadataContent,
+    required this.batchCount,
+    required this.batchIntervalSec,
+    required this.numberOfRequests,
+    required this.fileNamePrefixKey,
+  });
 
   factory Settings.fromJson(Map<String, dynamic> json) {
     return Settings(
@@ -57,7 +62,8 @@ class Settings {
           json['custom_metadata_content'] ?? defaultWatermarkContent,
       batchCount: json['batch_count'] ?? 10,
       batchIntervalSec: json['batch_interval'] ?? 10,
-      numberOfRequests: 0,
+      numberOfRequests: json['number_of_requests'] ?? 0,
+      fileNamePrefixKey: json['file_name_prefix_key'] ?? '',
     );
   }
 
@@ -72,6 +78,7 @@ class Settings {
       'custom_metadata_content': customMetadataContent,
       'batch_count': batchCount,
       'batch_interval': batchIntervalSec,
+      'file_name_prefix_key': fileNamePrefixKey,
     };
   }
 }

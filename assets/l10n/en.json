@@ -137,5 +137,7 @@
     "column_number": "Number of columns",
     "auto_position": "Let AI decide characters' positions",
     "vibe_transfer": "Vibe Transfer",
-    "generation_parameters": "Generation Parameters"
+    "generation_parameters": "Generation Parameters",
+    "output_file_name_prefix": "Output file prefix",
+    "output_file_name_prefix_hint": "Should match the comment in prompt config; Blank → None"
 }

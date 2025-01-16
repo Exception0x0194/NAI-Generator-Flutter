@@ -1,13 +1,82 @@
 import 'dart:math';
 
-class PromptResult {
-  String prompt;
-  String comment;
+sealed class NestedPrompt {
+  String toPrompt();
+  String toComment();
 
-  PromptResult({
-    required this.prompt,
-    required this.comment,
+  /// DFS search that returns prompt with specified key.
+  String? findPromptWithKey(String key);
+}
+
+/// Leaf node with no child.
+class NestedPromptString extends NestedPrompt {
+  String title;
+  String content;
+  NestedPromptString({
+    required this.title,
+    required this.content,
   });
+
+  @override
+  String toPrompt() {
+    return content;
+  }
+
+  @override
+  String toComment() {
+    return '$title: $content';
+  }
+
+  @override
+  String? findPromptWithKey(String key) {
+    if (title == key) return content;
+    return null;
+  }
+}
+
+/// Root node with a list of children.
+class NestedPromptList extends NestedPrompt {
+  String title;
+  List<NestedPrompt> children;
+
+  NestedPromptList({required this.title, required this.children});
+
+  @override
+  String toPrompt() {
+    return children
+        .map((child) => child.toPrompt())
+        .where((prompt) => prompt.isNotEmpty)
+        .join(', ');
+  }
+
+  @override
+  String toComment() {
+    if (children.isEmpty) return '$title: <None>';
+    var result = '$title:\n';
+    for (final (idx, child) in children.indexed) {
+      final comment = child.toComment();
+      result += _indent(comment.isNotEmpty ? comment : '<None>', 2);
+      if (idx != children.length - 1) result += '\n';
+    }
+    return result;
+  }
+
+  @override
+  String? findPromptWithKey(String key) {
+    if (key == title) return toPrompt();
+    for (final child in children) {
+      final result = child.findPromptWithKey(key);
+      if (result != null) return result;
+    }
+    return null;
+  }
+
+  /// Aux function that splits string and adds indent to each line.
+  String _indent(String str, int spaces) {
+    var indentation = ' ' * spaces;
+    var lines = str.split('\n');
+    return lines.map((line) => '$indentation$line').join('\n');
+  }
 }
 
 class PromptConfig {
@@ -107,90 +176,64 @@ class PromptConfig {
     return bracketString[0] + s + bracketString[1];
   }
 
-  Map<String, String> _pickPromptsFromConfig({int depth = 0}) {
-    String head = '', tail = '';
-    String comment = '';
-
+  NestedPrompt getPrmpts() {
     List<dynamic> chosenPrompts = [];
-    List<dynamic> toChoosePrompts = [];
+    List<dynamic> promptsToChoose = [];
     if (type == 'str') {
-      toChoosePrompts = List.from(strs);
+      promptsToChoose = List.from(strs);
     } else if (type == 'config') {
-      toChoosePrompts = List.from(prompts.where((p) => p.enabled));
+      promptsToChoose = List.from(prompts.where((p) => p.enabled));
     }
     final random = Random();
 
     switch (selectionMethod) {
       case 'single':
-        if (toChoosePrompts.isNotEmpty) {
+        if (promptsToChoose.isNotEmpty) {
           chosenPrompts
-              .add(toChoosePrompts[random.nextInt(toChoosePrompts.length)]);
+              .add(promptsToChoose[random.nextInt(promptsToChoose.length)]);
         }
         break;
       case 'all':
-        chosenPrompts = toChoosePrompts;
+        chosenPrompts = promptsToChoose;
         break;
       case 'multiple_prob':
         chosenPrompts =
-            toChoosePrompts.where((_) => random.nextDouble() < prob).toList();
+            promptsToChoose.where((_) => random.nextDouble() < prob).toList();
         break;
       case 'multiple_num':
-        chosenPrompts = List.from(toChoosePrompts);
+        chosenPrompts = List.from(promptsToChoose);
         chosenPrompts.shuffle();
         chosenPrompts = chosenPrompts.take(num).toList();
         break;
       case 'single_sequential':
-        chosenPrompts = [toChoosePrompts[_sequentialIdx]];
+        chosenPrompts = [promptsToChoose[_sequentialIdx]];
         _sequentialRepeatIdx++;
         if (_sequentialRepeatIdx >= num) {
-          _sequentialIdx = (_sequentialIdx + 1) % toChoosePrompts.length;
+          _sequentialIdx = (_sequentialIdx + 1) % promptsToChoose.length;
           _sequentialRepeatIdx = 0;
         }
         break;
       default:
-        chosenPrompts = List.from(toChoosePrompts);
+        chosenPrompts = List.from(promptsToChoose);
     }
 
     if (shuffled) {
       chosenPrompts.shuffle();
     }
 
-    for (var (idx, p) in chosenPrompts.indexed) {
-      final sep = idx == chosenPrompts.length - 1 ? '' : ', ';
-      if (type == 'str') {
-        if (p.contains('|||')) {
-          var parts = p.split('|||');
-          head = '${addRandomBrackets(parts[0])}$sep$head';
-          tail = '$tail${addRandomBrackets(parts[1])}$sep';
-        } else {
-          tail = '$tail${addRandomBrackets(p)}$sep';
-        }
-      } else if (type == 'config') {
-        var subPromptConfig = p as PromptConfig;
-        var result = subPromptConfig._pickPromptsFromConfig(depth: depth + 1);
-        if (result['head'] != null && result['head']!.isNotEmpty) {
-          head = '${addRandomBrackets(result['head']!)}$sep$head';
-        }
-        if (result['tail'] != null && result['tail']!.isNotEmpty) {
-          tail = '$tail${addRandomBrackets(result['tail']!)}$sep';
-        }
-        comment += result['comment']!;
-      }
+    if (type == 'str') {
+      return NestedPromptString(
+        title: comment,
+        content: chosenPrompts.map((p) => addRandomBrackets(p)).join(', '),
+      );
+    } else if (type == 'config') {
+      return NestedPromptList(
+          title: comment,
+          children: chosenPrompts
+              .map((p) => (p as PromptConfig).getPrmpts())
+              .toList());
+    } else {
+      throw UnimplementedError();
     }
-    if (type == 'str') comment += '$head$tail';
-
-    if (head.isNotEmpty || tail.isNotEmpty) {
-      comment =
-          '${'--' * depth}${this.comment}:${type == 'config' ? '\n' : ' '}$comment${type == 'config' ? '' : '\n'}';
-    }
-
-    return {'head': head, 'tail': tail, 'comment': comment};
-  }
-
-  PromptResult getPrompt() {
-    final prompts = _pickPromptsFromConfig();
-    return PromptResult(
-        prompt: '${prompts['head']}${prompts['tail']}',
-        comment: prompts['comment'] ?? '');
   }
 }

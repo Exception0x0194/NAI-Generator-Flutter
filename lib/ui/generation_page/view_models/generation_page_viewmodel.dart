@@ -13,6 +13,7 @@ import 'package:lorem_ipsum/lorem_ipsum.dart';
 import 'package:nai_casrand/data/services/api_service.dart';
 import 'package:nai_casrand/data/services/file_service.dart';
 import 'package:nai_casrand/data/services/postprocess_service.dart';
+import 'package:nai_casrand/data/use_cases/generate_payload_use_case.dart';
 
 const infoCardContentListLength = 200;
 
@@ -78,7 +79,12 @@ class GenerationPageViewmodel extends ChangeNotifier {
   void addTestPromptInfoCardContent() {
     // Sync command but wrapped as async
     commandFunc() async {
-      final payloadResult = payloadConfig.getPayload();
+      final payloadResult = GeneratePayloadUseCase(
+        rootPromptConfig: payloadConfig.rootPromptConfig,
+        characterConfigList: payloadConfig.characterConfigList,
+        vibeConfigList: payloadConfig.vibeConfigList,
+        paramConfig: payloadConfig.paramConfig,
+      )();
       final additionalInfo = digestPayloadResult(payloadResult);
       return InfoCardContent(
           title: 'Test Prompt',
@@ -107,7 +113,13 @@ class GenerationPageViewmodel extends ChangeNotifier {
       final endpoint = payloadConfig.settings.debugApiEnabled
           ? payloadConfig.settings.debugApiPath
           : 'https://image.novelai.net/ai/generate-image';
-      final payloadResult = payloadConfig.getPayload();
+      final payloadResult = GeneratePayloadUseCase(
+        rootPromptConfig: payloadConfig.rootPromptConfig,
+        characterConfigList: payloadConfig.characterConfigList,
+        vibeConfigList: payloadConfig.vibeConfigList,
+        paramConfig: payloadConfig.paramConfig,
+        fileNameKey: payloadConfig.settings.fileNamePrefixKey,
+      )();
       final request = ApiRequest(
         endpoint: endpoint,
         proxy: payloadConfig.settings.proxy,
@@ -127,17 +139,22 @@ class GenerationPageViewmodel extends ChangeNotifier {
               .embedMetadata(imageBytes, metadataString);
         }
         // Save image
-        final fileName = 'nai-generated-'
-            '${FileService().generateTimestampString(commandStatus.batchTimestamp)}-'
-            '${commandStatus.currentTotalCount}-'
-            '${FileService().generateRandomString()}.png';
+        final filePrefix = payloadResult.suggestedFileName.isNotEmpty
+            ? _getSafeFileName(payloadResult.suggestedFileName)
+            : '';
+        final fileName = [
+          FileService().generateTimestampString(commandStatus.batchTimestamp),
+          commandStatus.currentTotalCount.toString().padLeft(6, '0'),
+          filePrefix,
+          '${FileService().generateRandomString()}.png',
+        ].join('-');
         FileService().savePictureToFile(
           imageBytes,
           fileName,
           payloadConfig.settings.outputFolderPath,
         );
         return InfoCardContent(
-          title: fileName,
+          title: filePrefix.isNotEmpty ? filePrefix : 'Image',
           info: payloadResult.comment,
           additionalInfo: digestPayloadResult(payloadResult),
           imageBytes: imageBytes,
@@ -213,7 +230,8 @@ class GenerationPageViewmodel extends ChangeNotifier {
   }
 
   /// Make PayloadResult into readable Map<String, dynamic> for better visualization
-  Map<String, dynamic> digestPayloadResult(PayloadResult payloadResult) {
+  Map<String, dynamic> digestPayloadResult(
+      PayloadGenerationResult payloadResult) {
     final additionalInfo = payloadResult.payload;
     final additionalInfoParam =
         additionalInfo['parameters']! as Map<String, dynamic>;
@@ -227,5 +245,11 @@ class GenerationPageViewmodel extends ChangeNotifier {
     additionalInfo.remove('parameters');
     additionalInfo.addAll(additionalInfoParam);
     return additionalInfo;
+  }
+
+  String _getSafeFileName(String fileName) {
+    String safeName = fileName.replaceAll(RegExp(r'[<>"/\\|?*{}\[\]]'), '');
+    safeName = safeName.replaceAll(RegExp(r'[:]'), '_');
+    return safeName;
   }
 }

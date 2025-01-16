@@ -29,7 +29,7 @@ class CharacterConfig {
 
   CharacterPromptResult getPrompt() {
     final random = Random();
-    final promptResult = positivePromptConfig.getPrompt();
+    final promptResult = positivePromptConfig.getPrmpts();
     final Point<int> positionAsInt;
     if (positions.isNotEmpty) {
       positionAsInt = positions[random.nextInt(positions.length)];
@@ -38,9 +38,9 @@ class CharacterConfig {
     }
     return CharacterPromptResult(
       center: positionAsInt,
-      caption: promptResult.prompt,
+      caption: promptResult.toPrompt(),
       uc: negativePrompt,
-      comment: promptResult.comment,
+      comment: promptResult.toComment(),
     );
   }
 

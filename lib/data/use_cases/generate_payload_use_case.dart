@@ -1,19 +1,7 @@
 import 'package:nai_casrand/data/models/character_config.dart';
-import 'package:nai_casrand/data/models/i2i_config.dart';
 import 'package:nai_casrand/data/models/param_config.dart';
 import 'package:nai_casrand/data/models/prompt_config.dart';
-import 'package:nai_casrand/data/models/settings.dart';
 import 'package:nai_casrand/data/models/vibe_config.dart';
-
-class PayloadResult {
-  final String comment;
-  final Map<String, dynamic> payload;
-
-  const PayloadResult({
-    required this.comment,
-    required this.payload,
-  });
-}
 
 const Map<int, String> xMapping = {
   0: 'X',
@@ -33,25 +21,35 @@ const Map<int, double> doubleMapping = {
   5: 0.9
 };
 
-class PayloadConfig {
-  PromptConfig rootPromptConfig;
-  List<CharacterConfig> characterConfigList;
+class PayloadGenerationResult {
+  Map<String, dynamic> payload;
+  String comment;
+  String suggestedFileName;
 
-  ParamConfig paramConfig;
+  PayloadGenerationResult({
+    required this.payload,
+    required this.comment,
+    required this.suggestedFileName,
+  });
+}
 
-  Settings settings;
+class GeneratePayloadUseCase {
+  final PromptConfig rootPromptConfig;
+  final List<CharacterConfig> characterConfigList;
+  final List<VibeConfig> vibeConfigList;
+  final ParamConfig paramConfig;
 
-  I2IConfig i2iConfig = I2IConfig();
-  List<VibeConfig> vibeConfigList = [];
+  final String? fileNameKey;
 
-  PayloadConfig({
+  GeneratePayloadUseCase({
     required this.rootPromptConfig,
     required this.characterConfigList,
+    required this.vibeConfigList,
     required this.paramConfig,
-    required this.settings,
+    this.fileNameKey,
   });
 
-  PayloadResult getPayload() {
+  PayloadGenerationResult call() {
     final paramPayload = paramConfig.getPayload();
 
     final basePromptResult = rootPromptConfig.getPrmpts();
@@ -105,8 +103,11 @@ class PayloadConfig {
     paramPayload['v4_negative_prompt'] = v4NegPrompt;
     paramPayload['characterPrompts'] = characterPrompts;
 
-    return PayloadResult(
+    return PayloadGenerationResult(
       comment: payloadComment,
+      suggestedFileName: fileNameKey != null
+          ? basePromptResult.findPromptWithKey(fileNameKey!) ?? ''
+          : '',
       payload: {
         'input': basePromptResult.toPrompt(),
         'model': paramConfig.model,
@@ -114,52 +115,5 @@ class PayloadConfig {
         'parameters': paramPayload,
       },
     );
-  }
-
-  Map<String, String> getHeaders() {
-    return {
-      "authorization": "Bearer ${settings.apiKey}",
-      "referer": "https://novelai.net",
-      "user-agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:126.0) Gecko/20100101 Firefox/126.0"
-    };
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      "prompt_config": rootPromptConfig.toJson(),
-      "character_config":
-          characterConfigList.map((elem) => elem.toJson()).toList(),
-      "param_config": paramConfig.toJson(),
-      "settings": settings.toJson()
-    };
-  }
-
-  factory PayloadConfig.fromJson(Map<String, dynamic> jsonData) {
-    final jsonCharacterList = jsonData.containsKey('character_config')
-        ? jsonData['character_config'] as List<dynamic>
-        : [];
-    final characterList = jsonCharacterList.map((configJson) {
-      return CharacterConfig.fromJson(configJson);
-    }).toList();
-    return PayloadConfig(
-      rootPromptConfig: PromptConfig.fromJson(jsonData['prompt_config']),
-      characterConfigList: characterList,
-      paramConfig: ParamConfig.fromJson(jsonData['param_config'] ?? {}),
-      settings: Settings.fromJson(jsonData['settings'] ?? {}),
-    );
-  }
-
-  void loadJson(Map<String, dynamic> jsonData) {
-    final jsonCharacterList = jsonData.containsKey('character_config')
-        ? jsonData['character_config'] as List<dynamic>
-        : [];
-    final characterList = jsonCharacterList.map((configJson) {
-      return CharacterConfig.fromJson(configJson);
-    }).toList();
-    rootPromptConfig = PromptConfig.fromJson(jsonData['prompt_config']);
-    characterConfigList = characterList;
-    paramConfig = ParamConfig.fromJson(jsonData['param_config'] ?? {});
-    settings = Settings.fromJson(jsonData['settings'] ?? {});
   }
 }

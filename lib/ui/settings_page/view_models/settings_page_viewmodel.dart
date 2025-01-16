@@ -97,6 +97,11 @@ class SettingsPageViewmodel extends ChangeNotifier {
     }
   }
 
+  void setFileNamePrefixKey(String value) {
+    payloadConfig.settings.fileNamePrefixKey = value;
+    notifyListeners();
+  }
+
   void saveJsonConfig() {
     final configJson = payloadConfig.toJson();
     final filename =

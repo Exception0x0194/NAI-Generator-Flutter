@@ -136,5 +136,7 @@
     "column_number": "瀑布流列数",
     "auto_position": "由 AI 选择角色位置",
     "vibe_transfer": "Vibe Transfer",
-    "generation_parameters": "生成参数"
+    "generation_parameters": "生成参数",
+    "output_file_name_prefix": "输出文件前缀",
+    "output_file_name_prefix_hint": "应当对应参数设置的注释名；留空 → 不使用"
 }
