@@ -5,7 +5,8 @@ import 'package:image/image.dart' as img;
 import 'package:gzip/gzip.dart';
 import 'package:archive/archive.dart';
 
-class PostprocessService {
+class ImageService {
+  /// Process response bytes and return image bytes
   Uint8List processResponse(Uint8List zippedResponseBytes) {
     try {
       var archive = ZipDecoder().decodeBytes(zippedResponseBytes);

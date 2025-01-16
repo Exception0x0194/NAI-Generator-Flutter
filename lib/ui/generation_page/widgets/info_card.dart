@@ -40,44 +40,14 @@ class InfoCard extends StatelessWidget {
   void _showDetailedInfoDialog(BuildContext context) {
     if (command.isExecuting.value) return;
     final content = command.value;
-    List<Widget> contents = [
-      buildInfoTile(
-        'Title',
-        content.title,
-        context,
+
+    // 跳转到新页面
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => InfoDetailPage(content: content),
       ),
-      buildInfoTile(
-        'Info',
-        content.info,
-        context,
-      )
-    ];
-    for (final item in content.additionalInfo.entries) {
-      contents.add(buildInfoTile(
-        item.key,
-        item.value.toString(),
-        context,
-      ));
-    }
-    showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-              title: Text(
-                content.title,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              content: SingleChildScrollView(
-                  child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: contents,
-              )),
-              actions: [
-                TextButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: Text(tr('confirm')))
-              ],
-            ));
+    );
   }
 
   Widget buildInfoTile(String title, String content, BuildContext context) {
@@ -139,5 +109,90 @@ class InfoCard extends StatelessWidget {
               ),
             ],
           );
+  }
+}
+
+class InfoDetailPage extends StatelessWidget {
+  final InfoCardContent content;
+
+  const InfoDetailPage({super.key, required this.content});
+
+  @override
+  Widget build(BuildContext context) {
+    List<Widget> contents = [
+      buildInfoTile(tr('title'), content.title, context),
+      buildInfoTile(tr('info'), content.info, context),
+    ];
+    for (final item in content.additionalInfo.entries) {
+      contents.add(buildInfoTile(item.key, item.value.toString(), context));
+    }
+
+    final body = Scaffold(
+      appBar: AppBar(title: Text(content.title)),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            if (content.imageBytes != null)
+              Image.memory(content.imageBytes!, fit: BoxFit.contain),
+            ...contents,
+          ],
+        ),
+      ),
+    );
+
+    return GestureDetector(
+      onTap: () => Navigator.of(context).pop(),
+      child: body,
+    );
+  }
+
+  Widget buildInfoTile(String title, String content, BuildContext context) {
+    return Column(children: [
+      ListTile(
+          titleAlignment: ListTileTitleAlignment.top,
+          title: Text(title),
+          subtitle: Text(content),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) =>
+                            getSelectableTextPage(title, content)));
+                  },
+                  icon: Icon(
+                    Icons.visibility_outlined,
+                  )),
+              SizedBox(width: 16.0),
+              IconButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    _copyContent(content, context);
+                  },
+                  tooltip: tr('copy_to_clipboard'),
+                  icon: Icon(Icons.copy)),
+            ],
+          )),
+      Divider(),
+    ]);
+  }
+
+  void _copyContent(String content, BuildContext context) async {
+    await Clipboard.setData(ClipboardData(text: content));
+    if (!context.mounted) return;
+    showInfoBar(context, '${tr('info_export_to_clipboard')}${tr('succeed')}');
+  }
+
+  getSelectableTextPage(String title, String text) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(tr('selectable') + tr('colon') + title),
+      ),
+      body: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: SelectableText(text),
+      ),
+    );
   }
 }

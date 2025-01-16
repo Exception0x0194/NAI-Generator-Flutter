@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_command/flutter_command.dart';
@@ -12,7 +13,7 @@ import 'package:nai_casrand/data/models/payload_config.dart';
 import 'package:lorem_ipsum/lorem_ipsum.dart';
 import 'package:nai_casrand/data/services/api_service.dart';
 import 'package:nai_casrand/data/services/file_service.dart';
-import 'package:nai_casrand/data/services/postprocess_service.dart';
+import 'package:nai_casrand/data/services/image_service.dart';
 import 'package:nai_casrand/data/use_cases/generate_payload_use_case.dart';
 
 const infoCardContentListLength = 200;
@@ -87,7 +88,7 @@ class GenerationPageViewmodel extends ChangeNotifier {
       )();
       final additionalInfo = digestPayloadResult(payloadResult);
       return InfoCardContent(
-          title: 'Test Prompt',
+          title: tr('test_prompt'),
           info: payloadResult.comment,
           additionalInfo: additionalInfo);
     }
@@ -129,14 +130,14 @@ class GenerationPageViewmodel extends ChangeNotifier {
       try {
         final response = await ApiService().fetchData(request);
         // Even if response status is not 2xx, postprocess could throw correct exception.
-        var imageBytes = PostprocessService().processResponse(response.data);
+        var imageBytes = ImageService().processResponse(response.data);
         // Add custom metadata
         if (payloadConfig.settings.metadataEraseEnabled) {
           final metadataString = payloadConfig.settings.customMetadataEnabled
               ? payloadConfig.settings.customMetadataContent
               : '';
-          imageBytes = await PostprocessService()
-              .embedMetadata(imageBytes, metadataString);
+          imageBytes =
+              await ImageService().embedMetadata(imageBytes, metadataString);
         }
         // Save image
         final filePrefix = payloadResult.suggestedFileName.isNotEmpty
@@ -154,7 +155,7 @@ class GenerationPageViewmodel extends ChangeNotifier {
           payloadConfig.settings.outputFolderPath,
         );
         return InfoCardContent(
-          title: filePrefix.isNotEmpty ? filePrefix : 'Image',
+          title: fileName,
           info: payloadResult.comment,
           additionalInfo: digestPayloadResult(payloadResult),
           imageBytes: imageBytes,

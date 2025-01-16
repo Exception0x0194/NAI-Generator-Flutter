@@ -1,7 +1,4 @@
-import 'dart:math';
-
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:nai_casrand/ui/generation_page/widgets/info_card.dart';
 import 'package:nai_casrand/ui/generation_page/view_models/generation_page_viewmodel.dart';
@@ -10,9 +7,8 @@ import 'package:waterfall_flow/waterfall_flow.dart';
 
 class GenerationPageView extends StatelessWidget {
   final GenerationPageViewmodel viewmodel;
-  final ScrollController _scrollController = ScrollController();
 
-  GenerationPageView({super.key, required this.viewmodel});
+  const GenerationPageView({super.key, required this.viewmodel});
 
   @override
   Widget build(BuildContext context) {
@@ -38,18 +34,21 @@ class GenerationPageView extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         FloatingActionButton(
+          heroTag: 'gpfab1',
           onPressed: () => _showDisplaySettingsDialog(context),
           tooltip: tr('generation_settings'),
           child: const Icon(Icons.handyman_outlined),
         ),
         SizedBox(height: 20.0),
         FloatingActionButton(
+          heroTag: 'gpfab2',
           onPressed: () => viewmodel.addTestPromptInfoCardContent(),
           tooltip: tr('generate_one_prompt'),
           child: const Icon(Icons.add),
         ),
         SizedBox(height: 20.0),
         FloatingActionButton(
+          heroTag: 'gpfab3',
           onPressed: () => viewmodel.toggleBatch(),
           tooltip: tr('toggle_generation'),
           child: ListenableBuilder(
@@ -80,21 +79,6 @@ class GenerationPageView extends StatelessWidget {
                     child: Text(tr('confirm')))
               ],
             ));
-  }
-
-  Widget _buildCardColumn(int colIndex) {
-    final itemCount = viewmodel.commandList.length;
-    final startIndex = itemCount - 1 - colIndex * viewmodel.colNum.value;
-    final endIndex = max(
-      itemCount - (colIndex + 1) * viewmodel.colNum.value,
-      0,
-    );
-    List<Widget> cards = [];
-    for (int index = startIndex; index >= endIndex; index--) {
-      cards.add(
-          Expanded(child: InfoCard(command: viewmodel.commandList[index])));
-    }
-    return Column(children: cards);
   }
 }
 

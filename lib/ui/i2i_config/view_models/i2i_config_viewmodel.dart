@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:image/image.dart' as img;
 import 'package:nai_casrand/core/constants/image_formats.dart';
 import 'package:nai_casrand/data/models/param_config.dart';
-import 'package:nai_casrand/data/services/postprocess_service.dart';
+import 'package:nai_casrand/data/services/image_service.dart';
 import 'package:super_drag_and_drop/super_drag_and_drop.dart';
 
 import 'package:nai_casrand/data/models/i2i_config.dart';
@@ -69,7 +69,7 @@ class I2iVibeViewmodel extends ChangeNotifier {
     final image = img.decodeImage(bytes);
     Map<String, dynamic>? parameters;
     try {
-      final metadataString = await PostprocessService().extractMetadata(image!);
+      final metadataString = await ImageService().extractMetadata(image!);
       final Map<String, dynamic> metadata = json.decode(metadataString!);
       parameters = json.decode(metadata['Comment']);
     } catch (err) {

@@ -138,5 +138,9 @@
     "vibe_transfer": "Vibe Transfer",
     "generation_parameters": "生成参数",
     "output_file_name_prefix": "输出文件前缀",
-    "output_file_name_prefix_hint": "应当对应参数设置的注释名；留空 → 不使用"
+    "output_file_name_prefix_hint": "应当对应参数设置的注释名；留空 → 不使用",
+    "title": "标题",
+    "info": "信息",
+    "test_prompt": "测试提示词",
+    "selectable": "可选择"
 }
