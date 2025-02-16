@@ -139,7 +139,7 @@
     "vibe_transfer": "Vibe Transfer",
     "generation_parameters": "Generation Parameters",
     "output_file_name_prefix": "Output file prefix",
-    "output_file_name_prefix_hint": "Should match the comment in prompt config; Blank → None",
+    "output_file_name_prefix_hint": "Use `__key__` to import prompt content in file name\n\nE.g. `portrait-__artstyle__` → `portrait-watercolor`",
     "title": "Title",
     "info": "Info",
     "test_prompt": "Test Prompt",

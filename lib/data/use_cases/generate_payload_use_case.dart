@@ -103,17 +103,34 @@ class GeneratePayloadUseCase {
     paramPayload['v4_negative_prompt'] = v4NegPrompt;
     paramPayload['characterPrompts'] = characterPrompts;
 
+    final processedFileName = fileNameKey != null
+        ? _processFileNameKey(fileNameKey!, basePromptResult)
+        : '';
+
     return PayloadGenerationResult(
       comment: payloadComment,
-      suggestedFileName: fileNameKey != null
-          ? basePromptResult.findPromptWithKey(fileNameKey!) ?? ''
-          : '',
+      suggestedFileName: processedFileName,
       payload: {
         'input': basePromptResult.toPrompt(),
         'model': paramConfig.model,
         'action': 'generation',
         'parameters': paramPayload,
       },
+    );
+  }
+
+  String _processFileNameKey(
+    String rawKey,
+    NestedPrompt prompt,
+  ) {
+    return rawKey.replaceAllMapped(
+      // 允许Unicode字符
+      RegExp(
+        r'__([\p{L}0-9_\-（）().\u4e00-\u9fff\uff00-\uffef]+?)__',
+        unicode: true,
+      ),
+      (match) =>
+          prompt.findPromptWithKey(match[1].toString()) ?? '__${match[1]}__',
     );
   }
 }

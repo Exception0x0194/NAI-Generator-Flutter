@@ -138,7 +138,7 @@
     "vibe_transfer": "Vibe Transfer",
     "generation_parameters": "生成参数",
     "output_file_name_prefix": "输出文件前缀",
-    "output_file_name_prefix_hint": "应当对应参数设置的注释名；留空 → 不使用",
+    "output_file_name_prefix_hint": "使用 `__关键字__` 在文件名中导入部分提示词\n\nE.g. `portrait-__artstyle__` → `portrait-watercolor`",
     "title": "标题",
     "info": "信息",
     "test_prompt": "测试提示词",

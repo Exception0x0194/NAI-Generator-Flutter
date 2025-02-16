@@ -3,11 +3,11 @@ import 'dart:io';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:nai_casrand/data/models/settings.dart';
 import 'package:nai_casrand/ui/settings_page/view_models/settings_page_viewmodel.dart';
 import 'package:nai_casrand/ui/core/widgets/editable_list_tile.dart';
 import 'package:provider/provider.dart';
+
+import '../../../core/constants/defaults.dart';
 
 class SettingsPageView extends StatelessWidget {
   final SettingsPageViewmodel viewmodel;
