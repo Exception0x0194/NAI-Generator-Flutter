@@ -5,9 +5,13 @@ import 'package:nai_casrand/data/models/prompt_config.dart';
 class PromptTabViewmodel extends ChangeNotifier {
   PromptConfig promptConfig;
   List<CharacterConfig> characterConfigList;
+  List<PromptConfig> savedConfigList;
 
-  PromptTabViewmodel(
-      {required this.promptConfig, required this.characterConfigList});
+  PromptTabViewmodel({
+    required this.promptConfig,
+    required this.characterConfigList,
+    required this.savedConfigList,
+  });
 
   void reorderCharacter(int oldIndex, int newIndex) {
     if (newIndex > oldIndex) {

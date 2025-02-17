@@ -21,6 +21,36 @@ const Map<int, double> doubleMapping = {
   5: 0.9
 };
 
+class PromptCommentPair {
+  String prompt;
+  String comment;
+
+  PromptCommentPair({
+    required this.prompt,
+    required this.comment,
+  });
+
+  void processPair(List<PromptConfig> configList) {
+    prompt = prompt.replaceAllMapped(
+      RegExp(
+        r'__([\p{L}0-9_\-（）().\u4e00-\u9fff\uff00-\uffef]+?)__',
+        unicode: true,
+      ),
+      (match) {
+        try {
+          final config =
+              configList.firstWhere((elem) => elem.comment == match[1]);
+          final subPrompt = config.getPrmpts();
+          comment += '\n__${subPrompt.toComment()}';
+          return subPrompt.toPrompt();
+        } on StateError catch (_) {
+          return '__${match[1]}__';
+        }
+      },
+    );
+  }
+}
+
 class PayloadGenerationResult {
   Map<String, dynamic> payload;
   String comment;
@@ -36,6 +66,7 @@ class PayloadGenerationResult {
 class GeneratePayloadUseCase {
   final PromptConfig rootPromptConfig;
   final List<CharacterConfig> characterConfigList;
+  final List<PromptConfig> savedConfigList;
   final List<VibeConfig> vibeConfigList;
   final ParamConfig paramConfig;
 
@@ -44,6 +75,7 @@ class GeneratePayloadUseCase {
   GeneratePayloadUseCase({
     required this.rootPromptConfig,
     required this.characterConfigList,
+    required this.savedConfigList,
     required this.vibeConfigList,
     required this.paramConfig,
     this.fileNameKey,
@@ -53,29 +85,37 @@ class GeneratePayloadUseCase {
     final paramPayload = paramConfig.getPayload();
 
     final basePromptResult = rootPromptConfig.getPrmpts();
-    String payloadComment = basePromptResult.toComment();
-    final configPromptResultList =
+    final basePair = PromptCommentPair(
+      prompt: basePromptResult.toPrompt(),
+      comment: basePromptResult.toComment(),
+    );
+    basePair.processPair(savedConfigList);
+    String payloadComment = basePair.comment;
+    final characterPromptResultList =
         characterConfigList.map((elem) => elem.getPrompt()).toList();
 
     // Character prompts
     final characterPrompts = [];
     final v4CharPosCaptions = [];
     final v4CharNegCaptions = [];
-    for (final (index, result) in configPromptResultList.indexed) {
+    for (final (index, result) in characterPromptResultList.indexed) {
       final posAsString = '${xMapping[result.center.x]}${result.center.y}';
       final posAsDouble = {
         'x': doubleMapping[result.center.x]!,
         'y': doubleMapping[result.center.y]!,
       };
+      final characterPair =
+          PromptCommentPair(prompt: result.caption, comment: result.comment);
+      characterPair.processPair(savedConfigList);
       payloadComment +=
-          '\n\nCharacter#$index at $posAsString:\n${result.comment}';
+          '\n\nCharacter#$index at $posAsString:\n${characterPair.comment}';
       characterPrompts.add({
-        'prompt': result.caption,
+        'prompt': characterPair.prompt,
         'uc': result.uc,
         'center': posAsDouble,
       });
       v4CharPosCaptions.add({
-        'char_caption': result.caption,
+        'char_caption': characterPair.prompt,
         'centers': posAsDouble,
       });
       v4CharNegCaptions.add({
@@ -85,7 +125,7 @@ class GeneratePayloadUseCase {
     }
     final v4Prompt = {
       'caption': {
-        'base_caption': basePromptResult.toPrompt(),
+        'base_caption': basePair.prompt,
         'char_captions': v4CharPosCaptions,
       },
       'use_coords': !paramConfig.autoPosition,
@@ -111,7 +151,7 @@ class GeneratePayloadUseCase {
       comment: payloadComment,
       suggestedFileName: processedFileName,
       payload: {
-        'input': basePromptResult.toPrompt(),
+        'input': basePair.prompt,
         'model': paramConfig.model,
         'action': 'generation',
         'parameters': paramPayload,

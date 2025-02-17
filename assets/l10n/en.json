@@ -143,5 +143,10 @@
     "title": "Title",
     "info": "Info",
     "test_prompt": "Test Prompt",
-    "selectable": "Selectable"
+    "selectable": "Selectable",
+    "saved_config_list_import_from_clipborad": "Import from clipboard",
+    "saved_config_list_add": "Add config",
+    "saved_config_list_usage_tip": "Use `__title between double underscores__` to use saved configs here",
+    "manage_saved_configs": "Manage saved configs",
+    "saved_configs": "Saved Configs"
 }

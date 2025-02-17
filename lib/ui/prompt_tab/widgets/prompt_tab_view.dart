@@ -5,6 +5,8 @@ import 'package:nai_casrand/ui/character_config/view_models/character_config_vie
 import 'package:nai_casrand/ui/prompt_tab/view_models/prompt_tab_viewmodel.dart';
 import 'package:nai_casrand/ui/prompt_config/widgets/prompt_config_view.dart';
 import 'package:nai_casrand/ui/prompt_config/view_models/prompt_config_viewmodel.dart';
+import 'package:nai_casrand/ui/saved_config_list/view_models/saved_config_list_viewmodel.dart';
+import 'package:nai_casrand/ui/saved_config_list/widgets/saved_config_list_view.dart';
 import 'package:provider/provider.dart';
 
 class PromptTabView extends StatelessWidget {
@@ -66,8 +68,19 @@ class PromptTabView extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         FloatingActionButton(
+          onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => SavedConfigListView(
+                  viewmodel: SavedConfigListViewmodel(
+                      configList: viewmodel.savedConfigList)))),
+          tooltip: tr('manage_saved_configs'),
+          heroTag: 'ptvfab1',
+          child: const Icon(Icons.format_list_bulleted),
+        ),
+        SizedBox(height: 20.0),
+        FloatingActionButton(
           onPressed: () => _showCharacterRearrangeDialog(context),
           tooltip: tr('rearrange_characters'),
+          heroTag: 'ptvfab2',
           child: const Icon(Icons.group),
         ),
       ],

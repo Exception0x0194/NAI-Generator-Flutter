@@ -84,6 +84,7 @@ class GenerationPageViewmodel extends ChangeNotifier {
         rootPromptConfig: payloadConfig.rootPromptConfig,
         characterConfigList: payloadConfig.characterConfigList,
         vibeConfigList: payloadConfig.vibeConfigList,
+        savedConfigList: payloadConfig.savedPromptConfigList,
         paramConfig: payloadConfig.paramConfig,
       )();
       final additionalInfo = digestPayloadResult(payloadResult);
@@ -119,6 +120,7 @@ class GenerationPageViewmodel extends ChangeNotifier {
         characterConfigList: payloadConfig.characterConfigList,
         vibeConfigList: payloadConfig.vibeConfigList,
         paramConfig: payloadConfig.paramConfig,
+        savedConfigList: payloadConfig.savedPromptConfigList,
         fileNameKey: payloadConfig.settings.fileNamePrefixKey,
       )();
       final request = ApiRequest(

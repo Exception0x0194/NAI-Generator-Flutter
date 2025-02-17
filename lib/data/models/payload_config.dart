@@ -36,6 +36,7 @@ const Map<int, double> doubleMapping = {
 class PayloadConfig {
   PromptConfig rootPromptConfig;
   List<CharacterConfig> characterConfigList;
+  List<PromptConfig> savedPromptConfigList;
 
   ParamConfig paramConfig;
 
@@ -47,6 +48,7 @@ class PayloadConfig {
   PayloadConfig({
     required this.rootPromptConfig,
     required this.characterConfigList,
+    required this.savedPromptConfigList,
     required this.paramConfig,
     required this.settings,
   });
@@ -130,6 +132,8 @@ class PayloadConfig {
       "prompt_config": rootPromptConfig.toJson(),
       "character_config":
           characterConfigList.map((elem) => elem.toJson()).toList(),
+      "saved_config":
+          savedPromptConfigList.map((elem) => elem.toJson()).toList(),
       "param_config": paramConfig.toJson(),
       "settings": settings.toJson()
     };
@@ -139,12 +143,19 @@ class PayloadConfig {
     final jsonCharacterList = jsonData.containsKey('character_config')
         ? jsonData['character_config'] as List<dynamic>
         : [];
-    final characterList = jsonCharacterList.map((configJson) {
-      return CharacterConfig.fromJson(configJson);
-    }).toList();
+    final jsonSavedPromptList = jsonData.containsKey('saved_config')
+        ? jsonData['saved_config'] as List<dynamic>
+        : [];
+    final characterList = jsonCharacterList
+        .map((configJson) => CharacterConfig.fromJson(configJson))
+        .toList();
+    final savedList = jsonSavedPromptList
+        .map((configJson) => PromptConfig.fromJson(configJson))
+        .toList();
     return PayloadConfig(
       rootPromptConfig: PromptConfig.fromJson(jsonData['prompt_config']),
       characterConfigList: characterList,
+      savedPromptConfigList: savedList,
       paramConfig: ParamConfig.fromJson(jsonData['param_config'] ?? {}),
       settings: Settings.fromJson(jsonData['settings'] ?? {}),
     );
