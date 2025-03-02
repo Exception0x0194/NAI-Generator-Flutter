@@ -165,6 +165,10 @@ class ParamConfig {
       "prefer_brownian": preferBrownian
     };
     payload.removeWhere((k, v) => v == null);
+    if (model.contains('diffusion-4')) {
+      payload.remove('sm');
+      payload.remove('sm_dyn');
+    }
     return payload;
   }
 

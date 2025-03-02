@@ -235,9 +235,15 @@ class GenerationPageViewmodel extends ChangeNotifier {
   /// Make PayloadResult into readable Map<String, dynamic> for better visualization
   Map<String, dynamic> digestPayloadResult(
       PayloadGenerationResult payloadResult) {
-    final additionalInfo = payloadResult.payload;
-    final additionalInfoParam =
-        additionalInfo['parameters']! as Map<String, dynamic>;
+    // 明确将 payload 转换为可空动态类型
+    final additionalInfo = Map<String, dynamic>.from(payloadResult.payload);
+
+    // 使用 Map.from 确保 parameters 的类型为 Map<String, dynamic>
+    final additionalInfoParam = Map<String, dynamic>.from(
+      additionalInfo['parameters']! as Map,
+    );
+
+    // 移除不需要的键
     for (final key in [
       'reference_image_multiple',
       'reference_information_extracted_multiple',
@@ -245,8 +251,12 @@ class GenerationPageViewmodel extends ChangeNotifier {
     ]) {
       additionalInfoParam.remove(key);
     }
+
     additionalInfo.remove('parameters');
-    additionalInfo.addAll(additionalInfoParam);
+
+    // 合并时使用显式类型转换
+    additionalInfo.addAll(additionalInfoParam.cast<String, dynamic>());
+
     return additionalInfo;
   }
 
