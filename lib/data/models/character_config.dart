@@ -4,15 +4,13 @@ import 'package:nai_casrand/data/models/prompt_config.dart';
 
 class CharacterPromptResult {
   Point<int> center;
-  String caption;
+  NestedPrompt prompt;
   String uc;
-  String comment;
 
   CharacterPromptResult({
     required this.center,
-    required this.caption,
+    required this.prompt,
     required this.uc,
-    required this.comment,
   });
 }
 
@@ -38,9 +36,8 @@ class CharacterConfig {
     }
     return CharacterPromptResult(
       center: positionAsInt,
-      caption: promptResult.toPrompt(),
+      prompt: promptResult,
       uc: negativePrompt,
-      comment: promptResult.toComment(),
     );
   }
 

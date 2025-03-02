@@ -263,6 +263,6 @@ class GenerationPageViewmodel extends ChangeNotifier {
   String _getSafeFileName(String fileName) {
     String safeName = fileName.replaceAll(RegExp(r'[<>"/\\|?*{}\[\]]'), '');
     safeName = safeName.replaceAll(RegExp(r'[:]'), '_');
-    return safeName;
+    return safeName.substring(0, min(200, safeName.length));
   }
 }

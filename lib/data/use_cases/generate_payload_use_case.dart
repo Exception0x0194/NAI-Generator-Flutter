@@ -29,26 +29,6 @@ class PromptCommentPair {
     required this.prompt,
     required this.comment,
   });
-
-  void processPair(List<PromptConfig> configList) {
-    prompt = prompt.replaceAllMapped(
-      RegExp(
-        r'__([\p{L}0-9_\-（）().\u4e00-\u9fff\uff00-\uffef]+?)__',
-        unicode: true,
-      ),
-      (match) {
-        try {
-          final config =
-              configList.firstWhere((elem) => elem.comment == match[1]);
-          final subPrompt = config.getPrmpts();
-          comment += '\n__${subPrompt.toComment()}';
-          return subPrompt.toPrompt();
-        } on StateError catch (_) {
-          return '__${match[1]}__';
-        }
-      },
-    );
-  }
 }
 
 class PayloadGenerationResult {
@@ -82,14 +62,19 @@ class GeneratePayloadUseCase {
   });
 
   PayloadGenerationResult call() {
-    final paramPayload = paramConfig.getPayload();
+    final pattern = RegExp(
+      r'__([\p{L}0-9_\-（）().\u4e00-\u9fff\uff00-\uffef]+?)__',
+      unicode: true,
+    );
 
-    final basePromptResult = rootPromptConfig.getPrmpts();
+    final paramPayload = paramConfig.getPayload();
+    final basePromptResult =
+        rootPromptConfig.getPrmpts().replaceVariables(pattern, savedConfigList);
     final basePair = PromptCommentPair(
       prompt: basePromptResult.toPrompt(),
       comment: basePromptResult.toComment(),
     );
-    basePair.processPair(savedConfigList);
+    // basePair.processPair(savedConfigList);
     String payloadComment = basePair.comment;
     final characterPromptResultList =
         characterConfigList.map((elem) => elem.getPrompt()).toList();
@@ -104,9 +89,12 @@ class GeneratePayloadUseCase {
         'x': doubleMapping[result.center.x]!,
         'y': doubleMapping[result.center.y]!,
       };
-      final characterPair =
-          PromptCommentPair(prompt: result.caption, comment: result.comment);
-      characterPair.processPair(savedConfigList);
+      result.prompt = result.prompt.replaceVariables(pattern, savedConfigList);
+      final characterPair = PromptCommentPair(
+        prompt: result.prompt.toPrompt(),
+        comment: result.prompt.toComment(),
+      );
+      // characterPair.processPair(savedConfigList);
       payloadComment +=
           '\n\nCharacter#$index at $posAsString:\n${characterPair.comment}';
       characterPrompts.add({
@@ -116,11 +104,11 @@ class GeneratePayloadUseCase {
       });
       v4CharPosCaptions.add({
         'char_caption': characterPair.prompt,
-        'centers': posAsDouble,
+        'centers': [posAsDouble],
       });
       v4CharNegCaptions.add({
         'char_caption': result.uc,
-        'centers': posAsDouble,
+        'centers': [posAsDouble],
       });
     }
     final v4Prompt = {
@@ -136,12 +124,11 @@ class GeneratePayloadUseCase {
         'base_caption': paramConfig.negativePrompt,
         'char_captions': v4CharNegCaptions,
       },
-      'use_coords': !paramConfig.autoPosition,
-      'use_order': true,
     };
     paramPayload['v4_prompt'] = v4Prompt;
     paramPayload['v4_negative_prompt'] = v4NegPrompt;
     paramPayload['characterPrompts'] = characterPrompts;
+    paramPayload['legacy_v3_extend'] = false;
 
     final processedFileName = fileNameKey != null
         ? _processFileNameKey(fileNameKey!, basePromptResult)
@@ -153,7 +140,7 @@ class GeneratePayloadUseCase {
       payload: {
         'input': basePair.prompt,
         'model': paramConfig.model,
-        'action': 'generation',
+        'action': 'generate',
         'parameters': paramPayload,
       },
     );

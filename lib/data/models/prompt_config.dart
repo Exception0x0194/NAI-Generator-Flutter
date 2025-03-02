@@ -4,6 +4,11 @@ sealed class NestedPrompt {
   String toPrompt();
   String toComment();
 
+  NestedPrompt replaceVariables(
+    Pattern pattern,
+    List<PromptConfig> configList,
+  );
+
   /// DFS search that returns prompt with specified key.
   String? findPromptWithKey(String key);
 }
@@ -31,6 +36,28 @@ class NestedPromptString extends NestedPrompt {
   String? findPromptWithKey(String key) {
     if (title == key) return content;
     return null;
+  }
+
+  @override
+  NestedPrompt replaceVariables(
+    Pattern pattern,
+    List<PromptConfig> configList,
+  ) {
+    // 执行实际替换逻辑
+    final replaced = content.replaceAllMapped(
+        pattern, (m) => _getReplacement(m[1]!, configList));
+    return NestedPromptString(title: title, content: replaced);
+  }
+
+  String _getReplacement(String key, List<PromptConfig> configList) {
+    try {
+      return configList
+          .firstWhere((e) => e.comment == key)
+          .getPrmpts()
+          .toPrompt();
+    } catch (_) {
+      return '__${key}__'; // 保持未替换状态
+    }
   }
 }
 
@@ -76,6 +103,19 @@ class NestedPromptList extends NestedPrompt {
     var indentation = ' ' * spaces;
     var lines = str.split('\n');
     return lines.map((line) => '$indentation$line').join('\n');
+  }
+
+  @override
+  NestedPrompt replaceVariables(
+    Pattern pattern,
+    List<PromptConfig> configList,
+  ) {
+    // 递归处理子节点
+    return NestedPromptList(
+        title: title,
+        children: children
+            .map((c) => c.replaceVariables(pattern, configList))
+            .toList());
   }
 }
 
