@@ -149,31 +149,17 @@ class InfoDetailPage extends StatelessWidget {
   Widget buildInfoTile(String title, String content, BuildContext context) {
     return Column(children: [
       ListTile(
-          titleAlignment: ListTileTitleAlignment.top,
-          title: Text(title),
-          subtitle: Text(content),
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              IconButton(
-                  onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) =>
-                            getSelectableTextPage(title, content)));
-                  },
-                  icon: Icon(
-                    Icons.visibility_outlined,
-                  )),
-              SizedBox(width: 16.0),
-              IconButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    _copyContent(content, context);
-                  },
-                  tooltip: tr('copy_to_clipboard'),
-                  icon: Icon(Icons.copy)),
-            ],
-          )),
+        titleAlignment: ListTileTitleAlignment.top,
+        title: Text(title),
+        subtitle: SelectableText(content),
+        trailing: IconButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              _copyContent(content, context);
+            },
+            tooltip: tr('copy_to_clipboard'),
+            icon: Icon(Icons.copy)),
+      ),
       Divider(),
     ]);
   }

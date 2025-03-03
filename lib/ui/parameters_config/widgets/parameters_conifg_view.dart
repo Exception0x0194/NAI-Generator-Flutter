@@ -72,18 +72,20 @@ class ParametersConfigView extends StatelessWidget {
                   onSelectComplete: (value) =>
                       viewmodel.setNoiseScheduler(value)),
               // SMEA
-              _buildSwitchTile(
-                context.tr('sm'),
-                viewmodel.config.sm,
-                (newValue) => viewmodel.setSm(newValue),
-                const Icon(Icons.keyboard_double_arrow_right),
-              ),
-              _buildSwitchTile(
-                context.tr('sm_dyn'),
-                viewmodel.config.smDyn,
-                (newValue) => viewmodel.setSmDyn(newValue),
-                const Icon(Icons.keyboard_double_arrow_right),
-              ),
+              if (!viewmodel.config.model.contains('diffusion-4'))
+                _buildSwitchTile(
+                  context.tr('sm'),
+                  viewmodel.config.sm,
+                  (newValue) => viewmodel.setSm(newValue),
+                  const Icon(Icons.keyboard_double_arrow_right),
+                ),
+              if (!viewmodel.config.model.contains('diffusion-4'))
+                _buildSwitchTile(
+                  context.tr('sm_dyn'),
+                  viewmodel.config.smDyn,
+                  (newValue) => viewmodel.setSmDyn(newValue),
+                  const Icon(Icons.keyboard_double_arrow_right),
+                ),
               // Variety+
               _buildSwitchTile(
                 context.tr('variety_plus'),

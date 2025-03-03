@@ -128,7 +128,21 @@ class GeneratePayloadUseCase {
     paramPayload['v4_prompt'] = v4Prompt;
     paramPayload['v4_negative_prompt'] = v4NegPrompt;
     paramPayload['characterPrompts'] = characterPrompts;
-    paramPayload['legacy_v3_extend'] = false;
+
+    if (!paramConfig.model.contains('diffusion-4')) {
+      final imageB64List = [];
+      final referenceStrengthList = [];
+      final imformationExtractedList = [];
+      for (final vc in vibeConfigList) {
+        imageB64List.add(vc.imageB64);
+        referenceStrengthList.add(vc.referenceStrength);
+        imformationExtractedList.add(vc.infoExtracted);
+      }
+      paramPayload['reference_image_multiple'] = imageB64List;
+      paramPayload['reference_strength_multiple'] = referenceStrengthList;
+      paramPayload['reference_information_extracted_multiple'] =
+          imformationExtractedList;
+    }
 
     final processedFileName = fileNameKey != null
         ? _processFileNameKey(fileNameKey!, basePromptResult)

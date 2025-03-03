@@ -164,6 +164,7 @@ class ParamConfig {
       "deliberate_euler_ancestral_bug": deliberateEulerAncestralBug,
       "prefer_brownian": preferBrownian
     };
+    payload['legacy_v3_extend'] = false;
     payload.removeWhere((k, v) => v == null);
     if (model.contains('diffusion-4')) {
       payload.remove('sm');
