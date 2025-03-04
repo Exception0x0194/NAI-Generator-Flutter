@@ -215,8 +215,8 @@ class SettingsPageView extends StatelessWidget {
                       TextButton(
                           onPressed: () => setState(
                               () => controller.text = defaultWatermarkContent),
-                          child: const Text('👻')),
-                      const Spacer(),
+                          child: Text('👻')),
+                      Spacer(),
                       TextButton(
                         onPressed: () => Navigator.of(context).pop(),
                         child: Text(tr('cancel')),

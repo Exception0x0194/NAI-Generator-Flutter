@@ -11,7 +11,7 @@ import 'package:super_drag_and_drop/super_drag_and_drop.dart';
 class I2iConfigView extends StatelessWidget {
   final I2iVibeViewmodel viewmodel;
 
-  const I2iConfigView({super.key, required this.viewmodel});
+  I2iConfigView({required this.viewmodel});
 
   @override
   Widget build(BuildContext context) {

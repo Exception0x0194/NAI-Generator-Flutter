@@ -63,13 +63,13 @@ class NavigationViewState extends State<NavigationView> {
                       groupAlignment: -1.0,
                       destinations: [
                         NavigationRailDestination(
-                            icon: const Icon(Icons.create),
+                            icon: Icon(Icons.create),
                             label: Text(context.tr('generation'))),
                         NavigationRailDestination(
-                            icon: const Icon(Icons.visibility),
+                            icon: Icon(Icons.visibility),
                             label: Text(context.tr('prompt_config'))),
                         NavigationRailDestination(
-                            icon: const Icon(Icons.settings),
+                            icon: Icon(Icons.settings),
                             label: Text(context.tr('settings'))),
                       ],
                     ),
@@ -85,13 +85,13 @@ class NavigationViewState extends State<NavigationView> {
                 currentIndex: _currentIndex,
                 items: [
                   BottomNavigationBarItem(
-                      icon: const Icon(Icons.create),
+                      icon: Icon(Icons.create),
                       label: context.tr('generation')),
                   BottomNavigationBarItem(
-                      icon: const Icon(Icons.visibility),
+                      icon: Icon(Icons.visibility),
                       label: context.tr('prompt_config')),
                   BottomNavigationBarItem(
-                      icon: const Icon(Icons.settings),
+                      icon: Icon(Icons.settings),
                       label: context.tr('settings')),
                 ],
                 onTap: _changeIndex,

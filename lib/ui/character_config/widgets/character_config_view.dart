@@ -29,14 +29,14 @@ class CharacterConfigView extends StatelessWidget {
                   Expanded(
                       child: ListTile(
                     title: Text(tr('character_position')),
-                    leading: const Icon(Icons.location_on),
+                    leading: Icon(Icons.location_on),
                     subtitle: Text(viewmodel.getPositionsTexts()),
                     onTap: () => _showEditPositionDialog(context),
                   )),
                   Expanded(
                       child: EditableListTile(
                           title: tr('uc'),
-                          leading: const Icon(Icons.do_not_disturb),
+                          leading: Icon(Icons.do_not_disturb),
                           currentValue: viewmodel.config.negativePrompt,
                           maxLines: 1,
                           onEditComplete: (value) =>

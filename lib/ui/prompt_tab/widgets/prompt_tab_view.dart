@@ -32,7 +32,7 @@ class PromptTabView extends StatelessWidget {
               Expanded(child: Divider())
             ]),
             Padding(
-              padding: const EdgeInsets.only(left: 8.0),
+              padding: EdgeInsets.only(left: 8.0),
               child: PromptConfigView(
                 viewModel: PromptConfigViewModel(
                   config: viewmodel.promptConfig,
@@ -51,7 +51,7 @@ class PromptTabView extends StatelessWidget {
                     const Expanded(child: Divider())
                   ]),
                   Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
+                    padding: EdgeInsets.only(left: 8.0),
                     child: CharacterConfigView(
                       viewmodel: CharacterConfigViewmodel(
                         config: characterConfig,
@@ -76,7 +76,7 @@ class PromptTabView extends StatelessWidget {
           heroTag: 'ptvfab1',
           child: const Icon(Icons.format_list_bulleted),
         ),
-        const SizedBox(height: 20.0),
+        SizedBox(height: 20.0),
         FloatingActionButton(
           onPressed: () => _showCharacterRearrangeDialog(context),
           tooltip: tr('rearrange_characters'),
@@ -99,7 +99,7 @@ class PromptTabView extends StatelessWidget {
       child: Consumer<PromptTabViewmodel>(
           builder: (context, viewmodel, child) => ListTile(
                 title: Text(tr('add_character')),
-                leading: const Icon(Icons.person_add),
+                leading: Icon(Icons.person_add),
                 onTap: () => viewmodel.addCharacter(),
                 enabled: viewmodel.characterConfigList.length < 5,
               )),
@@ -143,12 +143,12 @@ class CharacterRearrangeView extends StatelessWidget {
               key: ValueKey(index),
               title: Text(
                   '#$index ${viewmodel.characterConfigList[index].positivePromptConfig.comment}'),
-              leading: const Icon(Icons.person),
+              leading: Icon(Icons.person),
               trailing: Padding(
-                  padding: const EdgeInsets.only(right: 16.0),
+                  padding: EdgeInsets.only(right: 16.0),
                   child: IconButton(
                     onPressed: () => viewmodel.removeCharacter(index),
-                    icon: const Icon(Icons.delete),
+                    icon: Icon(Icons.delete),
                   )),
             ),
             itemCount: viewmodel.characterConfigList.length,

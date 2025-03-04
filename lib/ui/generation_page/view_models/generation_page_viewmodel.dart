@@ -49,7 +49,7 @@ class GenerationPageViewmodel extends ChangeNotifier {
   void addLoremInfoCardContent() async {
     // Async command as image requires loading
     commandFunc() async {
-      await Future.delayed(const Duration(milliseconds: 500));
+      await Future.delayed(Duration(milliseconds: 500));
       final random = Random();
       final bytes =
           Uint8List.sublistView(await rootBundle.load('assets/appicon.png'));

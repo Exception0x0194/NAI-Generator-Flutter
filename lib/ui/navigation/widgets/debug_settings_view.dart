@@ -19,7 +19,7 @@ class DebugSettingsViewState extends State<DebugSettingsView> {
       mainAxisSize: MainAxisSize.min,
       children: [
         CheckboxListTile(
-            title: const Text('Debug API'),
+            title: Text('Debug API'),
             value: widget.payloadConfig.settings.debugApiEnabled,
             onChanged: (value) => setState(
                   () {
