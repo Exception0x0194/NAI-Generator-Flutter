@@ -121,20 +121,20 @@ class NavigationAppBarState extends State<NavigationAppBar>
           child: Text(_currentTitle),
           onTap: () => _showDebugDialog(context),
         ),
-        Spacer(),
+        const Spacer(),
         IconButton(
           onPressed: () => _toggleDark(context),
-          icon: Icon(Icons.dark_mode_outlined),
+          icon: const Icon(Icons.dark_mode_outlined),
         ),
-        SizedBox(width: 20.0),
+        const SizedBox(width: 20.0),
         IconButton(
           onPressed: () => _showLanguageSelectionDialog(context),
-          icon: Icon(Icons.translate),
+          icon: const Icon(Icons.translate),
         ),
-        SizedBox(width: 20.0),
+        const SizedBox(width: 20.0),
         IconButton(
           onPressed: () => _showAppInfoDialog(context),
-          icon: Icon(Icons.help_outline),
+          icon: const Icon(Icons.help_outline),
         ),
       ],
     );
@@ -274,7 +274,7 @@ class NavigationAppBarState extends State<NavigationAppBar>
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
-              title: Text('Debug Settings'),
+              title: const Text('Debug Settings'),
               content: DebugSettingsView(),
               actions: [
                 TextButton(

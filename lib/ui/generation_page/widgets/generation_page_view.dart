@@ -22,7 +22,7 @@ class GenerationPageView extends StatelessWidget {
         return WaterfallFlow.builder(
           gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
               crossAxisCount: viewmodel.colNum.value),
-          padding: EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(8.0),
           itemCount: itemCount,
           itemBuilder: (context, index) => InfoCard(
             command: viewmodel.commandList[itemCount - 1 - index],
@@ -39,14 +39,14 @@ class GenerationPageView extends StatelessWidget {
           tooltip: tr('generation_settings'),
           child: const Icon(Icons.handyman_outlined),
         ),
-        SizedBox(height: 20.0),
+        const SizedBox(height: 20.0),
         FloatingActionButton(
           heroTag: 'gpfab2',
           onPressed: () => viewmodel.addTestPromptInfoCardContent(),
           tooltip: tr('generate_one_prompt'),
           child: const Icon(Icons.add),
         ),
-        SizedBox(height: 20.0),
+        const SizedBox(height: 20.0),
         FloatingActionButton(
           heroTag: 'gpfab3',
           onPressed: () => viewmodel.toggleBatch(),
