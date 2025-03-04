@@ -171,7 +171,7 @@ class ParametersConfigView extends StatelessWidget {
   Widget _buildModelSelector(BuildContext context) {
     return SelectableListTile(
       title: tr('generation_model'),
-      leading: Icon(Icons.auto_awesome_outlined),
+      leading: const Icon(Icons.auto_awesome_outlined),
       currentValue: viewmodel.config.model,
       options: models,
       onSelectComplete: (value) => viewmodel.setModel(value),
@@ -181,7 +181,7 @@ class ParametersConfigView extends StatelessWidget {
   Widget _buildAutoPositionTile(BuildContext context) {
     return CheckboxListTile(
       title: Text(tr('auto_position')),
-      secondary: Icon(Icons.not_listed_location_outlined),
+      secondary: const Icon(Icons.not_listed_location_outlined),
       value: viewmodel.config.autoPosition,
       onChanged: (value) => viewmodel.setAutoPosition(value),
     );

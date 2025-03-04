@@ -60,7 +60,7 @@ class InfoCard extends StatelessWidget {
             _copyContent(content, context);
             Navigator.of(context).pop();
           },
-          icon: Icon(Icons.copy)),
+          icon: const Icon(Icons.copy)),
     );
   }
 
@@ -77,7 +77,7 @@ class InfoCard extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                leading: Icon(Icons.info_outline),
+                leading: const Icon(Icons.info_outline),
                 title: Text(content.title),
               ),
               ListTile(
@@ -95,7 +95,7 @@ class InfoCard extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                leading: Icon(Icons.photo_outlined),
+                leading: const Icon(Icons.photo_outlined),
                 title: Text(
                   content.title,
                   maxLines: 1,
@@ -158,9 +158,9 @@ class InfoDetailPage extends StatelessWidget {
               _copyContent(content, context);
             },
             tooltip: tr('copy_to_clipboard'),
-            icon: Icon(Icons.copy)),
+            icon: const Icon(Icons.copy)),
       ),
-      Divider(),
+      const Divider(),
     ]);
   }
 
@@ -176,7 +176,7 @@ class InfoDetailPage extends StatelessWidget {
         title: Text(tr('selectable') + tr('colon') + title),
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: SelectableText(text),
       ),
     );

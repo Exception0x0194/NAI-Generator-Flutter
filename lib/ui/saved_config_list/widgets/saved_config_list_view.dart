@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 class SavedConfigListView extends StatelessWidget {
   final SavedConfigListViewmodel viewmodel;
 
-  const SavedConfigListView({required this.viewmodel});
+  const SavedConfigListView({super.key, required this.viewmodel});
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +23,7 @@ class SavedConfigListView extends StatelessWidget {
 
   Widget buildBody(BuildContext context) {
     final pageTip = Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: MarkdownBody(data: tr('saved_config_list_usage_tip')),
     );
     return Scaffold(
@@ -46,24 +46,24 @@ class SavedConfigListView extends StatelessWidget {
                       indentLevel: 1,
                     ))),
                     IconButton(
-                        padding: EdgeInsets.symmetric(vertical: 12.0),
+                        padding: const EdgeInsets.symmetric(vertical: 12.0),
                         onPressed: () => viewmodel.removeConfig(elem),
-                        icon: Icon(Icons.delete_outline)),
+                        icon: const Icon(Icons.delete_outline)),
                   ],
                 )),
             Row(
               children: [
-                SizedBox(width: 20.0),
+                const SizedBox(width: 20.0),
                 Expanded(
                     child: ListTile(
                   title: Text(tr('saved_config_list_add')),
-                  leading: Icon(Icons.add),
+                  leading: const Icon(Icons.add),
                   onTap: () => viewmodel.addConfig(context),
                 )),
                 Expanded(
                     child: ListTile(
                   title: Text(tr('saved_config_list_import_from_clipborad')),
-                  leading: Icon(Icons.paste),
+                  leading: const Icon(Icons.paste),
                   onTap: () => viewmodel.importConfigFromClipboard(context),
                 )),
               ],

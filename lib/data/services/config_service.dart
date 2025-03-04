@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -17,8 +18,10 @@ class ConfigService {
   }
 
   Future<Map<String, dynamic>> loadSavedConfig() async {
-    final dir = await getApplicationDocumentsDirectory();
-    Hive.init(dir.path);
+    if (!kIsWeb) {
+      final dir = await getApplicationDocumentsDirectory();
+      Hive.init(dir.path);
+    }
     saveBox = await Hive.openBox('savedBox');
     String? jsonData = saveBox.get('savedConfig');
     if (jsonData == null) return loadDefaultConfig();
