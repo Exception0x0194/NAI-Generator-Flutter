@@ -21,6 +21,7 @@ class PromptConfigEditView extends StatelessWidget {
                   children: [
                     _buildSelectionMethodTile(viewModel, context),
                     _buildShuffledTile(viewModel, context),
+                    _buildNumTile(viewModel, context),
                     _buildProbTile(viewModel, context),
                     _buildRandomBrackets(viewModel, context),
                     _buildTypeTile(viewModel, context),
@@ -113,5 +114,19 @@ class PromptConfigEditView extends StatelessWidget {
       onChanged: (lower, upper) =>
           viewModel.setRandomBrackets(lower.toInt(), upper.toInt()),
     );
+  }
+
+  Widget _buildNumTile(PromptConfigViewModel viewModel, BuildContext context) {
+    if (viewModel.config.selectionMethod != 'multiple_num') {
+      return const SizedBox.shrink();
+    }
+    return EditableListTile(
+        title: tr('selection_num'),
+        leading: const Icon(Icons.question_mark),
+        confirmOnSubmit: true,
+        keyboardType: TextInputType.number,
+        currentValue: viewModel.config.num.toString(),
+        onEditComplete: (value) =>
+            viewModel.setNum(int.tryParse(value) ?? viewModel.config.num));
   }
 }
