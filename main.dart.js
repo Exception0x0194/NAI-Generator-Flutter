@@ -113172,7 +113172,7 @@ g=c.e
 if(c.z)f=B.cO.oC(2147483648)
 else f=c.Q
 e=t.z
-d=A.aI(["params_version",3,"width",o,"height",n,"scale",q,"sampler",l,"steps",k,"n_samples",c.b,"ucPreset",c.ch,"qualityToggle",c.ay,"sm",j,"sm_dyn",i,"dynamic_thresholding",c.as,"controlnet_strength",c.at,"legacy",c.cx,"add_original_image",!0,"cfg_rescale",h,"noise_schedule",g,"skip_cfg_above_sigma",m,"use_coords",!0,"seed",f,"characterPrompts",[],"v4_prompt",A.t(e,e),"v4_negative_prompt",A.t(e,e),"negative_prompt",c.CW,"reference_image_multiple",[],"reference_information_extracted_multiple",[],"reference_strength_multiple",[],"deliberate_euler_ancestral_bug",r,"prefer_brownian",s],t.N,t.X)
+d=A.aI(["params_version",3,"width",o,"height",n,"scale",q,"sampler",l,"steps",k,"n_samples",c.b,"ucPreset",2,"qualityToggle",!1,"sm",j,"sm_dyn",i,"dynamic_thresholding",c.as,"controlnet_strength",c.at,"legacy",c.cx,"add_original_image",!0,"cfg_rescale",h,"noise_schedule",g,"skip_cfg_above_sigma",m,"use_coords",!0,"seed",f,"characterPrompts",[],"v4_prompt",A.t(e,e),"v4_negative_prompt",A.t(e,e),"negative_prompt",c.CW,"reference_image_multiple",[],"reference_information_extracted_multiple",[],"reference_strength_multiple",[],"deliberate_euler_ancestral_bug",r,"prefer_brownian",s],t.N,t.X)
 d.n(0,"legacy_v3_extend",!1)
 d.H4(d,new A.azt())
 if(B.e.p(c.db,"diffusion-4")){d.F(0,"sm")
