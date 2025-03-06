@@ -1,0 +1,34 @@
+name: Build Windows Release
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+      - name: 设置 Flutter 环境
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.24.3
+      - name: 构建 Windows
+        run: flutter build windows
+
+      - name: 打包为 ZIP 文件
+        shell: powershell  # 指定使用 PowerShell 运行
+        run: |
+          # 使用 Compress-Archive 命令打包文件夹
+          Compress-Archive -Path "build/windows/x64/runner/Release" -DestinationPath "windows-x64-release.zip"
+
+      - name: 上传 Windows ZIP Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-release-zip  # 修改 artifact 的名称，更清晰地表示是 zip 文件
+          path: windows-x64-release.zip # 修改上传的路径为 zip 文件
