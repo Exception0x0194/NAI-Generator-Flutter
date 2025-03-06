@@ -1,0 +1,28 @@
+name: Build Android Release
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+      - name: 设置 Flutter 环境
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: 获取 Flutter 依赖
+        run: flutter pub get
+      - name: 构建 APK
+        run: flutter build apk
+      - name: 上传 APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-apk
+          path: build/app/outputs/apk/app-release.apk
