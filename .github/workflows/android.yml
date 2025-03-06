@@ -18,10 +18,13 @@ jobs:
         with:
           channel: stable
           flutter-version: 3.24.3
+      - name: 创建 secrets.json 文件
+        run: |
+          echo "${{ secrets.SECRETS_JSON_CONTENT }}" > secrets.json
       - name: 获取 Flutter 依赖
         run: flutter pub get
       - name: 构建 APK
-        run: flutter build apk
+        run: flutter build apk --dart-define-from-file=secrets.json
       - name: 上传 APK Artifact
         uses: actions/upload-artifact@v4
         with:
