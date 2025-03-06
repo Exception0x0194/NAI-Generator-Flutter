@@ -2,9 +2,8 @@ name: Build Windows Release
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches: [ "main" ] # 当 main 分支有 push 时触发
+  workflow_dispatch: # 允许手动触发 workflow
 
 jobs:
   build-windows:
@@ -18,11 +17,15 @@ jobs:
         with:
           channel: stable
           flutter-version: 3.24.3
-      - name: 创建 secrets.json 文件 (Windows)
-        shell: powershell # 明确指定使用 PowerShell
+      - name: 创建 secrets.json 文件
+        shell: powershell 
         run: |
-          # 使用 PowerShell 的 Set-Content 命令创建并写入文件
-          Set-Content -Path "secrets.json" -Value "${{ secrets.SECRETS_JSON_CONTENT }}"
+          # 从 Base64 解码 GitHub Secret 的内容
+          $decodedJsonBytes = [System.Convert]::FromBase64String("${{ secrets.SECRETS_JSON_CONTENT }}")
+          # 将解码后的字节数组转换为 UTF-8 字符串
+          $decodedJsonString = [System.Text.Encoding]::UTF8.GetString($decodedJsonBytes)
+          # 将解码后的 JSON 字符串写入 secrets.json 文件
+          $decodedJsonString | Out-File -FilePath "secrets.json" -Encoding UTF8
       - name: 构建 Windows
         run: flutter build windows --dart-define-from-file=secrets.json
       - name: 打包为 ZIP 文件

@@ -24,9 +24,7 @@ jobs:
 
       - name: 创建 secrets.json 文件
         run: |
-          echo "${{ secrets.SECRETS_JSON_CONTENT }}" > secrets.json
-          # 可选：输出 secrets.json 文件内容用于调试 (生产环境不推荐，可能泄露敏感信息)
-          # cat secrets.json
+          echo "${{ secrets.SECRETS_JSON_CONTENT }} | base64 -d" > secrets.json
 
       - name: 构建 Flutter Web Release
         run: flutter build web --release --dart-define-from-file=secrets.json
