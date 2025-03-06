@@ -18,15 +18,18 @@ jobs:
         with:
           channel: stable
           flutter-version: 3.24.3
+      - name: 创建 secrets.json 文件 (Windows)
+        shell: powershell # 明确指定使用 PowerShell
+        run: |
+          # 使用 PowerShell 的 Set-Content 命令创建并写入文件
+          Set-Content -Path "secrets.json" -Value "${{ secrets.SECRETS_JSON_CONTENT }}"
       - name: 构建 Windows
-        run: flutter build windows
-
+        run: flutter build windows --dart-define-from-file=secrets.json
       - name: 打包为 ZIP 文件
         shell: powershell  # 指定使用 PowerShell 运行
         run: |
           # 使用 Compress-Archive 命令打包文件夹
           Compress-Archive -Path "build/windows/x64/runner/Release" -DestinationPath "windows-x64-release.zip"
-
       - name: 上传 Windows ZIP Artifact
         uses: actions/upload-artifact@v4
         with:
