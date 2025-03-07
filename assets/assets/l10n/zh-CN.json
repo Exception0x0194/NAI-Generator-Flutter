@@ -147,5 +147,6 @@
     "saved_config_list_add": "添加配置",
     "saved_config_list_usage_tip": "在提示词/角色配置中使用 `__双下划线包裹的标题__` 调用在此保存的配置",
     "manage_saved_configs": "管理保存的提示词配置",
-    "saved_configs": "保存的配置"
+    "saved_configs": "保存的配置",
+    "theme_mode": "主题风格"
 }
