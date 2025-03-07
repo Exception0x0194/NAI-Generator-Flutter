@@ -78,6 +78,7 @@ class Settings {
       'batch_count': batchCount,
       'batch_interval': batchIntervalSec,
       'file_name_prefix_key': fileNamePrefixKey,
+      'number_of_requests': numberOfRequests,
     };
   }
 }
