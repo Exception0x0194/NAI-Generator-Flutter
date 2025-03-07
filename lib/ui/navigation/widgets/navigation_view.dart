@@ -39,13 +39,13 @@ class NavigationViewState extends State<NavigationView> {
     final payloadConfig = GetIt.instance<PayloadConfig>();
     final pages = [
       GenerationPageView(
-        viewmodel: GenerationPageViewmodel(payloadConfig: payloadConfig),
+        viewmodel: GenerationPageViewmodel(),
       ),
       ConfigPageView(
         viewmodel: ConfigPageViewmodel(payloadConfig: payloadConfig),
       ),
       SettingsPageView(
-        viewmodel: SettingsPageViewmodel(payloadConfig: payloadConfig),
+        viewmodel: SettingsPageViewmodel(),
       ),
     ];
     final appBar = NavigationAppBar();

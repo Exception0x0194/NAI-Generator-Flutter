@@ -148,5 +148,6 @@
     "saved_config_list_add": "Add config",
     "saved_config_list_usage_tip": "Use `__title between double underscores__` to use saved configs here",
     "manage_saved_configs": "Manage saved configs",
-    "saved_configs": "Saved Configs"
+    "saved_configs": "Saved Configs",
+    "theme_mode": "Theme Mode"
 }

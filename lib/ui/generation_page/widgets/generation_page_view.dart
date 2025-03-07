@@ -13,15 +13,12 @@ class GenerationPageView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final content = AnimatedBuilder(
-      animation: Listenable.merge([
-        viewmodel.commandIdx,
-        viewmodel.colNum,
-      ]),
+      animation: Listenable.merge([viewmodel, viewmodel.commandIdx]),
       builder: (context, child) {
         final itemCount = viewmodel.commandList.length;
         return WaterfallFlow.builder(
           gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
-              crossAxisCount: viewmodel.colNum.value),
+              crossAxisCount: viewmodel.colNum),
           padding: const EdgeInsets.all(8.0),
           itemCount: itemCount,
           itemBuilder: (context, index) => InfoCard(
@@ -90,21 +87,21 @@ class DisplaySettingsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
-      listenable: viewmodel.colNum,
-      builder: (context, child) => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SliderListTile(
-            title:
-                '${tr('column_number')}: ${viewmodel.colNum.value.toString()}',
-            sliderValue: viewmodel.colNum.value.toDouble(),
-            min: 1.0,
-            max: 5.0,
-            divisions: 4,
-            onChanged: (value) => viewmodel.setCardsPerCol(value.toInt()),
-          ),
-        ],
-      ),
-    );
+        listenable: viewmodel,
+        builder: (context, _) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SliderListTile(
+                title: '${tr('column_number')}: ${viewmodel.colNum.toString()}',
+                sliderValue: viewmodel.colNum.toDouble(),
+                min: 1.0,
+                max: 5.0,
+                divisions: 4,
+                onChanged: (value) => viewmodel.setCardsPerCol(value.toInt()),
+              ),
+            ],
+          );
+        });
   }
 }

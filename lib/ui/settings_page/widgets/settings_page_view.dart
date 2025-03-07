@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:nai_casrand/core/constants/settings.dart';
 import 'package:nai_casrand/ui/settings_page/view_models/settings_page_viewmodel.dart';
 import 'package:nai_casrand/ui/core/widgets/editable_list_tile.dart';
 import 'package:provider/provider.dart';
@@ -27,6 +28,9 @@ class SettingsPageView extends StatelessWidget {
             if (!kIsWeb && Platform.isWindows) _buildOutputSelectionTile(),
             _buildPrefixKeyTile(),
             if (!kIsWeb) _buildProxyTile(),
+            const Divider(),
+            _buildThemeModeTile(context),
+            _buildLanguageTile(context),
           ],
         ),
       ),
@@ -245,5 +249,58 @@ class SettingsPageView extends StatelessWidget {
       confirmOnSubmit: true,
       onEditComplete: (value) => viewmodel.setFileNamePrefixKey(value),
     );
+  }
+
+  Widget _buildThemeModeTile(BuildContext context) {
+    return SelectableListTile(
+      title: tr('theme_mode'),
+      leading: const Icon(Icons.dark_mode_outlined),
+      currentValue: viewmodel.payloadConfig.settings.themeMode,
+      options: themeModeStrings,
+      onSelectComplete: (value) => viewmodel.setThemeMode(value, context),
+    );
+  }
+
+  Widget _buildLanguageTile(BuildContext context) {
+    return ListTile(
+      title: const Text('Language'),
+      leading: const Icon(Icons.translate),
+      subtitle: Text(context.locale.toLanguageTag()),
+      onTap: () => _showLanguageSelectionDialog(context),
+    );
+  }
+
+  void _showLanguageSelectionDialog(BuildContext context) {
+    final locales = context.supportedLocales;
+    String getLocaleName(Locale locale) {
+      if (locale.countryCode == null) {
+        return locale.languageCode;
+      } else {
+        return '${locale.languageCode}-${locale.countryCode}';
+      }
+    }
+
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+                title: const Text('Select language...'),
+                content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: locales
+                        .map((l) => ListTile(
+                              title: Text(getLocaleName(l)),
+                              onTap: () {
+                                Navigator.of(context).pop();
+                                context.setLocale(l);
+                              },
+                            ))
+                        .toList()),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text(context.tr('confirm')))
+                ]));
   }
 }

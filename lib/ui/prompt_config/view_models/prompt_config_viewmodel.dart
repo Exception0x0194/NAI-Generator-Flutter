@@ -122,9 +122,11 @@ class PromptConfigViewModel extends ChangeNotifier {
         } else {
           config.prompts.add(newConfig); // 如果位置无效，添加到末尾
         }
+        if (!context.mounted) return;
         showErrorBar(context,
             '${context.tr('info_import_from_clipboard')}${context.tr('succeed')}');
       } catch (e) {
+        if (!context.mounted) return;
         showErrorBar(context,
             '${context.tr('info_import_from_clipboard')}${context.tr('failed')}');
       }
@@ -134,6 +136,7 @@ class PromptConfigViewModel extends ChangeNotifier {
 
   void copyToClipboard(BuildContext context) async {
     await Clipboard.setData(ClipboardData(text: json.encode(config.toJson())));
+    if (!context.mounted) return;
     showInfoBar(context,
         '${context.tr('info_export_to_clipboard')}${context.tr('succeed')}');
   }

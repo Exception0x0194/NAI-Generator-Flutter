@@ -1,7 +1,9 @@
-import 'package:adaptive_theme/adaptive_theme.dart';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:get_it/get_it.dart';
+import 'package:blinking_text/blinking_text.dart';
 import 'package:nai_casrand/data/models/command_status.dart';
 import 'package:nai_casrand/data/services/config_service.dart';
 import 'package:nai_casrand/data/services/file_service.dart';
@@ -25,46 +27,24 @@ class NavigationAppBar extends StatefulWidget implements PreferredSizeWidget {
 
 class NavigationAppBarState extends State<NavigationAppBar>
     with SingleTickerProviderStateMixin {
-  AnimationController? _animationController;
-  Animation<Color?>? _colorAnimation;
-  Color _staticColor = Colors.transparent;
-  String _currentTitle = '';
+  late final _iconAnimationController = AnimationController(
+    duration: const Duration(seconds: 3), // 控制旋转速度
+    vsync: this,
+  );
+  late final _animation = CurvedAnimation(
+    parent: _iconAnimationController,
+    curve: Curves.linear,
+  );
   AppState _state = AppState.idle;
 
   @override
   void initState() {
     super.initState();
 
-    _animationController = AnimationController(
-      duration: const Duration(seconds: 1), // 控制闪烁速度
-      vsync: this,
-    );
-
-    _colorAnimation = ColorTween(
-      begin: Colors.transparent,
-      end: Colors.yellow,
-    ).animate(_animationController!)
-      ..addListener(() {
-        setState(() {});
-      })
-      ..addStatusListener((status) {
-        if (status == AnimationStatus.completed) {
-          _animationController!.reverse();
-        } else if (status == AnimationStatus.dismissed) {
-          _animationController!.forward();
-        }
-      });
-
     // 在生成状态变化时改变样式
     widget.commandStatus.isBatchActive.addListener(refreshDisplay);
     widget.commandStatus.isCoolingDown.addListener(refreshDisplay);
     refreshDisplay(); // 初始化状态
-  }
-
-  @override
-  void dispose() {
-    _animationController?.dispose();
-    super.dispose();
   }
 
   void refreshDisplay() {
@@ -76,62 +56,55 @@ class NavigationAppBarState extends State<NavigationAppBar>
     } else {
       newState = AppState.idle;
     }
-
-    // Change display only on status is changed
-    if (newState == _state) return;
-    _state = newState;
-
-    switch (_state) {
-      case AppState.idle:
-        _animationController!.stop();
-        _colorAnimation = null;
-        _animationController!.value = 0.0;
-        _staticColor = Colors.transparent;
-        break;
-      case AppState.generating:
-        _colorAnimation =
-            ColorTween(begin: Colors.transparent, end: Colors.yellow)
-                .animate(_animationController!);
-        _animationController!.forward();
-        break;
-      case AppState.coolingDown:
-        _animationController!.stop();
-        _colorAnimation = null;
-        _animationController!.value = 0.0;
-        _staticColor = Colors.grey;
-    }
+    setState(() => _state = newState);
   }
 
   @override
   Widget build(BuildContext context) {
+    Widget title;
     switch (_state) {
       case AppState.idle:
-        _currentTitle = context.tr('appbar_idle');
+        title = Text(
+          context.tr('appbar_idle'),
+        );
+        _iconAnimationController.stop();
         break;
       case AppState.generating:
-        _currentTitle = context.tr('appbar_regular');
+        title = BlinkText(
+          context.tr('appbar_regular'),
+          beginColor: Theme.of(context).textTheme.titleMedium?.color,
+        );
+        _iconAnimationController.repeat();
         break;
       case AppState.coolingDown:
-        _currentTitle = context.tr('appbar_cooldown');
+        title = BlinkText(
+          context.tr('appbar_cooldown'),
+          beginColor: Theme.of(context).textTheme.titleMedium?.color,
+        );
+        _iconAnimationController.stop();
         break;
     }
+    Widget icon = RotationTransition(
+        turns: _animation,
+        child: Image.asset(
+          'assets/appicon.png',
+          filterQuality: FilterQuality.medium,
+          height: widget.preferredSize.height - 16.0,
+        ));
     final titleBar = Row(
       children: [
         InkWell(
-          child: Text(_currentTitle),
+          child: icon,
+          onTap: () => _iconAnimationController
+              .animateTo(Random().nextDouble())
+              .whenComplete(refreshDisplay),
+        ),
+        const SizedBox(width: 8.0),
+        InkWell(
+          child: title,
           onTap: () => _showDebugDialog(context),
         ),
         const Spacer(),
-        IconButton(
-          onPressed: () => _toggleDark(context),
-          icon: const Icon(Icons.dark_mode_outlined),
-        ),
-        const SizedBox(width: 20.0),
-        IconButton(
-          onPressed: () => _showLanguageSelectionDialog(context),
-          icon: const Icon(Icons.translate),
-        ),
-        const SizedBox(width: 20.0),
         IconButton(
           onPressed: () => _showAppInfoDialog(context),
           icon: const Icon(Icons.help_outline),
@@ -139,44 +112,8 @@ class NavigationAppBarState extends State<NavigationAppBar>
       ],
     );
     return AppBar(
-      backgroundColor: _colorAnimation?.value ??
-          _staticColor, // Use static color for default
       title: titleBar,
     );
-  }
-
-  void _showLanguageSelectionDialog(BuildContext context) {
-    final locales = context.supportedLocales;
-    String getLocaleName(Locale locale) {
-      if (locale.countryCode == null) {
-        return locale.languageCode;
-      } else {
-        return '${locale.languageCode}-${locale.countryCode}';
-      }
-    }
-
-    showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-                title: const Text('Select language...'),
-                content: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: locales
-                        .map((l) => ListTile(
-                              title: Text(getLocaleName(l)),
-                              onTap: () {
-                                Navigator.of(context).pop();
-                                context.setLocale(l);
-                              },
-                            ))
-                        .toList()),
-                actions: [
-                  TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Text(context.tr('confirm')))
-                ]));
   }
 
   void _showAppInfoDialog(BuildContext context) {
@@ -259,15 +196,6 @@ class NavigationAppBarState extends State<NavigationAppBar>
                 ],
               ),
             ));
-  }
-
-  void _toggleDark(BuildContext context) {
-    final brightness = AdaptiveTheme.of(context).brightness;
-    if (brightness == Brightness.light) {
-      AdaptiveTheme.of(context).setDark();
-    } else {
-      AdaptiveTheme.of(context).setLight();
-    }
   }
 
   void _showDebugDialog(BuildContext context) {

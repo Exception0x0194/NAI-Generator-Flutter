@@ -19,20 +19,18 @@ import 'package:nai_casrand/data/use_cases/generate_payload_use_case.dart';
 const infoCardContentListLength = 200;
 
 class GenerationPageViewmodel extends ChangeNotifier {
-  PayloadConfig payloadConfig;
-  ValueNotifier<int> colNum = ValueNotifier(2);
-
-  CommandStatus get commandStatus => GetIt.instance<CommandStatus>();
+  PayloadConfig get payloadConfig => GetIt.I<PayloadConfig>();
+  CommandStatus get commandStatus => GetIt.I<CommandStatus>();
   List<Command<void, InfoCardContent>> get commandList =>
       commandStatus.commandList;
   ValueNotifier<int> get commandIdx => commandStatus.commandIdx;
+  int get colNum => payloadConfig.settings.generationPageColumnCount;
 
   Command<void, InfoCardContent>? currentCommand;
 
-  GenerationPageViewmodel({required this.payloadConfig});
-
   void setCardsPerCol(int value) {
-    colNum.value = value;
+    payloadConfig.settings.generationPageColumnCount = value;
+    notifyListeners();
   }
 
   void addAndRunCommand(Command<void, InfoCardContent> command) {

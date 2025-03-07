@@ -20,7 +20,6 @@ void main() async {
 
   GetIt.instance.registerLazySingleton<PayloadConfig>(
       () => PayloadConfig.fromJson(savedConfig));
-
   GetIt.instance.registerLazySingleton<CommandStatus>(() => CommandStatus());
 
   final appWithLocales = EasyLocalization(
@@ -37,6 +36,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final config = GetIt.I<PayloadConfig>();
     return AdaptiveTheme(
       light: ThemeData(
           colorScheme: ColorScheme.fromSeed(
@@ -50,7 +50,7 @@ class MyApp extends StatelessWidget {
             brightness: Brightness.dark,
           ),
           useMaterial3: true),
-      initial: AdaptiveThemeMode.light,
+      initial: config.settings.theme,
       builder: (theme, darkTheme) => MaterialApp(
         theme: theme,
         localizationsDelegates: context.localizationDelegates,

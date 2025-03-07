@@ -1,8 +1,14 @@
+import 'package:adaptive_theme/adaptive_theme.dart';
+
 import '../../core/constants/defaults.dart';
 
 class Settings {
   // Don't show again
   String welcomeMessageVersion;
+
+  // Display settings
+  int generationPageColumnCount;
+  String themeMode;
 
   // API key
   String apiKey;
@@ -45,6 +51,8 @@ class Settings {
     required this.batchIntervalSec,
     required this.numberOfRequests,
     required this.fileNamePrefixKey,
+    required this.generationPageColumnCount,
+    required this.themeMode,
   });
 
   factory Settings.fromJson(Map<String, dynamic> json) {
@@ -63,6 +71,8 @@ class Settings {
       batchIntervalSec: json['batch_interval'] ?? 10,
       numberOfRequests: json['number_of_requests'] ?? 0,
       fileNamePrefixKey: json['file_name_prefix_key'] ?? '',
+      generationPageColumnCount: json['generation_page_column_count'] ?? 2,
+      themeMode: json['theme_mode'] ?? 'system',
     );
   }
 
@@ -79,6 +89,19 @@ class Settings {
       'batch_interval': batchIntervalSec,
       'file_name_prefix_key': fileNamePrefixKey,
       'number_of_requests': numberOfRequests,
+      'generation_page_column_count': generationPageColumnCount,
+      'theme_mode': themeMode,
     };
+  }
+
+  AdaptiveThemeMode get theme {
+    switch (themeMode) {
+      case 'light':
+        return AdaptiveThemeMode.light;
+      case 'dart':
+        return AdaptiveThemeMode.dark;
+      default:
+        return AdaptiveThemeMode.system;
+    }
   }
 }

@@ -1,17 +1,20 @@
 import 'dart:convert';
 
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:nai_casrand/core/constants/settings.dart';
 import 'package:nai_casrand/data/models/payload_config.dart';
 import 'package:nai_casrand/data/models/settings.dart';
 import 'package:nai_casrand/data/services/file_service.dart';
 import 'package:nai_casrand/ui/core/utils/flushbar.dart';
 
 class SettingsPageViewmodel extends ChangeNotifier {
-  PayloadConfig payloadConfig;
+  PayloadConfig get payloadConfig => GetIt.I<PayloadConfig>();
 
-  SettingsPageViewmodel({required this.payloadConfig});
+  SettingsPageViewmodel();
 
   Settings get settings {
     return payloadConfig.settings;
@@ -110,5 +113,11 @@ class SettingsPageViewmodel extends ChangeNotifier {
       json.encode(configJson),
       filename,
     );
+  }
+
+  void setThemeMode(String value, BuildContext context) {
+    payloadConfig.settings.themeMode = value;
+    AdaptiveTheme.of(context).setThemeMode(stringToThemeMode[value]!);
+    notifyListeners();
   }
 }
