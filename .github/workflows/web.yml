@@ -41,9 +41,10 @@ jobs:
           name: web-release-zip
           path: web-release.zip
 
-      - name: 切换 deploy 分支
-        run: |
-          git checkout -f origin/deploy
+      - name: 切换或创建 deploy 分支
+        uses: actions/checkout@v4
+        with:
+          ref: deploy
 
       - name: 清理 deploy 分支
         run: |
