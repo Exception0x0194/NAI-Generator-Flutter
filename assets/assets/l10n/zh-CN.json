@@ -8,7 +8,7 @@
     "generation_settings": "设置",
     "info_tile_height": "图片磁贴高度",
     "toggle_display_info_aside_img": "显示图片生成信息",
-    "image_number_to_generate": "生成图片数量",
+    "image_number_to_generate": "生成图片总数",
     "edit_image_number_to_generate": "设置生成图片数量（设为 0 将持续生成）",
     "info_set_genration_number": "设置生成 {num} 幅图片",
     "info_set_genration_number_failed": "设置中出现错误",

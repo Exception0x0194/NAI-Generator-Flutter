@@ -8,7 +8,7 @@
     "generation_settings": "Genration Settings",
     "info_tile_height": "Image Tile Height",
     "toggle_display_info_aside_img": "Display Image Generation Info",
-    "image_number_to_generate": "Number of Images to Generate",
+    "image_number_to_generate": "Total Generation Count",
     "edit_image_number_to_generate": "Set Number of Images to Generate (Set to 0 for continuous generation)",
     "info_set_genration_number": "Set {num} generations",
     "info_set_genration_number_failed": "Set genration number failed",
