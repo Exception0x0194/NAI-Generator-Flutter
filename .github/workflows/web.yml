@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 检出代码
+      - name: 检出代码 (main 分支) # 显式注释，更清晰
         uses: actions/checkout@v4
 
       - name: 设置 Flutter 环境
@@ -32,29 +32,29 @@ jobs:
       - name: 构建 Flutter Web Release
         run: flutter build web --release --dart-define-from-file=secrets.json
 
-      - name: 打包 Web Release 为 ZIP
-        run: zip -r web-release.zip build/web
-
-      - name: 上传 Web ZIP Artifact
+      - name: 上传 Web Release Artifact # 上传 build/web 目录
         uses: actions/upload-artifact@v4
         with:
-          name: web-release-zip
-          path: web-release.zip
+          name: web-release-artifact # Artifact 名称
+          path: build/web # 上传整个 build/web 目录
 
-      - name: 切换或创建 deploy 分支
+      - name: 检出 deploy 分支 # 显式注释，更清晰
         uses: actions/checkout@v4
         with:
           ref: deploy
 
       - name: 清理 deploy 分支
         run: |
-          find . -mindepth 1 -maxdepth 1 -not -path "./.git" -not -path "./.gitignore" -not -path "./build" -exec rm -rf {} +
+          find . -mindepth 1 -maxdepth 1 -not -path "./.git" -not -path "./.gitignore" -exec rm -rf {} +
           echo "Cleaned deploy branch"
 
-      - name: 复制 build/web 内容到 deploy 分支
-        run: cp -r build/web/* .
+      - name: 下载 Web Release Artifact # 下载之前上传的 build/web
+        uses: actions/download-artifact@v4
+        with:
+          name: web-release-artifact # 和上传 Artifact 的 name 一致
+          path: .
 
-      - name: Commit files and push changes
+      - name: 提交代码到 deploy 分支
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
