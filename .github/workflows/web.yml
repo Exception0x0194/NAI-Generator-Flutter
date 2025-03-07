@@ -5,6 +5,9 @@ on:
     branches: [ "main" ] # 当 main 分支有 push 时触发
   workflow_dispatch: # 允许手动触发 workflow
 
+permissions:
+  contents: write
+
 jobs:
   build-and-deploy-web:
     runs-on: ubuntu-latest
@@ -40,7 +43,7 @@ jobs:
 
       - name: 切换 deploy 分支
         run: |
-          git checkout deploy
+          git checkout -f origin/deploy
 
       - name: 清理 deploy 分支
         run: |
@@ -50,14 +53,10 @@ jobs:
       - name: 复制 build/web 内容到 deploy 分支
         run: cp -r build/web/* .
 
-      - name: Commit files
+      - name: Commit files and push changes
+        uses: actions/checkout@v3
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git commit -a -m "deploy"
-      - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          force: true
-          branch: deploy
+          git push
