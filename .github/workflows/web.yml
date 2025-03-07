@@ -38,15 +38,9 @@ jobs:
           name: web-release-zip
           path: web-release.zip
 
-      - name: 切换或创建 deploy 分支
+      - name: 切换 deploy 分支
         run: |
-          if git rev-parse --quiet --verify deploy; then
-            echo "Deploy branch exists, checking out..."
-            git checkout deploy
-          else
-            echo "Deploy branch does not exist, creating..."
-            git checkout --orphan deploy
-          fi
+          git checkout deploy
 
       - name: 清理 deploy 分支
         run: |
@@ -65,4 +59,5 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          force: true
           branch: deploy
