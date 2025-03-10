@@ -100,11 +100,18 @@ class PayloadConfig {
     final jsonCharacterList = jsonData.containsKey('character_config')
         ? jsonData['character_config'] as List<dynamic>
         : [];
+    final jsonSavedPromptList = jsonData.containsKey('saved_config')
+        ? jsonData['saved_config'] as List<dynamic>
+        : [];
     final characterList = jsonCharacterList.map((configJson) {
       return CharacterConfig.fromJson(configJson);
     }).toList();
+    final savedList = jsonSavedPromptList
+        .map((configJson) => PromptConfig.fromJson(configJson))
+        .toList();
     rootPromptConfig = PromptConfig.fromJson(jsonData['prompt_config']);
     characterConfigList = characterList;
+    savedPromptConfigList = savedList;
     paramConfig = ParamConfig.fromJson(jsonData['param_config'] ?? {});
     settings = Settings.fromJson(jsonData['settings'] ?? {});
   }
