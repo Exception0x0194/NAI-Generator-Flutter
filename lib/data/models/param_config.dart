@@ -33,6 +33,7 @@ class ParamConfig {
   String model = 'nai-diffusion-4-curated-preview';
 
   bool autoPosition;
+  bool legacyUc;
 
   ParamConfig({
     this.model = 'nai-diffusion-4-curated-preview',
@@ -57,6 +58,7 @@ class ParamConfig {
     this.varietyPlus = false,
     this.negativePrompt = defaultUC,
     this.autoPosition = false,
+    this.legacyUc = false,
   });
 
   Map<String, dynamic> toJson() {
@@ -85,6 +87,7 @@ class ParamConfig {
       'reference_strength_multiple': [],
       'variety_plus': varietyPlus,
       'auto_position': autoPosition,
+      'legacy_uc': legacyUc,
     };
   }
 
@@ -106,33 +109,6 @@ class ParamConfig {
       final v = pow(4.0 * w * h / 63232, 0.5);
       skipCfgAboveSigma = 19.0 * v;
     }
-    // var payload = {
-    //   'width': width,
-    //   'height': height,
-    //   'scale': scale,
-    //   'sampler': sampler,
-    //   'steps': steps,
-    //   'n_samples': nSamples,
-    //   'ucPreset': ucPreset,
-    //   'qualityToggle': qualityToggle,
-    //   'sm': sm,
-    //   'sm_dyn': smDyn,
-    //   'seed': randomSeed ? Random().nextInt(1 << 32 - 1) : seed,
-    //   'dynamic_thresholding': dynamicThresholding,
-    //   'controlnet_strength': controlNetStrength,
-    //   'legacy': legacy,
-    //   'add_original_image': addOriginalImage,
-    //   'uncond_scale': uncondScale,
-    //   'cfg_rescale': cfgRescale,
-    //   'noise_schedule': noiseSchedule,
-    //   'negative_prompt': negativePrompt,
-    //   'reference_image_multiple': [],
-    //   'reference_information_extracted_multiple': [],
-    //   'reference_strength_multiple': [],
-    //   'prefer_brownian': preferBrownian,
-    //   'skip_cfg_above_sigma': skipCfgAboveSigma,
-    //   'deliberate_euler_ancestral_bug': deliberateEulerAncestralBug,
-    // };
     var payload = {
       "params_version": 3,
       "width": width,
@@ -162,7 +138,8 @@ class ParamConfig {
       "reference_information_extracted_multiple": [],
       "reference_strength_multiple": [],
       "deliberate_euler_ancestral_bug": deliberateEulerAncestralBug,
-      "prefer_brownian": preferBrownian
+      "prefer_brownian": preferBrownian,
+      "legacy_uc": legacyUc,
     };
     payload['legacy_v3_extend'] = false;
     payload.removeWhere((k, v) => v == null);
@@ -204,6 +181,7 @@ class ParamConfig {
       noiseSchedule: json['noise_schedule'],
       negativePrompt: json['negative_prompt'],
       autoPosition: json['auto_position'] ?? false,
+      legacyUc: json['legacy_uc'] ?? false,
     );
   }
 
@@ -288,6 +266,10 @@ class ParamConfig {
     if (json.containsKey('seed')) {
       seed = json['seed'];
       randomSeed = false;
+      loadCount++;
+    }
+    if (json.containsKey('legacy_uc')) {
+      seed = json['legacy_uc'];
       loadCount++;
     }
     return loadCount;

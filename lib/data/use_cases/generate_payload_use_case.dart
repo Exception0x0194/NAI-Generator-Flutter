@@ -124,6 +124,7 @@ class GeneratePayloadUseCase {
         'base_caption': paramConfig.negativePrompt,
         'char_captions': v4CharNegCaptions,
       },
+      'legacy_uc': paramConfig.legacyUc,
     };
     paramPayload['v4_prompt'] = v4Prompt;
     paramPayload['v4_negative_prompt'] = v4NegPrompt;

@@ -5,7 +5,8 @@ import 'package:nai_casrand/data/models/payload_config.dart';
 import 'package:nai_casrand/data/models/generation_size.dart';
 
 class ParametersConfigViewmodel extends ChangeNotifier {
-  ParamConfig config = GetIt.instance<PayloadConfig>().paramConfig;
+  PayloadConfig get payloadConfig => GetIt.I();
+  ParamConfig get config => payloadConfig.paramConfig;
 
   ParametersConfigViewmodel();
 
@@ -108,4 +109,12 @@ class ParametersConfigViewmodel extends ChangeNotifier {
     config.autoPosition = value;
     notifyListeners();
   }
+
+  void setLegacyUc(bool? value) {
+    if (value == null) return;
+    config.legacyUc = value;
+    notifyListeners();
+  }
+
+  void loadImageMetadata(BuildContext context) {}
 }

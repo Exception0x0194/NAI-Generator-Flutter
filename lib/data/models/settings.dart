@@ -1,4 +1,5 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:nai_casrand/core/constants/settings.dart';
 
 import '../../core/constants/defaults.dart';
 
@@ -94,14 +95,6 @@ class Settings {
     };
   }
 
-  AdaptiveThemeMode get theme {
-    switch (themeMode) {
-      case 'light':
-        return AdaptiveThemeMode.light;
-      case 'dart':
-        return AdaptiveThemeMode.dark;
-      default:
-        return AdaptiveThemeMode.system;
-    }
-  }
+  AdaptiveThemeMode get theme =>
+      stringToThemeMode[themeMode] ?? AdaptiveThemeMode.system;
 }

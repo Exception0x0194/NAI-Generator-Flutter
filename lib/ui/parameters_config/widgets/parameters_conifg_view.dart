@@ -1,11 +1,15 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:nai_casrand/core/constants/defaults.dart';
 import 'package:nai_casrand/core/constants/parameters.dart';
+import 'package:nai_casrand/data/services/image_service.dart';
+import 'package:nai_casrand/ui/core/utils/flushbar.dart';
 import 'package:nai_casrand/ui/parameters_config/view_models/parameters_config_viewmodel.dart';
 import 'package:nai_casrand/ui/core/widgets/editable_list_tile.dart';
 import 'package:nai_casrand/ui/core/widgets/slider_list_tile.dart';
 import 'package:provider/provider.dart';
+import 'package:image/image.dart' as img;
 
 class ParametersConfigView extends StatelessWidget {
   final ParametersConfigViewmodel viewmodel;
@@ -14,101 +18,109 @@ class ParametersConfigView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final content = ChangeNotifierProvider.value(
-        value: viewmodel,
-        child: Consumer<ParametersConfigViewmodel>(
-            builder: (context, viewmodel, child) {
-          return Column(
-            children: [
-              _buildModelSelector(context),
-              if (viewmodel.isV4) _buildAutoPositionTile(context),
-              _buildSizeSelector(context),
-              // Steps
-              SliderListTile(
-                  title: context.tr('sampling_steps') +
-                      context.tr('colon') +
-                      viewmodel.config.steps.toString(),
-                  sliderValue: viewmodel.config.steps.toDouble(),
-                  leading: const Icon(Icons.repeat),
-                  min: 0,
-                  max: 28,
-                  divisions: 28,
-                  onChanged: (value) => viewmodel.setSteps(value)),
-              // CFG
-              SliderListTile(
-                title: context.tr('scale') +
-                    context.tr('colon') +
-                    viewmodel.config.scale.toStringAsFixed(1),
-                sliderValue: viewmodel.config.scale,
-                leading: const Icon(Icons.numbers),
-                min: 0,
-                max: 10,
-                divisions: 100,
-                onChanged: (value) => viewmodel.setScale(value),
-              ),
-              SliderListTile(
-                leading: const Icon(Icons.numbers),
-                title: context.tr('cfg_rescale') +
-                    context.tr('colon') +
-                    viewmodel.config.cfgRescale.toStringAsFixed(2),
-                min: 0,
-                max: 1,
-                divisions: 20,
-                sliderValue: viewmodel.config.cfgRescale,
-                onChanged: (value) => viewmodel.setCfgRescale(value),
-              ),
-              // Sampler
-              SelectableListTile(
-                  leading: const Icon(Icons.search),
-                  title: context.tr('sampler'),
-                  currentValue: viewmodel.config.sampler,
-                  options: viewmodel.isV4 ? samplersV4 : samplers,
-                  onSelectComplete: (value) => viewmodel.setSampler(value)),
-              SelectableListTile(
-                  leading: const Icon(Icons.search),
-                  title: context.tr('noise_scheduler'),
-                  currentValue: viewmodel.config.noiseSchedule,
-                  options: viewmodel.isV4 ? noiseSchedulesV4 : noiseSchedules,
-                  onSelectComplete: (value) =>
-                      viewmodel.setNoiseScheduler(value)),
-              // SMEA
-              if (!viewmodel.config.model.contains('diffusion-4'))
-                _buildSwitchTile(
-                  context.tr('sm'),
-                  viewmodel.config.sm,
-                  (newValue) => viewmodel.setSm(newValue),
-                  const Icon(Icons.keyboard_double_arrow_right),
-                ),
-              if (!viewmodel.config.model.contains('diffusion-4'))
-                _buildSwitchTile(
-                  context.tr('sm_dyn'),
-                  viewmodel.config.smDyn,
-                  (newValue) => viewmodel.setSmDyn(newValue),
-                  const Icon(Icons.keyboard_double_arrow_right),
-                ),
-              // Variety+
-              _buildSwitchTile(
-                context.tr('variety_plus'),
-                viewmodel.config.varietyPlus,
-                (newValue) => viewmodel.setVarietyPlus(newValue),
-                const Icon(Icons.add),
-              ),
-              // Seed
-              _buildRandomSeedTile(context),
-              // UC
-              EditableListTile(
-                leading: const Icon(Icons.do_not_disturb),
-                title: context.tr('uc'),
-                currentValue: viewmodel.config.negativePrompt,
-                confirmOnSubmit: true,
-                onEditComplete: (value) => viewmodel.setNegativePrompt(value),
-                keyboardType: TextInputType.text,
-              ),
-            ],
-          );
-        }));
-    return SingleChildScrollView(
-      child: content,
+    final content = ListenableBuilder(
+      listenable: viewmodel,
+      builder: (context, _) => Column(
+        children: [
+          _buildModelSelector(context),
+          if (viewmodel.isV4) _buildAutoPositionTile(context),
+          if (viewmodel.isV4) _buildLegacyUcTile(context),
+          _buildSizeSelector(context),
+          // Steps
+          SliderListTile(
+              title: context.tr('sampling_steps') +
+                  context.tr('colon') +
+                  viewmodel.config.steps.toString(),
+              sliderValue: viewmodel.config.steps.toDouble(),
+              leading: const Icon(Icons.repeat),
+              min: 0,
+              max: 28,
+              divisions: 28,
+              onChanged: (value) => viewmodel.setSteps(value)),
+          // CFG
+          SliderListTile(
+            title: context.tr('scale') +
+                context.tr('colon') +
+                viewmodel.config.scale.toStringAsFixed(1),
+            sliderValue: viewmodel.config.scale,
+            leading: const Icon(Icons.numbers),
+            min: 0,
+            max: 10,
+            divisions: 100,
+            onChanged: (value) => viewmodel.setScale(value),
+          ),
+          SliderListTile(
+            leading: const Icon(Icons.numbers),
+            title: context.tr('cfg_rescale') +
+                context.tr('colon') +
+                viewmodel.config.cfgRescale.toStringAsFixed(2),
+            min: 0,
+            max: 1,
+            divisions: 20,
+            sliderValue: viewmodel.config.cfgRescale,
+            onChanged: (value) => viewmodel.setCfgRescale(value),
+          ),
+          // Sampler
+          SelectableListTile(
+              leading: const Icon(Icons.search),
+              title: context.tr('sampler'),
+              currentValue: viewmodel.config.sampler,
+              options: viewmodel.isV4 ? samplersV4 : samplers,
+              onSelectComplete: (value) => viewmodel.setSampler(value)),
+          SelectableListTile(
+              leading: const Icon(Icons.search),
+              title: context.tr('noise_scheduler'),
+              currentValue: viewmodel.config.noiseSchedule,
+              options: viewmodel.isV4 ? noiseSchedulesV4 : noiseSchedules,
+              onSelectComplete: (value) => viewmodel.setNoiseScheduler(value)),
+          // SMEA
+          if (!viewmodel.isV4)
+            _buildSwitchTile(
+              context.tr('sm'),
+              viewmodel.config.sm,
+              (newValue) => viewmodel.setSm(newValue),
+              const Icon(Icons.keyboard_double_arrow_right),
+            ),
+          if (!viewmodel.isV4)
+            _buildSwitchTile(
+              context.tr('sm_dyn'),
+              viewmodel.config.smDyn,
+              (newValue) => viewmodel.setSmDyn(newValue),
+              const Icon(Icons.keyboard_double_arrow_right),
+            ),
+          // Variety+
+          _buildSwitchTile(
+            context.tr('variety_plus'),
+            viewmodel.config.varietyPlus,
+            (newValue) => viewmodel.setVarietyPlus(newValue),
+            const Icon(Icons.add),
+          ),
+          // Seed
+          _buildRandomSeedTile(context),
+          // UC
+          EditableListTile(
+            leading: const Icon(Icons.do_not_disturb),
+            title: context.tr('uc'),
+            currentValue: viewmodel.config.negativePrompt,
+            confirmOnSubmit: true,
+            onEditComplete: (value) => viewmodel.setNegativePrompt(value),
+            keyboardType: TextInputType.text,
+          ),
+        ],
+      ),
+    );
+
+    /// TODO: import metadata from image
+    final fab = FloatingActionButton(
+      tooltip: tr('import_metadata_from_image'),
+      onPressed: () => _showImportMetadataDialog(context),
+      child: const Icon(Icons.image_outlined),
+    );
+    return Scaffold(
+      // floatingActionButton: fab,
+      body: SingleChildScrollView(
+        child: content,
+      ),
     );
   }
 
@@ -184,6 +196,36 @@ class ParametersConfigView extends StatelessWidget {
       secondary: const Icon(Icons.not_listed_location_outlined),
       value: viewmodel.config.autoPosition,
       onChanged: (value) => viewmodel.setAutoPosition(value),
+    );
+  }
+
+  Widget _buildLegacyUcTile(BuildContext context) {
+    return CheckboxListTile(
+      title: const Text('Legacy Prompt Conditioning Mode'),
+      secondary: const Icon(Icons.do_not_disturb),
+      value: viewmodel.config.legacyUc,
+      onChanged: (value) => viewmodel.setLegacyUc(value),
+    );
+  }
+
+  Future _showImportMetadataDialog(BuildContext context) async {
+    final picker = ImagePicker();
+    final result = await picker.pickImage(source: ImageSource.gallery);
+    if (result == null) return;
+    final image = img.decodeImage(await result.readAsBytes());
+    if (image == null) return;
+    final metadataString = await ImageService().extractMetadata(image);
+    if (!context.mounted) return;
+    if (metadataString == null) {
+      showErrorBar(context, tr('metadata_not_found'));
+      return;
+    }
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text(tr('metadata_found')),
+        content: Text(metadataString),
+      ),
     );
   }
 }
