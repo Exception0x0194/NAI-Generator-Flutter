@@ -120,4 +120,6 @@ class SettingsPageViewmodel extends ChangeNotifier {
     AdaptiveTheme.of(context).setThemeMode(stringToThemeMode[value]!);
     notifyListeners();
   }
+
+  void notify() => notifyListeners();
 }

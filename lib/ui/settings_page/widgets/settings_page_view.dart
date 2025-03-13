@@ -6,14 +6,15 @@ import 'package:flutter/material.dart';
 import 'package:nai_casrand/core/constants/settings.dart';
 import 'package:nai_casrand/ui/settings_page/view_models/settings_page_viewmodel.dart';
 import 'package:nai_casrand/ui/core/widgets/editable_list_tile.dart';
+import 'package:nai_casrand/ui/settings_page/widgets/config_selection_page_view.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/constants/defaults.dart';
 
 class SettingsPageView extends StatelessWidget {
-  final SettingsPageViewmodel viewmodel;
+  final SettingsPageViewmodel viewmodel = SettingsPageViewmodel();
 
-  const SettingsPageView({super.key, required this.viewmodel});
+  SettingsPageView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +30,7 @@ class SettingsPageView extends StatelessWidget {
             _buildPrefixKeyTile(),
             if (!kIsWeb) _buildProxyTile(),
             const Divider(),
+            _buildSavedConfigTile(context),
             _buildThemeModeTile(context),
             _buildLanguageTile(context),
           ],
@@ -42,12 +44,14 @@ class SettingsPageView extends StatelessWidget {
         FloatingActionButton(
           onPressed: () => viewmodel.loadJsonConfig(context),
           tooltip: tr('import_settings_from_file'),
+          heroTag: 'settings_import_fab',
           child: const Icon(Icons.file_open),
         ),
         const SizedBox(height: 20),
         FloatingActionButton(
           onPressed: () => viewmodel.saveJsonConfig(),
           tooltip: tr('export_settings_to_file'),
+          heroTag: 'settings_export_fab',
           child: const Icon(Icons.save),
         ),
       ],
@@ -302,5 +306,18 @@ class SettingsPageView extends StatelessWidget {
                       },
                       child: Text(context.tr('confirm')))
                 ]));
+  }
+
+  Widget _buildSavedConfigTile(BuildContext context) {
+    return ListTile(
+      title: Text(tr('saved_config')),
+      leading: const Icon(Icons.save_outlined),
+      onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ConfigSelectionPageView(
+                    notificationCallback: () => viewmodel.notify(),
+                  ))),
+    );
   }
 }

@@ -21,7 +21,7 @@ class ConfigPageView extends StatelessWidget {
           appBar: AppBar(
             title: TabBar(
               tabs: [
-                Tab(text: tr('prompt_config')),
+                Tab(text: tr('generation_prompt_config')),
                 Tab(text: tr('vibe_transfer')),
                 Tab(text: tr('generation_parameters')),
               ],

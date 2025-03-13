@@ -1,6 +1,7 @@
 {
     "generation": "Image Generation",
     "prompt_config": "Generation Config",
+    "generation_prompt_config": "Prompt Config",
     "i2i_config": "Img2Img Settings",
     "director_tool": "Director Tools",
     "settings": "Settings",
@@ -99,6 +100,8 @@
     "enhance_override_prompts": "Overwrite random prompts",
     "enhance_override_smea": "Forcely use SMEA settings",
     "metadata_found": "Metadata found in imported image",
+    "metadata_not_found": "Metadata not found in imported image",
+    "import_metadata_from_image": "Import metadata from image",
     "tap_to_paste_parameters": "Tap to paste parameters",
     "prompt": "Prompt",
     "parameters": "Parameters",
@@ -149,5 +152,11 @@
     "saved_config_list_usage_tip": "Use `__title between double underscores__` to use saved configs here",
     "manage_saved_configs": "Manage saved configs",
     "saved_configs": "Saved Configs",
-    "theme_mode": "Theme Mode"
+    "theme_mode": "Theme Mode",
+    "current_config": "Current Config",
+    "config_selection_page_hint": "Tap & hold saved config to load",
+    "import_from_file": "Import from file",
+    "info_load_saved_config": "Load saved config",
+    "saved_config": "Saved Config",
+    "imported_config": "Import config"
 }

@@ -111,11 +111,11 @@ class ParametersConfigView extends StatelessWidget {
     );
 
     /// TODO: import metadata from image
-    final fab = FloatingActionButton(
-      tooltip: tr('import_metadata_from_image'),
-      onPressed: () => _showImportMetadataDialog(context),
-      child: const Icon(Icons.image_outlined),
-    );
+    // final fab = FloatingActionButton(
+    //   tooltip: tr('import_metadata_from_image'),
+    //   onPressed: () => _showImportMetadataDialog(context),
+    //   child: const Icon(Icons.image_outlined),
+    // );
     return Scaffold(
       // floatingActionButton: fab,
       body: SingleChildScrollView(

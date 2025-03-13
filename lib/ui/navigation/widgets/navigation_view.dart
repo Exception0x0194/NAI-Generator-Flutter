@@ -11,7 +11,6 @@ import 'package:nai_casrand/ui/generation_page/view_models/generation_page_viewm
 import 'package:nai_casrand/ui/navigation/view_models/navigation_view_model.dart';
 import 'package:nai_casrand/ui/navigation/widgets/navigation_appbar.dart';
 import 'package:nai_casrand/ui/settings_page/widgets/settings_page_view.dart';
-import 'package:nai_casrand/ui/settings_page/view_models/settings_page_viewmodel.dart';
 
 class NavigationView extends StatefulWidget {
   final NavigationViewModel viewModel;
@@ -44,9 +43,7 @@ class NavigationViewState extends State<NavigationView> {
       ConfigPageView(
         viewmodel: ConfigPageViewmodel(payloadConfig: payloadConfig),
       ),
-      SettingsPageView(
-        viewmodel: SettingsPageViewmodel(),
-      ),
+      SettingsPageView(),
     ];
     final appBar = NavigationAppBar();
     final content = LayoutBuilder(
