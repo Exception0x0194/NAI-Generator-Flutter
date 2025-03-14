@@ -8,9 +8,16 @@ import 'package:nai_casrand/ui/core/utils/flushbar.dart';
 
 class PromptConfigViewModel extends ChangeNotifier {
   PromptConfig config;
-  int indentLevel = 0;
+  bool isRoot;
+  bool initiallyExpanded;
 
-  PromptConfigViewModel({required this.config, this.indentLevel = 0});
+  PromptConfigViewModel({
+    required this.config,
+    this.isRoot = true,
+    this.initiallyExpanded = true,
+  });
+
+  bool get isEnabled => isRoot ? true : config.enabled;
 
   void setSelectionMethod(String value) {
     config.selectionMethod = value;
@@ -107,7 +114,8 @@ class PromptConfigViewModel extends ChangeNotifier {
   List<PromptConfigViewModel> get subConfigs => config.prompts
       .map((promptConfig) => PromptConfigViewModel(
             config: promptConfig,
-            indentLevel: indentLevel + 1,
+            isRoot: false,
+            initiallyExpanded: false,
           ))
       .toList();
 

@@ -17,12 +17,12 @@ class PromptConfigView extends StatelessWidget {
       value: viewModel,
       child: Consumer<PromptConfigViewModel>(
         builder: (context, viewModel, child) {
-          final backgroundColor = viewModel.config.enabled
+          final backgroundColor = viewModel.isEnabled
               ? null
               : Theme.of(context).disabledColor.withAlpha(30);
 
           return Padding(
-            padding: EdgeInsets.only(left: viewModel.indentLevel == 0 ? 0 : 20),
+            padding: EdgeInsets.only(left: viewModel.isRoot ? 0 : 20),
             child: ExpansionTile(
               title: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
@@ -34,14 +34,16 @@ class PromptConfigView extends StatelessWidget {
                   )
                 ]),
               ),
-              trailing: Switch(
-                value: viewModel.config.enabled,
-                onChanged: (value) => viewModel.setEnabled(value),
-              ),
+              trailing: viewModel.isRoot
+                  ? const SizedBox.shrink()
+                  : Switch(
+                      value: viewModel.isEnabled,
+                      onChanged: (value) => viewModel.setEnabled(value),
+                    ),
               backgroundColor: backgroundColor,
               collapsedBackgroundColor: backgroundColor,
               controlAffinity: ListTileControlAffinity.leading,
-              initiallyExpanded: (viewModel.indentLevel == 0),
+              initiallyExpanded: viewModel.initiallyExpanded,
               children: _buildChildrenList(viewModel, context),
             ),
           );

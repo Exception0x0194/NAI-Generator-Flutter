@@ -43,7 +43,8 @@ class SavedConfigListView extends StatelessWidget {
                         child: PromptConfigView(
                             viewModel: PromptConfigViewModel(
                       config: elem,
-                      indentLevel: 1,
+                      isRoot: true,
+                      initiallyExpanded: false,
                     ))),
                     IconButton(
                         padding: const EdgeInsets.symmetric(vertical: 12.0),

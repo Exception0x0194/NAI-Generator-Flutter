@@ -63,7 +63,10 @@ class ConfigSelectionPageView extends StatelessWidget {
     );
     final importButton = ListTile(
       title: Text(tr('import_from_file')),
-      trailing: const Icon(Icons.file_open_outlined),
+      trailing: IconButton(
+        onPressed: () => viewmodel.importConfigFromFile(context),
+        icon: const Icon(Icons.file_open_outlined),
+      ),
       onTap: () => viewmodel.importConfigFromFile(context),
     );
     final pageHint = Text(tr('config_selection_page_hint'));
