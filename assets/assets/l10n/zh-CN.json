@@ -102,6 +102,7 @@
     "metadata_found": "发现了图片中的元数据",
     "metadata_not_found": "没有发现图片中的元数据",
     "import_metadata_from_image": "从图片导入元数据",
+    "import_all_metadata_from_image": "导入全部元数据",
     "tap_to_paste_parameters": "点击以复制参数",
     "prompt": "提示词",
     "parameters": "生成参数",
@@ -152,10 +153,12 @@
     "manage_saved_configs": "管理保存的提示词配置",
     "saved_configs": "保存的配置",
     "theme_mode": "主题风格",
-    "current_config": "当前配置",
+    "current_config": "复制当前配置",
     "config_selection_page_hint": "长按保存的配置以加载",
     "import_from_file": "从文件导入",
     "info_load_saved_config": "加载保存的配置",
     "saved_config": "保存的配置",
-    "imported_config": "导入的配置"
+    "copied_config": "复制的配置",
+    "imported_config": "导入的配置",
+    "there_is_no_saved_config": "没有保存的配置..."
 }

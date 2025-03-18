@@ -102,6 +102,7 @@
     "metadata_found": "Metadata found in imported image",
     "metadata_not_found": "Metadata not found in imported image",
     "import_metadata_from_image": "Import metadata from image",
+    "import_all_metadata_from_image": "Import all metadata",
     "tap_to_paste_parameters": "Tap to paste parameters",
     "prompt": "Prompt",
     "parameters": "Parameters",
@@ -110,7 +111,7 @@
     "pasted_parameter": "Pasted {parameter_name}.",
     "i2i_conifgs_set": "Image to image configs set.",
     "director_tool_type": "Director Tool type",
-    "succeed": "succeed",
+    "succeed": "succeeded",
     "failed": "failed",
     "enabled": "Enabled",
     "disabled": "Disabled",
@@ -153,10 +154,12 @@
     "manage_saved_configs": "Manage saved configs",
     "saved_configs": "Saved Configs",
     "theme_mode": "Theme Mode",
-    "current_config": "Current Config",
+    "current_config": "Copy current config",
     "config_selection_page_hint": "Tap & hold saved config to load",
     "import_from_file": "Import from file",
     "info_load_saved_config": "Load saved config",
     "saved_config": "Saved Config",
-    "imported_config": "Import config"
+    "copied_config": "Copied Config",
+    "imported_config": "Import config",
+    "there_is_no_saved_config": "There is no saved config..."
 }
