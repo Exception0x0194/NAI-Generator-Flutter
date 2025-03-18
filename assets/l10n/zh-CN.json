@@ -102,6 +102,7 @@
     "metadata_found": "发现了图片中的元数据",
     "metadata_not_found": "没有发现图片中的元数据",
     "import_metadata_from_image": "从图片导入元数据",
+    "import_all_metadata_from_image": "导入全部元数据",
     "tap_to_paste_parameters": "点击以复制参数",
     "prompt": "提示词",
     "parameters": "生成参数",

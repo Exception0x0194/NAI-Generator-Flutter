@@ -146,6 +146,9 @@ class ParamConfig {
     if (model.contains('diffusion-4')) {
       payload.remove('sm');
       payload.remove('sm_dyn');
+      if (noiseSchedule.contains('native')) {
+        payload['noise_schedule'] = 'karras';
+      }
     }
     return payload;
   }
@@ -268,8 +271,8 @@ class ParamConfig {
       randomSeed = false;
       loadCount++;
     }
-    if (json.containsKey('legacy_uc')) {
-      seed = json['legacy_uc'];
+    if (json.containsKey('use_coords')) {
+      autoPosition = json['use_coords'];
       loadCount++;
     }
     return loadCount;

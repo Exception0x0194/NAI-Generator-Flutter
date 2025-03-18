@@ -32,3 +32,24 @@ const noiseSchedulesV4 = [
   'exponential',
   'polyexponential',
 ];
+
+const List<String> commentKeys = [
+  'scale',
+  'sampler',
+  'steps',
+  'n_samples',
+  'ucPreset',
+  'qualityToggle',
+  'sm',
+  'sm_dyn',
+  'dynamic_thresholding',
+  'controlnet_strength',
+  'legacy',
+  'add_original_image',
+  'uncond_scale',
+  'cfg_rescale',
+  'noise_schedule',
+  'negative_prompt',
+  'seed',
+  'use_coords',
+];

@@ -1,8 +1,10 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:nai_casrand/data/models/param_config.dart';
 import 'package:nai_casrand/data/models/payload_config.dart';
 import 'package:nai_casrand/data/models/generation_size.dart';
+import 'package:nai_casrand/ui/core/utils/flushbar.dart';
 
 class ParametersConfigViewmodel extends ChangeNotifier {
   PayloadConfig get payloadConfig => GetIt.I();
@@ -116,5 +118,15 @@ class ParametersConfigViewmodel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void loadImageMetadata(BuildContext context) {}
+  void loadImageMetadata(
+      BuildContext context, Map<String, dynamic> commentData) {
+    final loadedCount = config.loadJson(commentData);
+    notifyListeners();
+    showInfoBar(
+        context,
+        tr(
+          'loaded_parameters_count',
+          namedArgs: {'num': loadedCount.toString()},
+        ));
+  }
 }

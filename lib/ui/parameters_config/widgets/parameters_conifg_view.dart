@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -110,14 +112,13 @@ class ParametersConfigView extends StatelessWidget {
       ),
     );
 
-    /// TODO: import metadata from image
-    // final fab = FloatingActionButton(
-    //   tooltip: tr('import_metadata_from_image'),
-    //   onPressed: () => _showImportMetadataDialog(context),
-    //   child: const Icon(Icons.image_outlined),
-    // );
+    final fab = FloatingActionButton(
+      tooltip: tr('import_metadata_from_image'),
+      onPressed: () => _showImportMetadataDialog(context),
+      child: const Icon(Icons.image_outlined),
+    );
     return Scaffold(
-      // floatingActionButton: fab,
+      floatingActionButton: fab,
       body: SingleChildScrollView(
         child: content,
       ),
@@ -220,13 +221,68 @@ class ParametersConfigView extends StatelessWidget {
       showErrorBar(context, tr('metadata_not_found'));
       return;
     }
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: Text(tr('metadata_found')),
-        content: Text(metadataString),
-      ),
-    );
+    try {
+      final jsonData = json.decode(metadataString) as Map<String, dynamic>;
+      final commentData =
+          json.decode(jsonData['Comment']) as Map<String, dynamic>;
+      final sizeTile = ListTile(
+        title: Text(tr('image_size')),
+        subtitle: Text(
+          '${commentData['width']} × ${commentData['height']}',
+        ),
+        dense: true,
+        trailing: IconButton(
+            onPressed: () => viewmodel.loadImageMetadata(
+                  context,
+                  {
+                    'width': commentData['width'],
+                    'height': commentData['height']
+                  },
+                ),
+            icon: const Icon(Icons.copy)),
+      );
+      final tiles = commentKeys.map((key) {
+        final value = commentData[key];
+        if (value == null) return const SizedBox.shrink();
+        return ListTile(
+          title: Text(key),
+          subtitle: Text(value.toString()),
+          dense: true,
+          trailing: IconButton(
+            onPressed: () => viewmodel.loadImageMetadata(context, {key: value}),
+            icon: const Icon(Icons.copy),
+          ),
+        );
+      }).toList();
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: Text(tr('metadata_found')),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [sizeTile, ...tiles],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(tr('cancel')),
+            ),
+            TextButton(
+                onPressed: () {
+                  viewmodel.loadImageMetadata(context, commentData);
+                  Navigator.pop(context);
+                },
+                child: Text(tr('import_all_metadata_from_image')))
+          ],
+        ),
+      );
+    } catch (e) {
+      if (!context.mounted) return;
+      showErrorBar(
+          context, '${tr('import_metadata_from_image')}${tr('failed')}');
+    }
   }
 }
 
