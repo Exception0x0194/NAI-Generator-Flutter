@@ -54,12 +54,16 @@ class ConfigSelectionPageView extends StatelessWidget {
         },
       );
     }).toList();
+    final emptyTile = ListTile(
+      title: Text(tr('there_is_no_saved_config')),
+    );
     final currentConfigButton = ListTile(
       title: Text(tr('current_config')),
       trailing: IconButton(
         onPressed: () => viewmodel.saveCopyOfCurrentConfig(context),
         icon: const Icon(Icons.copy),
       ),
+      onTap: () => viewmodel.saveCopyOfCurrentConfig(context),
     );
     final importButton = ListTile(
       title: Text(tr('import_from_file')),
@@ -69,7 +73,17 @@ class ConfigSelectionPageView extends StatelessWidget {
       ),
       onTap: () => viewmodel.importConfigFromFile(context),
     );
-    final pageHint = Text(tr('config_selection_page_hint'));
+    final buttons = IntrinsicHeight(
+      child: Row(children: [
+        Expanded(child: currentConfigButton),
+        const VerticalDivider(),
+        Expanded(child: importButton),
+      ]),
+    );
+    final pageHint = Padding(
+      padding: const EdgeInsets.only(right: 8.0),
+      child: Text(tr('config_selection_page_hint')),
+    );
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -77,11 +91,10 @@ class ConfigSelectionPageView extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             pageHint,
-            currentConfigButton,
+            buttons,
             const Divider(),
             ...configListTiles,
-            if (configListTiles.isNotEmpty) const Divider(),
-            importButton,
+            if (configListTiles.isEmpty) emptyTile,
           ],
         ),
       ),

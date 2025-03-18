@@ -25,7 +25,11 @@ class ConfigSelectionPageViewmodel extends ChangeNotifier {
   void saveCopyOfCurrentConfig(BuildContext context) {
     final jsonData = payloadConfig.toJson();
     final uuid = const Uuid().v4();
-    configService.saveConfigByUuid(uuid, tr('copied_config'), jsonData);
+    configService.saveConfigByUuid(
+      uuid,
+      '${tr('copied_config')}-${FileService().generateTimestampString(DateTime.now())}',
+      jsonData,
+    );
     notifyListeners();
   }
 

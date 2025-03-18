@@ -153,10 +153,12 @@
     "manage_saved_configs": "Manage saved configs",
     "saved_configs": "Saved Configs",
     "theme_mode": "Theme Mode",
-    "current_config": "Current Config",
+    "current_config": "Copy current config",
     "config_selection_page_hint": "Tap & hold saved config to load",
     "import_from_file": "Import from file",
     "info_load_saved_config": "Load saved config",
     "saved_config": "Saved Config",
-    "imported_config": "Import config"
+    "copied_config": "Copied Config",
+    "imported_config": "Import config",
+    "there_is_no_saved_config": "There is no saved config..."
 }
