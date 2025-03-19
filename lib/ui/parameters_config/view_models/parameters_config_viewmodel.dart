@@ -129,4 +129,17 @@ class ParametersConfigViewmodel extends ChangeNotifier {
           namedArgs: {'num': loadedCount.toString()},
         ));
   }
+
+  void loadSingleImageMetadata(
+      BuildContext context, Map<String, dynamic> commentData, String key) {
+    final loadedCount = config.loadJson(commentData);
+    if (loadedCount == 0) return;
+    notifyListeners();
+    showInfoBar(
+        context,
+        tr(
+          'pasted_parameter',
+          namedArgs: {'parameter_name': key},
+        ));
+  }
 }

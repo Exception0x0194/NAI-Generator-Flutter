@@ -34,6 +34,7 @@ const noiseSchedulesV4 = [
 ];
 
 const List<String> commentKeys = [
+  'uc',
   'scale',
   'sampler',
   'steps',
@@ -53,3 +54,11 @@ const List<String> commentKeys = [
   'seed',
   'use_coords',
 ];
+
+const Map<String, String> sourceToModel = {
+  'Stable Diffusion XL C1E1DE52': 'nai-diffusion-3',
+  'Stable Diffusion XL 7BCCAA2C': 'nai-diffusion-3',
+  'Stable Diffusion XL 9CC2F394': 'nai-diffusion-furry-3',
+  'NovelAI Diffusion V4 F6E18726': 'nai-diffusion-4-curated-preview',
+  'NovelAI Diffusion V4 79F47848': 'nai-diffusion-4-full'
+};

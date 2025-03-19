@@ -275,6 +275,10 @@ class ParamConfig {
       autoPosition = json['use_coords'];
       loadCount++;
     }
+    if (json.containsKey('uc')) {
+      negativePrompt = json['uc'];
+      loadCount++;
+    }
     return loadCount;
   }
 }

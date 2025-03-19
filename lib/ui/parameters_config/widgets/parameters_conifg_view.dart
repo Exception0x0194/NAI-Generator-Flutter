@@ -225,33 +225,44 @@ class ParametersConfigView extends StatelessWidget {
       final jsonData = json.decode(metadataString) as Map<String, dynamic>;
       final commentData =
           json.decode(jsonData['Comment']) as Map<String, dynamic>;
+      final source = jsonData['Source'] ?? '';
+      final model = sourceToModel[source];
+      final toolTip = Padding(
+        padding: const EdgeInsets.only(left: 8.0),
+        child: Text(tr('tap_to_paste_parameters')),
+      );
+      final modelTile = model != null
+          ? ListTile(
+              title: Text(tr('generation_model')),
+              subtitle: Text(model),
+              onTap: () => viewmodel.setModel(model),
+            )
+          : const SizedBox.shrink();
       final sizeTile = ListTile(
         title: Text(tr('image_size')),
         subtitle: Text(
           '${commentData['width']} × ${commentData['height']}',
         ),
         dense: true,
-        trailing: IconButton(
-            onPressed: () => viewmodel.loadImageMetadata(
-                  context,
-                  {
-                    'width': commentData['width'],
-                    'height': commentData['height']
-                  },
-                ),
-            icon: const Icon(Icons.copy)),
+        onTap: () => viewmodel.loadSingleImageMetadata(
+          context,
+          {'width': commentData['width'], 'height': commentData['height']},
+          tr('image_size'),
+        ),
       );
       final tiles = commentKeys.map((key) {
         final value = commentData[key];
         if (value == null) return const SizedBox.shrink();
         return ListTile(
           title: Text(key),
-          subtitle: Text(value.toString()),
-          dense: true,
-          trailing: IconButton(
-            onPressed: () => viewmodel.loadImageMetadata(context, {key: value}),
-            icon: const Icon(Icons.copy),
+          subtitle: Text(
+            value.toString(),
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis,
           ),
+          dense: true,
+          onTap: () =>
+              viewmodel.loadSingleImageMetadata(context, {key: value}, key),
         );
       }).toList();
       showDialog(
@@ -260,8 +271,9 @@ class ParametersConfigView extends StatelessWidget {
           title: Text(tr('metadata_found')),
           content: SingleChildScrollView(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
               mainAxisSize: MainAxisSize.min,
-              children: [sizeTile, ...tiles],
+              children: [toolTip, modelTile, sizeTile, ...tiles],
             ),
           ),
           actions: [
