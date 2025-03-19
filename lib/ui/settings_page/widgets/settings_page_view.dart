@@ -312,12 +312,15 @@ class SettingsPageView extends StatelessWidget {
     return ListTile(
       title: Text(tr('saved_config')),
       leading: const Icon(Icons.save_outlined),
-      onTap: () => Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => ConfigSelectionPageView(
-                    notificationCallback: () => viewmodel.notify(),
-                  ))),
+      onTap: () {
+        viewmodel.saveCurrentConfig();
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ConfigSelectionPageView(
+                      notificationCallback: () => viewmodel.notify(),
+                    )));
+      },
     );
   }
 }

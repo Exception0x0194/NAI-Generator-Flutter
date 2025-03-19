@@ -20,9 +20,12 @@ class ConfigSelectionPageView extends StatelessWidget {
   }
 
   Widget getBody(BuildContext context) {
+    final format = DateFormat('yyyy-MM-dd HH:mm:ss');
     List<Widget> configListTiles = viewmodel.configIndexes.entries.map((item) {
       final uuid = item.key;
-      final title = item.value;
+      final info = item.value;
+      final formattedDate = format.format(info.lastModified);
+      final isActive = uuid == viewmodel.configService.currentUuid;
       final buttons = Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -39,14 +42,22 @@ class ConfigSelectionPageView extends StatelessWidget {
             width: 8.0,
           ),
           IconButton(
-              onPressed: () => viewmodel.deleteConfig(context, uuid),
+              onPressed:
+                  isActive ? null : () => viewmodel.deleteConfig(context, uuid),
               icon: const Icon(Icons.delete_outline)),
         ],
       );
       return InkWell(
         child: ListTile(
-          title: Text(title.toString()),
+          title: Text(info.title.toString()),
+          subtitle: Text(tr(
+            'last_modified',
+            namedArgs: {'time': formattedDate},
+          )),
           trailing: buttons,
+          leading: isActive
+              ? const Icon(Icons.edit_outlined)
+              : const SizedBox.shrink(),
         ),
         onLongPress: () {
           viewmodel.loadSavedConfig(context, uuid);
@@ -54,11 +65,8 @@ class ConfigSelectionPageView extends StatelessWidget {
         },
       );
     }).toList();
-    final emptyTile = ListTile(
-      title: Text(tr('there_is_no_saved_config')),
-    );
     final currentConfigButton = ListTile(
-      title: Text(tr('current_config')),
+      title: Text(tr('copy_current_config')),
       trailing: IconButton(
         onPressed: () => viewmodel.saveCopyOfCurrentConfig(context),
         icon: const Icon(Icons.copy),
@@ -91,10 +99,9 @@ class ConfigSelectionPageView extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             pageHint,
-            buttons,
-            const Divider(),
             ...configListTiles,
-            if (configListTiles.isEmpty) emptyTile,
+            const Divider(),
+            buttons,
           ],
         ),
       ),
@@ -103,7 +110,7 @@ class ConfigSelectionPageView extends StatelessWidget {
 
   void _showTitleEditDialog(BuildContext context, String uuid) {
     final controller = TextEditingController(
-      text: viewmodel.configIndexes[uuid].toString(),
+      text: viewmodel.configIndexes[uuid]!.title,
     );
     showDialog(
         context: context,

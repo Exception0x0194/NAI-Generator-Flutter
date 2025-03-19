@@ -13,7 +13,7 @@ import 'package:uuid/uuid.dart';
 class ConfigSelectionPageViewmodel extends ChangeNotifier {
   ConfigService get configService => GetIt.I();
   PayloadConfig get payloadConfig => GetIt.I();
-  Map<String, dynamic> get configIndexes => configService.configIndex;
+  Map<String, SavedConfigInfo> get configIndexes => configService.configIndex;
 
   ConfigSelectionPageViewmodel();
 
@@ -24,12 +24,12 @@ class ConfigSelectionPageViewmodel extends ChangeNotifier {
 
   void saveCopyOfCurrentConfig(BuildContext context) {
     final jsonData = payloadConfig.toJson();
-    final uuid = const Uuid().v4();
-    configService.saveConfigByUuid(
-      uuid,
-      '${tr('copied_config')}-${FileService().generateTimestampString(DateTime.now())}',
-      jsonData,
-    );
+    final currentUuid = configService.currentUuid;
+    final currentName = configIndexes[currentUuid]!.title;
+    final newUuid = const Uuid().v4();
+    configService.saveConfigByUuid(newUuid, jsonData);
+    configService.renameConfigByUuid(
+        newUuid, '${tr('copied_config')}${tr('colon')}$currentName');
     notifyListeners();
   }
 
@@ -42,8 +42,9 @@ class ConfigSelectionPageViewmodel extends ChangeNotifier {
       final fileName = result.files.single.name;
       Map<String, dynamic> jsonData = json.decode(fileContent);
       final uuid = const Uuid().v4();
-      configService.saveConfigByUuid(
-          uuid, '${tr('imported_config')}${tr('colon')}$fileName', jsonData);
+      configService.saveConfigByUuid(uuid, jsonData);
+      configService.renameConfigByUuid(
+          uuid, '${tr('imported_config')}${tr('colon')}$fileName');
       notifyListeners();
     } catch (error) {
       if (!context.mounted) return;
@@ -59,6 +60,7 @@ class ConfigSelectionPageViewmodel extends ChangeNotifier {
       return;
     }
     payloadConfig.loadJson(jsonData);
+    configService.currentUuid = uuid;
     notifyListeners();
     showInfoBar(context, '${tr('info_load_saved_config')}${tr('succeed')}');
   }

@@ -8,11 +8,13 @@ import 'package:get_it/get_it.dart';
 import 'package:nai_casrand/core/constants/settings.dart';
 import 'package:nai_casrand/data/models/payload_config.dart';
 import 'package:nai_casrand/data/models/settings.dart';
+import 'package:nai_casrand/data/services/config_service.dart';
 import 'package:nai_casrand/data/services/file_service.dart';
 import 'package:nai_casrand/ui/core/utils/flushbar.dart';
 
 class SettingsPageViewmodel extends ChangeNotifier {
-  PayloadConfig get payloadConfig => GetIt.I<PayloadConfig>();
+  PayloadConfig get payloadConfig => GetIt.I();
+  ConfigService get configService => GetIt.I();
 
   SettingsPageViewmodel();
 
@@ -122,4 +124,8 @@ class SettingsPageViewmodel extends ChangeNotifier {
   }
 
   void notify() => notifyListeners();
+
+  void saveCurrentConfig() {
+    configService.saveConfig(payloadConfig.toJson());
+  }
 }
