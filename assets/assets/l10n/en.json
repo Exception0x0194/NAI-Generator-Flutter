@@ -93,6 +93,7 @@
     "vibe_export": "Vibe image export ",
     "enhance_presets": "Enhance parameter presets",
     "override_random_prompts": "Override random prompts",
+    "use_character_prompt": "Use generated character prompts",
     "override_prompt": "Override prompts",
     "set_enhancement_parameters": "Set enhancement parameters",
     "enhance_scale": "Scale factor",
