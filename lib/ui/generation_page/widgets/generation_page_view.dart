@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:nai_casrand/ui/core/widgets/editable_list_tile.dart';
 import 'package:nai_casrand/ui/generation_page/widgets/info_card.dart';
 import 'package:nai_casrand/ui/generation_page/view_models/generation_page_viewmodel.dart';
 import 'package:nai_casrand/ui/core/widgets/slider_list_tile.dart';
@@ -12,21 +13,35 @@ class GenerationPageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final content = AnimatedBuilder(
-      animation: Listenable.merge([viewmodel, viewmodel.commandIdx]),
-      builder: (context, child) {
-        final itemCount = viewmodel.commandList.length;
-        return WaterfallFlow.builder(
-          gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
-              crossAxisCount: viewmodel.colNum),
-          padding: const EdgeInsets.all(8.0),
-          itemCount: itemCount,
-          itemBuilder: (context, index) => InfoCard(
-            command: viewmodel.commandList[itemCount - 1 - index],
-          ),
-        );
-      },
-    );
+    final content = ListenableBuilder(
+        listenable: viewmodel,
+        builder: (context, _) {
+          final itemCount = viewmodel.commandList.length;
+          return Column(
+            children: [
+              Expanded(
+                child: WaterfallFlow.builder(
+                  gridDelegate:
+                      SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: viewmodel.colNum),
+                  padding: const EdgeInsets.all(8.0),
+                  itemCount: itemCount,
+                  itemBuilder: (context, index) => InfoCard(
+                    command: viewmodel.commandList[itemCount - 1 - index],
+                  ),
+                ),
+              ),
+              if (viewmodel.payloadConfig.useOverridePrompt)
+                EditableListTile(
+                  title: tr('override_prompt'),
+                  leading: const Icon(Icons.edit_note),
+                  maxLines: 3,
+                  currentValue: viewmodel.payloadConfig.overridePrompt,
+                  onEditComplete: (value) => viewmodel.setOverridePrompt(value),
+                )
+            ],
+          );
+        });
     final buttons = Column(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
@@ -100,6 +115,19 @@ class DisplaySettingsView extends StatelessWidget {
                 divisions: 4,
                 onChanged: (value) => viewmodel.setCardsPerCol(value.toInt()),
               ),
+              CheckboxListTile(
+                title: Text(tr('override_random_prompts')),
+                secondary: const Icon(Icons.edit),
+                value: viewmodel.payloadConfig.useOverridePrompt,
+                onChanged: (value) => viewmodel.setOverride(value),
+              ),
+              if (viewmodel.payloadConfig.useOverridePrompt)
+                CheckboxListTile(
+                  title: Text(tr('use_character_prompt')),
+                  secondary: const Icon(Icons.edit),
+                  value: viewmodel.payloadConfig.useCharacterPromptWithOverride,
+                  onChanged: (value) => viewmodel.setCharacterOverride(value),
+                ),
             ],
           );
         });

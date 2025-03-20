@@ -1,5 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:nai_casrand/data/models/character_config.dart';
 import 'package:nai_casrand/data/models/param_config.dart';
+import 'package:nai_casrand/data/models/payload_config.dart';
 import 'package:nai_casrand/data/models/prompt_config.dart';
 import 'package:nai_casrand/data/models/vibe_config.dart';
 
@@ -44,22 +46,19 @@ class PayloadGenerationResult {
 }
 
 class GeneratePayloadUseCase {
-  final PromptConfig rootPromptConfig;
-  final List<CharacterConfig> characterConfigList;
-  final List<PromptConfig> savedConfigList;
-  final List<VibeConfig> vibeConfigList;
-  final ParamConfig paramConfig;
-
-  final String? fileNameKey;
+  final PayloadConfig payloadConfig;
 
   GeneratePayloadUseCase({
-    required this.rootPromptConfig,
-    required this.characterConfigList,
-    required this.savedConfigList,
-    required this.vibeConfigList,
-    required this.paramConfig,
-    this.fileNameKey,
+    required this.payloadConfig,
   });
+
+  ParamConfig get paramConfig => payloadConfig.paramConfig;
+  PromptConfig get rootPromptConfig => payloadConfig.rootPromptConfig;
+  List<CharacterConfig> get characterConfigList =>
+      payloadConfig.characterConfigList;
+  List<PromptConfig> get savedConfigList => payloadConfig.savedPromptConfigList;
+  List<VibeConfig> get vibeConfigList => payloadConfig.vibeConfigList;
+  String get fileNameKey => payloadConfig.settings.fileNamePrefixKey;
 
   PayloadGenerationResult call() {
     final pattern = RegExp(
@@ -67,17 +66,34 @@ class GeneratePayloadUseCase {
       unicode: true,
     );
 
-    final paramPayload = paramConfig.getPayload();
-    final basePromptResult =
-        rootPromptConfig.getPrmpts().replaceVariables(pattern, savedConfigList);
+    // Get prompt
+    final NestedPrompt basePromptResult;
+    if (payloadConfig.useOverridePrompt) {
+      basePromptResult = NestedPromptString(
+        title: tr('override_prompt'),
+        content: payloadConfig.overridePrompt,
+      );
+    } else {
+      basePromptResult = rootPromptConfig
+          .getPrmpts()
+          .replaceVariables(pattern, savedConfigList);
+    }
     final basePair = PromptCommentPair(
       prompt: basePromptResult.toPrompt(),
       comment: basePromptResult.toComment(),
     );
-    // basePair.processPair(savedConfigList);
+    final paramPayload = paramConfig.getPayload();
     String payloadComment = basePair.comment;
-    final characterPromptResultList =
-        characterConfigList.map((elem) => elem.getPrompt()).toList();
+
+    // Get character prompt
+    final List<CharacterPromptResult> characterPromptResultList;
+    if (payloadConfig.useOverridePrompt &&
+        !payloadConfig.useCharacterPromptWithOverride) {
+      characterPromptResultList = [];
+    } else {
+      characterPromptResultList =
+          characterConfigList.map((elem) => elem.getPrompt()).toList();
+    }
 
     // Character prompts
     final characterPrompts = [];
@@ -145,9 +161,8 @@ class GeneratePayloadUseCase {
           imformationExtractedList;
     }
 
-    final processedFileName = fileNameKey != null
-        ? _processFileNameKey(fileNameKey!, basePromptResult)
-        : '';
+    final processedFileName =
+        _processFileNameKey(fileNameKey, basePromptResult);
 
     return PayloadGenerationResult(
       comment: payloadComment,

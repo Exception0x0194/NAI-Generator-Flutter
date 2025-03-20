@@ -41,6 +41,7 @@ class GenerationPageViewmodel extends ChangeNotifier {
     // Push command into list and run command
     commandList.add(command);
     commandIdx.value++;
+    notifyListeners();
     command();
   }
 
@@ -78,13 +79,8 @@ class GenerationPageViewmodel extends ChangeNotifier {
   void addTestPromptInfoCardContent() {
     // Sync command but wrapped as async
     commandFunc() async {
-      final payloadResult = GeneratePayloadUseCase(
-        rootPromptConfig: payloadConfig.rootPromptConfig,
-        characterConfigList: payloadConfig.characterConfigList,
-        vibeConfigList: payloadConfig.vibeConfigList,
-        savedConfigList: payloadConfig.savedPromptConfigList,
-        paramConfig: payloadConfig.paramConfig,
-      )();
+      final payloadResult =
+          GeneratePayloadUseCase(payloadConfig: payloadConfig)();
       final additionalInfo = digestPayloadResult(payloadResult);
       return InfoCardContent(
           title: tr('test_prompt'),
@@ -113,14 +109,8 @@ class GenerationPageViewmodel extends ChangeNotifier {
       final endpoint = payloadConfig.settings.debugApiEnabled
           ? payloadConfig.settings.debugApiPath
           : 'https://image.novelai.net/ai/generate-image';
-      final payloadResult = GeneratePayloadUseCase(
-        rootPromptConfig: payloadConfig.rootPromptConfig,
-        characterConfigList: payloadConfig.characterConfigList,
-        vibeConfigList: payloadConfig.vibeConfigList,
-        paramConfig: payloadConfig.paramConfig,
-        savedConfigList: payloadConfig.savedPromptConfigList,
-        fileNameKey: payloadConfig.settings.fileNamePrefixKey,
-      )();
+      final payloadResult =
+          GeneratePayloadUseCase(payloadConfig: payloadConfig)();
       final request = ApiRequest(
         endpoint: endpoint,
         proxy: payloadConfig.settings.proxy,
@@ -262,5 +252,22 @@ class GenerationPageViewmodel extends ChangeNotifier {
     String safeName = fileName.replaceAll(RegExp(r'[<>"/\\|?*{}\[\]]'), '');
     safeName = safeName.replaceAll(RegExp(r'[:]'), '_');
     return safeName.substring(0, min(200, safeName.length));
+  }
+
+  void setOverride(bool? value) {
+    if (value == null) return;
+    payloadConfig.useOverridePrompt = value;
+    notifyListeners();
+  }
+
+  void setCharacterOverride(bool? value) {
+    if (value == null) return;
+    payloadConfig.useCharacterPromptWithOverride = value;
+    notifyListeners();
+  }
+
+  void setOverridePrompt(String value) {
+    payloadConfig.overridePrompt = value;
+    notifyListeners();
   }
 }

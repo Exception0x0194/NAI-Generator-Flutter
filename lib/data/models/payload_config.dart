@@ -45,12 +45,19 @@ class PayloadConfig {
   I2IConfig i2iConfig = I2IConfig();
   List<VibeConfig> vibeConfigList = [];
 
+  String overridePrompt;
+  bool useOverridePrompt;
+  bool useCharacterPromptWithOverride;
+
   PayloadConfig({
     required this.rootPromptConfig,
     required this.characterConfigList,
     required this.savedPromptConfigList,
     required this.paramConfig,
     required this.settings,
+    required this.overridePrompt,
+    required this.useOverridePrompt,
+    required this.useCharacterPromptWithOverride,
   });
 
   Map<String, String> getHeaders() {
@@ -70,7 +77,10 @@ class PayloadConfig {
       "saved_config":
           savedPromptConfigList.map((elem) => elem.toJson()).toList(),
       "param_config": paramConfig.toJson(),
-      "settings": settings.toJson()
+      "settings": settings.toJson(),
+      'override_prompt': overridePrompt,
+      'use_override_prompt': useOverridePrompt,
+      'use_character_prompt_with_override': useCharacterPromptWithOverride,
     };
   }
 
@@ -93,6 +103,10 @@ class PayloadConfig {
       savedPromptConfigList: savedList,
       paramConfig: ParamConfig.fromJson(jsonData['param_config'] ?? {}),
       settings: Settings.fromJson(jsonData['settings'] ?? {}),
+      overridePrompt: jsonData['override_prompt'] ?? '',
+      useOverridePrompt: jsonData['use_override_prompt'] ?? false,
+      useCharacterPromptWithOverride:
+          jsonData['use_character_prompt_with_override'] ?? false,
     );
   }
 
@@ -114,5 +128,9 @@ class PayloadConfig {
     savedPromptConfigList = savedList;
     paramConfig = ParamConfig.fromJson(jsonData['param_config'] ?? {});
     settings = Settings.fromJson(jsonData['settings'] ?? {});
+    overridePrompt = jsonData['override_prompt'] ?? '';
+    useOverridePrompt = jsonData['use_override_prompt'] ?? false;
+    useCharacterPromptWithOverride =
+        jsonData['use_character_prompt_with_override'] ?? false;
   }
 }
