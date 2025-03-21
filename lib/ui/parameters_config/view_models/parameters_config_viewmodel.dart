@@ -118,9 +118,22 @@ class ParametersConfigViewmodel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void loadImageMetadata(
-      BuildContext context, Map<String, dynamic> commentData) {
-    final loadedCount = config.loadJson(commentData);
+  void loadAllMetadata(
+    BuildContext context,
+    Map<String, dynamic> commentData,
+    String? prompt,
+    String? model,
+  ) {
+    int loadedCount = config.loadJson(commentData);
+    if (prompt != null) {
+      payloadConfig.overridePrompt = prompt;
+      payloadConfig.useOverridePrompt = true;
+      loadedCount++;
+    }
+    if (model != null) {
+      payloadConfig.paramConfig.model = model;
+      loadedCount++;
+    }
     notifyListeners();
     showInfoBar(
         context,
@@ -140,6 +153,19 @@ class ParametersConfigViewmodel extends ChangeNotifier {
         tr(
           'pasted_parameter',
           namedArgs: {'parameter_name': key},
+        ));
+  }
+
+  void setOverridePrompt(BuildContext context, String? prompt) {
+    if (prompt == null) return;
+    payloadConfig.overridePrompt = prompt;
+    payloadConfig.useOverridePrompt = true;
+    notifyListeners();
+    showInfoBar(
+        context,
+        tr(
+          'pasted_parameter',
+          namedArgs: {'parameter_name': tr('prompt')},
         ));
   }
 }

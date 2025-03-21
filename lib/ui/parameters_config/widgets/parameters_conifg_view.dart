@@ -226,11 +226,19 @@ class ParametersConfigView extends StatelessWidget {
       final commentData =
           json.decode(jsonData['Comment']) as Map<String, dynamic>;
       final source = jsonData['Source'] ?? '';
-      final model = sourceToModel[source];
+      final String? model = sourceToModel[source];
+      final String? prompt = jsonData['Description'];
       final toolTip = Padding(
         padding: const EdgeInsets.only(left: 8.0),
         child: Text(tr('tap_to_paste_parameters')),
       );
+      final promptTile = prompt != null
+          ? ListTile(
+              title: Text(tr('prompt')),
+              subtitle: Text(prompt),
+              onTap: () => viewmodel.setOverridePrompt(context, prompt),
+            )
+          : const SizedBox.shrink();
       final modelTile = model != null
           ? ListTile(
               title: Text(tr('generation_model')),
@@ -273,7 +281,13 @@ class ParametersConfigView extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               mainAxisSize: MainAxisSize.min,
-              children: [toolTip, modelTile, sizeTile, ...tiles],
+              children: [
+                toolTip,
+                promptTile,
+                modelTile,
+                sizeTile,
+                ...tiles,
+              ],
             ),
           ),
           actions: [
@@ -283,7 +297,12 @@ class ParametersConfigView extends StatelessWidget {
             ),
             TextButton(
                 onPressed: () {
-                  viewmodel.loadImageMetadata(context, commentData);
+                  viewmodel.loadAllMetadata(
+                    context,
+                    commentData,
+                    prompt,
+                    model,
+                  );
                   Navigator.pop(context);
                 },
                 child: Text(tr('import_all_metadata_from_image')))
