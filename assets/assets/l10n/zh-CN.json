@@ -100,6 +100,7 @@
     "enhance_override_prompts": "以图片 prompt 覆盖随机 prompt",
     "enhance_override_smea": "强行使用设置中的 SMEA 参数",
     "i2i_conifgs_set": "已设置图生图参数",
+    "drop_to_read_metadata": "拖拽图片至此以读取生成信息",
     "metadata_found": "发现了图片中的元数据",
     "metadata_not_found": "没有发现图片中的元数据",
     "import_metadata_from_image": "从图片导入元数据",

@@ -100,6 +100,7 @@
     "enhance_only_once": "Enhance only once",
     "enhance_override_prompts": "Overwrite random prompts",
     "enhance_override_smea": "Forcely use SMEA settings",
+    "drop_to_read_metadata": "Drop image here to read metadata",
     "metadata_found": "Metadata found in imported image",
     "metadata_not_found": "Metadata not found in imported image",
     "import_metadata_from_image": "Import metadata from image",
