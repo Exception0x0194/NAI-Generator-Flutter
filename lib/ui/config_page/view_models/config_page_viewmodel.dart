@@ -1,7 +1,8 @@
+import 'package:get_it/get_it.dart';
 import 'package:nai_casrand/data/models/payload_config.dart';
 
 class ConfigPageViewmodel {
-  PayloadConfig payloadConfig;
+  PayloadConfig get payloadConfig => GetIt.I();
 
-  ConfigPageViewmodel({required this.payloadConfig});
+  ConfigPageViewmodel();
 }
