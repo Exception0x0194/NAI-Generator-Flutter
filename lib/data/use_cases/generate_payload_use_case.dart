@@ -86,13 +86,13 @@ class GeneratePayloadUseCase {
     String payloadComment = basePair.comment;
 
     // Get character prompt
-    final List<CharacterPromptResult> characterPromptResultList;
-    if (payloadConfig.useOverridePrompt &&
-        !payloadConfig.useCharacterPromptWithOverride) {
-      characterPromptResultList = [];
-    } else {
-      characterPromptResultList =
-          characterConfigList.map((elem) => elem.getPrompt()).toList();
+    final List<CharacterPromptResult> characterPromptResultList = [];
+    if (!payloadConfig.useOverridePrompt ||
+        payloadConfig.useCharacterPromptWithOverride) {
+      for (final config in characterConfigList) {
+        if (!config.enabled) continue;
+        characterPromptResultList.add(config.getPrompt());
+      }
     }
 
     // Character prompts

@@ -15,40 +15,47 @@ class CharacterConfigView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider.value(
-      value: viewmodel,
-      child: Consumer<CharacterConfigViewmodel>(
-        builder: (context, viewmodel, child) {
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                      child: ListTile(
-                    title: Text(tr('character_position')),
-                    leading: const Icon(Icons.location_on),
-                    subtitle: Text(viewmodel.getPositionsTexts()),
-                    onTap: () => _showEditPositionDialog(context),
-                  )),
-                  Expanded(
-                      child: EditableListTile(
-                          title: tr('uc'),
-                          leading: const Icon(Icons.do_not_disturb),
-                          currentValue: viewmodel.config.negativePrompt,
-                          maxLines: 1,
-                          onEditComplete: (value) =>
-                              viewmodel.setNegativePrompt(value)))
-                ],
-              ),
-              PromptConfigView(
-                  viewModel: PromptConfigViewModel(
-                      config: viewmodel.config.positivePromptConfig)),
-            ],
-          );
-        },
+    return ListenableBuilder(
+      listenable: viewmodel,
+      builder: (context, _) => DecoratedBox(
+        decoration: BoxDecoration(
+          color: Theme.of(context)
+              .disabledColor
+              .withAlpha(viewmodel.config.enabled ? 0 : 30),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                    child: ListTile(
+                  title: Text(tr('character_position')),
+                  leading: const Icon(Icons.location_on),
+                  subtitle: Text(viewmodel.getPositionsTexts()),
+                  onTap: () => _showEditPositionDialog(context),
+                )),
+                Expanded(
+                    child: EditableListTile(
+                        title: tr('uc'),
+                        leading: const Icon(Icons.do_not_disturb),
+                        currentValue: viewmodel.config.negativePrompt,
+                        maxLines: 1,
+                        onEditComplete: (value) =>
+                            viewmodel.setNegativePrompt(value))),
+                Checkbox(
+                    value: viewmodel.config.enabled,
+                    onChanged: (value) => viewmodel.setEnabled(value)),
+              ],
+            ),
+            PromptConfigView(
+                viewModel: PromptConfigViewModel(
+                    config: viewmodel.config.positivePromptConfig)),
+          ],
+        ),
       ),
     );
   }

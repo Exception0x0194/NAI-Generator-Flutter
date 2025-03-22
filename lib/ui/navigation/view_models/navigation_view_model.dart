@@ -7,12 +7,11 @@ class NavigationViewModel extends ChangeNotifier {
   int currentPageIndex = 0;
 
   void changeIndex(int value) {
-    // If leaving from prompt page or settings page, save the config
-    if (currentPageIndex == 1 || currentPageIndex == 2) {
-      final config = GetIt.instance<PayloadConfig>();
-      final service = GetIt.instance<ConfigService>();
-      service.saveConfig(config.toJson());
-    }
+    // Save the config
+    final config = GetIt.instance<PayloadConfig>();
+    final service = GetIt.instance<ConfigService>();
+    service.saveConfig(config.toJson());
+
     currentPageIndex = value;
   }
 }

@@ -40,4 +40,10 @@ class CharacterConfigViewmodel extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  void setEnabled(bool? value) {
+    if (value == null) return;
+    config.enabled = value;
+    notifyListeners();
+  }
 }

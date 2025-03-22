@@ -18,11 +18,13 @@ class CharacterConfig {
   List<Point<int>> positions;
   PromptConfig positivePromptConfig;
   String negativePrompt;
+  bool enabled;
 
   CharacterConfig({
     required this.positions,
     required this.positivePromptConfig,
     required this.negativePrompt,
+    required this.enabled,
   });
 
   CharacterPromptResult getPrompt() {
@@ -43,9 +45,11 @@ class CharacterConfig {
 
   factory CharacterConfig.fromEmpty() {
     return CharacterConfig(
-        positions: [],
-        positivePromptConfig: PromptConfig(),
-        negativePrompt: '');
+      positions: [],
+      positivePromptConfig: PromptConfig(),
+      negativePrompt: '',
+      enabled: true,
+    );
   }
 
   factory CharacterConfig.fromJson(Map<String, dynamic> json) {
@@ -58,7 +62,8 @@ class CharacterConfig {
     return CharacterConfig(
       positions: positions,
       positivePromptConfig: PromptConfig.fromJson(json['positivePromptConfig']),
-      negativePrompt: json['negativePrompt'],
+      negativePrompt: json['negativePrompt'] ?? '',
+      enabled: json['enabled'] ?? true,
     );
   }
 
@@ -72,6 +77,7 @@ class CharacterConfig {
       }).toList(),
       'positivePromptConfig': positivePromptConfig.toJson(),
       'negativePrompt': negativePrompt,
+      'enabled': enabled,
     };
   }
 }
