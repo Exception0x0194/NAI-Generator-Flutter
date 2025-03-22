@@ -3,7 +3,6 @@ import 'package:flutter_command/flutter_command.dart';
 import 'package:nai_casrand/data/models/info_card_content.dart';
 
 class CommandStatus {
-  ValueNotifier<int> commandIdx = ValueNotifier(0);
   List<Command<void, InfoCardContent>> commandList = [];
   DateTime batchTimestamp = DateTime.now();
 

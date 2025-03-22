@@ -1,12 +1,19 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get_it/get_it.dart';
+import 'package:nai_casrand/data/models/command_status.dart';
 import 'package:nai_casrand/data/models/info_card_content.dart';
+import 'package:nai_casrand/data/models/payload_config.dart';
+import 'package:nai_casrand/data/models/settings.dart';
 import 'package:nai_casrand/ui/core/utils/flushbar.dart';
 import 'package:flutter_command/flutter_command.dart';
 
 class InfoCard extends StatelessWidget {
   final Command<void, InfoCardContent> command;
+
+  CommandStatus get commandStatus => GetIt.I();
+  Settings get settings => GetIt.I<PayloadConfig>().settings;
 
   const InfoCard({super.key, required this.command});
 
@@ -16,10 +23,14 @@ class InfoCard extends StatelessWidget {
       listenable: command.isExecuting,
       builder: (context, child) {
         if (command.isExecuting.value) {
+          final current = commandStatus.currentTotalCount.toString();
+          final total = settings.numberOfRequests != 0
+              ? settings.numberOfRequests.toString()
+              : '∞';
           // Loading
-          return const ListTile(
-            leading: CircularProgressIndicator(),
-            title: Text('Requesting...'),
+          return ListTile(
+            leading: const CircularProgressIndicator(),
+            title: Text('Requesting $current/$total ...'),
           );
         } else {
           // Result

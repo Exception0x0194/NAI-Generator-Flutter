@@ -23,7 +23,6 @@ class GenerationPageViewmodel extends ChangeNotifier {
   CommandStatus get commandStatus => GetIt.I<CommandStatus>();
   List<Command<void, InfoCardContent>> get commandList =>
       commandStatus.commandList;
-  ValueNotifier<int> get commandIdx => commandStatus.commandIdx;
   int get colNum => payloadConfig.settings.generationPageColumnCount;
 
   Command<void, InfoCardContent>? currentCommand;
@@ -40,9 +39,8 @@ class GenerationPageViewmodel extends ChangeNotifier {
     }
     // Push command into list and run command
     commandList.add(command);
-    commandIdx.value++;
-    notifyListeners();
     command();
+    notifyListeners();
   }
 
   void addLoremInfoCardContent() async {
@@ -268,6 +266,11 @@ class GenerationPageViewmodel extends ChangeNotifier {
 
   void setOverridePrompt(String value) {
     payloadConfig.overridePrompt = value;
+    notifyListeners();
+  }
+
+  void setUC(String value) {
+    payloadConfig.paramConfig.negativePrompt = value;
     notifyListeners();
   }
 }
