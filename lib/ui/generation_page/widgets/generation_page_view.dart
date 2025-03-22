@@ -35,9 +35,18 @@ class GenerationPageView extends StatelessWidget {
                 EditableListTile(
                   title: tr('override_prompt'),
                   leading: const Icon(Icons.edit_note),
-                  maxLines: 3,
+                  maxLines: 2,
                   currentValue: viewmodel.payloadConfig.overridePrompt,
                   onEditComplete: (value) => viewmodel.setOverridePrompt(value),
+                ),
+              if (viewmodel.payloadConfig.useOverridePrompt)
+                EditableListTile(
+                  title: tr('uc'),
+                  leading: const Icon(Icons.do_not_disturb),
+                  maxLines: 1,
+                  currentValue:
+                      viewmodel.payloadConfig.paramConfig.negativePrompt,
+                  onEditComplete: (value) => viewmodel.setUC(value),
                 )
             ],
           );
