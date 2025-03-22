@@ -67,7 +67,7 @@
     "noise_scheduler": "Noise Scheduler",
     "use_random_seed": "Use Random Seed",
     "random_seed": "Random Seed",
-    "uc": "Inverse Prompt Token",
+    "uc": "Unwanted content",
     "metadata_erase_enabled": "Erase metadata in generated images",
     "custom_metadata_enabled": "Embed fake metadata into generated images",
     "custom_metadata_content": "Metadata content",
