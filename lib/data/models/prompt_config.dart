@@ -146,8 +146,8 @@ class PromptConfig {
     this.type = 'str',
     this.comment = 'Unnamed config',
     this.filter = '',
-    this.strs = const [],
-    this.prompts = const [],
+    required this.strs,
+    required this.prompts,
     this.enabled = true,
   });
 

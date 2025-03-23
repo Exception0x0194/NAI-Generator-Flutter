@@ -150,7 +150,7 @@ class PromptConfigViewModel extends ChangeNotifier {
   }
 
   void addNewConfig() {
-    config.prompts.add(PromptConfig());
+    config.prompts.add(PromptConfig(strs: [], prompts: []));
     notifyListeners();
   }
 

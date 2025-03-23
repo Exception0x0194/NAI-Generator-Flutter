@@ -12,7 +12,7 @@ class SavedConfigListViewmodel extends ChangeNotifier {
   SavedConfigListViewmodel({required this.configList});
 
   void addConfig(BuildContext context) {
-    configList.add(PromptConfig());
+    configList.add(PromptConfig(strs: [], prompts: []));
     notifyListeners();
   }
 

@@ -46,7 +46,7 @@ class CharacterConfig {
   factory CharacterConfig.fromEmpty() {
     return CharacterConfig(
       positions: [],
-      positivePromptConfig: PromptConfig(),
+      positivePromptConfig: PromptConfig(strs: [], prompts: []),
       negativePrompt: '',
       enabled: true,
     );
