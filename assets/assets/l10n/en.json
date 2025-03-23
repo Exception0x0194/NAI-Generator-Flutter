@@ -17,6 +17,7 @@
     "generate_one_prompt": "Generate One Prompt",
     "comment": "Config Comment",
     "prompt_compact_view_hint": "Tap properties to edit, scroll if information is cropped",
+    "prompt_edit_tooltip": "点击标题以修改",
     "copy_to_clipboard": "Copy to Clipboard",
     "selection_method": "Selection Method",
     "selection_method_all": "All",

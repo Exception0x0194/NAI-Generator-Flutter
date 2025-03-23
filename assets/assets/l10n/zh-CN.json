@@ -17,6 +17,7 @@
     "generate_one_prompt": "生成一个 Prompt",
     "comment": "Config 注释",
     "prompt_compact_view_hint": "左右滑动查看参数，点击参数以修改",
+    "prompt_edit_tooltip": "点击标题以修改",
     "copy_to_clipboard": "导出到剪切板",
     "selection_method": "选取方法",
     "selection_method_all": "全部",
