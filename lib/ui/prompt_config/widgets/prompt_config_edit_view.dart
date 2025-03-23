@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:nai_casrand/ui/prompt_config/view_models/prompt_config_viewmodel.dart';
 import 'package:nai_casrand/ui/core/widgets/editable_list_tile.dart';
 import 'package:nai_casrand/ui/core/widgets/slider_list_tile.dart';
-import 'package:provider/provider.dart';
 
 class PromptConfigEditView extends StatelessWidget {
   final PromptConfigViewModel viewModel;
@@ -12,21 +11,46 @@ class PromptConfigEditView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<PromptConfigViewModel>.value(
-        value: viewModel,
-        child: Consumer<PromptConfigViewModel>(
-            builder: (context, viewModel, child) => Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildSelectionMethodTile(viewModel, context),
-                    _buildShuffledTile(viewModel, context),
-                    _buildNumTile(viewModel, context),
-                    _buildProbTile(viewModel, context),
-                    _buildRandomBrackets(viewModel, context),
-                    _buildTypeTile(viewModel, context),
-                  ],
-                )));
+    final title = InkWell(
+      child: Text(viewModel.config.comment),
+      onTap: () => _showEditCommentDialog(context),
+    );
+    return ListenableBuilder(
+      listenable: viewModel,
+      builder: (context, _) => AlertDialog(
+        title: title,
+        content: _buildBody(context),
+        actions: [
+          TextButton(
+            onPressed: () {
+              viewModel.copyToClipboard(context);
+              Navigator.of(context).pop();
+            },
+            child: Text(tr('copy_to_clipboard')),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(tr('confirm')),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBody(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        _buildToolTip(context),
+        _buildSelectionMethodTile(viewModel, context),
+        _buildShuffledTile(viewModel, context),
+        _buildNumTile(viewModel, context),
+        _buildProbTile(viewModel, context),
+        _buildRandomBrackets(viewModel, context),
+        _buildTypeTile(viewModel, context),
+      ],
+    );
   }
 
   Widget _buildSelectionMethodTile(
@@ -128,5 +152,36 @@ class PromptConfigEditView extends StatelessWidget {
         currentValue: viewModel.config.num.toString(),
         onEditComplete: (value) =>
             viewModel.setNum(int.tryParse(value) ?? viewModel.config.num));
+  }
+
+  Widget _buildToolTip(BuildContext context) {
+    return Text(tr('prompt_edit_tooltip'));
+  }
+
+  _showEditCommentDialog(BuildContext context) {
+    final controller = TextEditingController(text: viewModel.config.comment);
+    setComment() {
+      viewModel.setComment(controller.text);
+      Navigator.of(context).pop();
+    }
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(context.tr('comment')),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          onSubmitted: (value) => setComment(),
+        ),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(context.tr('cancel'))),
+          TextButton(
+              onPressed: () => setComment(), child: Text(context.tr('confirm')))
+        ],
+      ),
+    );
   }
 }

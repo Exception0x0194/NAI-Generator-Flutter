@@ -56,36 +56,9 @@ class PromptConfigView extends StatelessWidget {
     PromptConfigViewModel viewModel,
     BuildContext context,
   ) {
-    final title = ChangeNotifierProvider.value(
-      value: viewModel,
-      child: Consumer<PromptConfigViewModel>(
-          builder: (context, viewModel, child) => Text(context.tr('edit') +
-              context.tr('colon') +
-              viewModel.config.comment)),
-    );
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Row(children: [
-          title,
-          const Spacer(),
-          IconButton(
-              onPressed: () => _showEditCommentDialog(viewModel, context),
-              icon: const Icon(Icons.edit)),
-          IconButton(
-              onPressed: () {
-                viewModel.copyToClipboard(context);
-              },
-              icon: const Icon(Icons.copy))
-        ]),
-        content: PromptConfigEditView(viewModel: viewModel),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(context.tr('confirm')),
-          ),
-        ],
-      ),
+      builder: (context) => PromptConfigEditView(viewModel: viewModel),
     );
   }
 
@@ -254,33 +227,5 @@ class PromptConfigView extends StatelessWidget {
         );
       },
     );
-  }
-
-  _showEditCommentDialog(
-      PromptConfigViewModel viewModel, BuildContext context) {
-    final controller = TextEditingController(text: viewModel.config.comment);
-    setComment() {
-      viewModel.setComment(controller.text);
-      Navigator.of(context).pop();
-    }
-
-    showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-              title: Text(context.tr('comment')),
-              content: TextField(
-                controller: controller,
-                autofocus: true,
-                onSubmitted: (value) => setComment(),
-              ),
-              actions: [
-                TextButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: Text(context.tr('cancel'))),
-                TextButton(
-                    onPressed: () => setComment(),
-                    child: Text(context.tr('confirm')))
-              ],
-            ));
   }
 }
