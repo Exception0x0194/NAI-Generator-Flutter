@@ -12,7 +12,7 @@ class VibeConfigViewmodel extends ChangeNotifier {
   }
 
   void setReferenceStrength(double value) {
-    config.infoExtracted = value;
+    config.referenceStrength = value;
     notifyListeners();
   }
 }
