@@ -27,6 +27,9 @@ class GenerationPageViewmodel extends ChangeNotifier {
 
   Command<void, InfoCardContent>? currentCommand;
 
+  PayloadGenerationResult? _cachedPayloadResult;
+  int _cacheRetriesCount = 0;
+
   void setCardsPerCol(int value) {
     payloadConfig.settings.generationPageColumnCount = value;
     notifyListeners();
@@ -107,8 +110,20 @@ class GenerationPageViewmodel extends ChangeNotifier {
       final endpoint = payloadConfig.settings.debugApiEnabled
           ? payloadConfig.settings.debugApiPath
           : 'https://image.novelai.net/ai/generate-image';
-      final payloadResult =
-          GeneratePayloadUseCase(payloadConfig: payloadConfig)();
+
+      // Check whether cached payload exists, use cache if exists
+      PayloadGenerationResult payloadResult;
+      if (_cachedPayloadResult != null && _cacheRetriesCount < 3) {
+        // Use cached payload, increment counter
+        payloadResult = _cachedPayloadResult!;
+        _cacheRetriesCount++;
+      } else {
+        // Generate new payload
+        payloadResult = GeneratePayloadUseCase(payloadConfig: payloadConfig)();
+        _cachedPayloadResult = payloadResult; // Cache generated payload
+        _cacheRetriesCount = 0;
+      }
+
       final request = ApiRequest(
         endpoint: endpoint,
         proxy: payloadConfig.settings.proxy,
@@ -142,6 +157,8 @@ class GenerationPageViewmodel extends ChangeNotifier {
           fileName,
           payloadConfig.settings.outputFolderPath,
         );
+        // Reset cache after successful generation
+        _cachedPayloadResult = null;
         return InfoCardContent(
           title: fileName,
           info: payloadResult.comment,
@@ -152,7 +169,7 @@ class GenerationPageViewmodel extends ChangeNotifier {
         return InfoCardContent(
           title: 'Error occurred in generation process.',
           info: e.toString(),
-          additionalInfo: {},
+          additionalInfo: digestPayloadResult(payloadResult),
         );
       }
     }
