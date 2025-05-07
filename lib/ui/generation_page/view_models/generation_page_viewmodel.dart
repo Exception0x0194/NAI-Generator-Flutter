@@ -208,6 +208,7 @@ class GenerationPageViewmodel extends ChangeNotifier {
     commandStatus.currentBatchCount = 0;
     commandStatus.currentTotalCount = 0;
     commandStatus.isBatchActive.value = true;
+    commandStatus.batchTimestamp = DateTime.now();
     nextCommand();
   }
 
