@@ -4,6 +4,7 @@ import 'package:nai_casrand/data/models/param_config.dart';
 import 'package:nai_casrand/data/models/payload_config.dart';
 import 'package:nai_casrand/data/models/prompt_config.dart';
 import 'package:nai_casrand/data/models/vibe_config.dart';
+import 'package:nai_casrand/data/models/vibe_config_v4.dart';
 
 const Map<int, String> xMapping = {
   0: 'X',
@@ -58,6 +59,7 @@ class GeneratePayloadUseCase {
       payloadConfig.characterConfigList;
   List<PromptConfig> get savedConfigList => payloadConfig.savedPromptConfigList;
   List<VibeConfig> get vibeConfigList => payloadConfig.vibeConfigList;
+  List<VibeConfigV4> get vibeConfigV4List => payloadConfig.vibeConfigListV4;
   String get fileNameKey => payloadConfig.settings.fileNamePrefixKey;
 
   PayloadGenerationResult call() {
@@ -146,7 +148,8 @@ class GeneratePayloadUseCase {
     paramPayload['v4_negative_prompt'] = v4NegPrompt;
     paramPayload['characterPrompts'] = characterPrompts;
 
-    if (!paramConfig.model.contains('diffusion-4')) {
+    if (paramConfig.model.contains('-3')) {
+      // Vibe config for NAI3 models
       final imageB64List = [];
       final referenceStrengthList = [];
       final imformationExtractedList = [];
@@ -159,6 +162,20 @@ class GeneratePayloadUseCase {
       paramPayload['reference_strength_multiple'] = referenceStrengthList;
       paramPayload['reference_information_extracted_multiple'] =
           imformationExtractedList;
+    } else if (paramConfig.model.contains('-4-')) {
+      // Vibe config for NAI4 models
+      final imageB64List = [];
+      final infoExtractedList = [];
+      final referenceStrengthList = [];
+      for (final vc in vibeConfigV4List) {
+        imageB64List.add(vc.vibeB64);
+        referenceStrengthList.add(vc.referenceStrength);
+        infoExtractedList.add(1.0);
+      }
+      paramPayload['reference_image_multiple'] = imageB64List;
+      paramPayload['reference_strength_multiple'] = referenceStrengthList;
+      paramPayload['reference_information_extracted_multiple'] =
+          infoExtractedList;
     }
 
     final processedFileName =

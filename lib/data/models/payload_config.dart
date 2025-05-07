@@ -4,6 +4,7 @@ import 'package:nai_casrand/data/models/param_config.dart';
 import 'package:nai_casrand/data/models/prompt_config.dart';
 import 'package:nai_casrand/data/models/settings.dart';
 import 'package:nai_casrand/data/models/vibe_config.dart';
+import 'package:nai_casrand/data/models/vibe_config_v4.dart';
 
 class PayloadResult {
   final String comment;
@@ -44,6 +45,7 @@ class PayloadConfig {
 
   I2IConfig i2iConfig = I2IConfig();
   List<VibeConfig> vibeConfigList = [];
+  List<VibeConfigV4> vibeConfigListV4 = [];
 
   String overridePrompt;
   bool useOverridePrompt;

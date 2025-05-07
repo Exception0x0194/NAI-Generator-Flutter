@@ -733,6 +733,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.8"
+  png_chunks_extract:
+    dependency: "direct main"
+    description:
+      name: png_chunks_extract
+      sha256: "948b9f102d7c18931aeb104823878c8bc93f1e2808bb89483a113a924678763c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.2"
   pointycastle:
     dependency: transitive
     description:

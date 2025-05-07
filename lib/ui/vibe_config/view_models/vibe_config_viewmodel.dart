@@ -6,6 +6,10 @@ class VibeConfigViewmodel extends ChangeNotifier {
 
   VibeConfigViewmodel({required this.config});
 
+  String get fileName => config.fileName;
+  double get referenceStrength => config.referenceStrength;
+  double get infoExtracted => config.infoExtracted;
+
   void setInfoExtracted(double value) {
     config.infoExtracted = value;
     notifyListeners();
