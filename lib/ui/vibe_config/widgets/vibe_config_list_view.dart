@@ -20,26 +20,21 @@ class VibeConfigListView extends StatelessWidget {
     );
 
     final addVibeDropArea = InkWell(
-        onTap: () => viewmodel.addNewVibe(),
-        child: SizedBox(
-          width: 340.0,
-          height: 150.0,
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey.withAlpha(127), width: 2.0),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  addVibeImage,
-                  Text(context.tr('drag_and_drop_image_notice')),
-                ],
-              ),
-            ),
+      onTap: () => viewmodel.addNewVibe(),
+      child: Card(
+        margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              addVibeImage,
+              Text(context.tr('drag_and_drop_image_notice')),
+            ],
           ),
-        ));
+        ),
+      ),
+    );
 
     return ListenableBuilder(
       listenable: viewmodel,
