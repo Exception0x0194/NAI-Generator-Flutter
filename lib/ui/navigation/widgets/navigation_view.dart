@@ -1,6 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:get_it/get_it.dart';
 import 'package:nai_casrand/ui/config_page/widgets/config_page_view.dart';
 import 'package:nai_casrand/ui/config_page/view_models/config_page_viewmodel.dart';
 import 'package:nai_casrand/ui/core/utils/flushbar.dart';
@@ -10,6 +12,10 @@ import 'package:nai_casrand/ui/navigation/view_models/navigation_view_model.dart
 import 'package:nai_casrand/ui/navigation/widgets/metadata_drop_area.dart';
 import 'package:nai_casrand/ui/navigation/widgets/navigation_appbar.dart';
 import 'package:nai_casrand/ui/settings_page/widgets/settings_page_view.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import '../../../data/models/payload_config.dart';
+import '../../../data/services/config_service.dart';
 
 class NavigationView extends StatefulWidget {
   final NavigationViewModel viewModel;
@@ -29,6 +35,14 @@ class NavigationViewState extends State<NavigationView> {
     widget.viewModel.changeIndex(value);
     setState(() {
       _currentIndex = value;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _showWelcomeDialog();
     });
   }
 
@@ -124,5 +138,52 @@ class NavigationViewState extends State<NavigationView> {
       },
     );
     return Center(child: content);
+  }
+
+  void _showWelcomeDialog() {
+    final dontShowAgainVersion =
+        GetIt.I<PayloadConfig>().settings.welcomeMessageVersion;
+    final packageInfo = GetIt.instance<ConfigService>().packageInfo;
+    const appName = 'Nai CasRand';
+    final appVersion = packageInfo.version;
+    if (appVersion == dontShowAgainVersion) return;
+    showDialog(
+        context: context,
+        builder: (dialogContext) {
+          return AlertDialog(
+            title:
+                Text('${tr('welcome_message_title')} - $appName $appVersion'),
+            content: MarkdownBody(
+              data: tr('welcome_message_markdown'),
+              onTapLink: (text, href, title) {
+                if (href == null) return;
+                if (href == '#jump_to_settings') {
+                  // Jump to settings page
+                  _changeIndex(2);
+                  Navigator.of(dialogContext).pop();
+                } else {
+                  // Launch link
+                  launchUrl(Uri.parse(href));
+                }
+              },
+            ),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    GetIt.I<PayloadConfig>().settings.welcomeMessageVersion =
+                        appVersion;
+                    // Save the config
+                    final config = GetIt.instance<PayloadConfig>();
+                    final service = GetIt.instance<ConfigService>();
+                    service.saveConfig(config.toJson());
+                    Navigator.of(dialogContext).pop();
+                  },
+                  child: Text(tr('dont_show_again'))),
+              TextButton(
+                  onPressed: () => Navigator.of(dialogContext).pop(),
+                  child: Text(tr('confirm')))
+            ],
+          );
+        });
   }
 }
