@@ -38,6 +38,7 @@ class GenerationPageView extends StatelessWidget {
                   maxLines: 2,
                   currentValue: viewmodel.payloadConfig.overridePrompt,
                   onEditComplete: (value) => viewmodel.setOverridePrompt(value),
+                  confirmOnSubmit: true,
                 ),
               if (viewmodel.payloadConfig.useOverridePrompt)
                 EditableListTile(
@@ -47,6 +48,7 @@ class GenerationPageView extends StatelessWidget {
                   currentValue:
                       viewmodel.payloadConfig.paramConfig.negativePrompt,
                   onEditComplete: (value) => viewmodel.setUC(value),
+                  confirmOnSubmit: true,
                 )
             ],
           );
