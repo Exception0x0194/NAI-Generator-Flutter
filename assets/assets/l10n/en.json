@@ -144,7 +144,7 @@
     "column_number": "Number of columns",
     "auto_position": "Let AI decide characters' positions",
     "vibe_transfer": "Vibe Transfer",
-    "vibe_v4_page_tip": "Supports .naiv4vibe and .naiv4vibebundle files; PNG images with embedded vibe information are also supported - try [online tool](https://nai-vibe-encoder.pages.dev/)",
+    "vibe_v4_page_tip": "Supports .naiv4vibe and .naiv4vibebundle files; PNG images with embedded vibe information are also supported - try [online tool](https://nai-vibe-embedder.pages.dev/)",
     "generation_parameters": "Generation Parameters",
     "output_file_name_prefix": "Output file prefix",
     "output_file_name_prefix_hint": "Use `__key__` to import prompt content in file name\n\nE.g. `portrait-__artstyle__` → `portrait-watercolor`",

@@ -143,7 +143,7 @@
     "column_number": "瀑布流列数",
     "auto_position": "由 AI 选择角色位置",
     "vibe_transfer": "Vibe Transfer",
-    "vibe_v4_page_tip": "支持 .naiv4vibe 和 .naiv4vibebundle 文件；也支持嵌入了 vibe 信息的 PNG 图片 - 可以在[在线工具](https://nai-vibe-encoder.pages.dev/)进行获取",
+    "vibe_v4_page_tip": "支持 .naiv4vibe 和 .naiv4vibebundle 文件；也支持嵌入了 vibe 信息的 PNG 图片 - 可以在[在线工具](https://nai-vibe-embedder.pages.dev/)进行获取",
     "generation_parameters": "生成参数",
     "output_file_name_prefix": "输出文件前缀",
     "output_file_name_prefix_hint": "使用 `__关键字__` 在文件名中导入部分提示词\n\nE.g. `portrait-__artstyle__` → `portrait-watercolor`",
