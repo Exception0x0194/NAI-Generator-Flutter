@@ -1,6 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:super_drag_and_drop/super_drag_and_drop.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../viewmodels/vibe_config_v4_list_viewmodel.dart';
 import '../viewmodels/vibe_config_v4_viewmodel.dart';
@@ -36,11 +38,22 @@ class VibeConfigV4ListView extends StatelessWidget {
       ),
     );
 
+    final pageTipCard = ListTile(
+      leading: const Icon(Icons.info_outline),
+      title: MarkdownBody(
+        data: tr('vibe_v4_page_tip'),
+        onTapLink: (text, href, title) => launchUrl(
+          Uri.parse(href!),
+        ),
+      ),
+      dense: true,
+    );
+
     return ListenableBuilder(
       listenable: viewmodel,
       builder: (context, child) {
         return ListView.builder(
-          itemCount: viewmodel.vibeList.length + 1,
+          itemCount: viewmodel.vibeList.length + 2,
           itemBuilder: (context, index) {
             if (index < viewmodel.vibeList.length) {
               final config = viewmodel.vibeList[index];
@@ -51,13 +64,18 @@ class VibeConfigV4ListView extends StatelessWidget {
                 viewmodel: itemViewModel,
                 onDelete: () => viewmodel.removeConfigAtIndex(index),
               );
-            } else {
+            } else if (index == viewmodel.vibeList.length) {
               return DropRegion(
                 formats: Formats.standardFormats,
                 onDropOver: (_) => DropOperation.copy,
-                onPerformDrop: (event) => viewmodel.handleVibeDropEvent(event),
+                onPerformDrop: (event) => viewmodel.handleVibeDropEvent(
+                  context,
+                  event,
+                ),
                 child: addVibeDropArea,
               );
+            } else {
+              return pageTipCard;
             }
           },
         );

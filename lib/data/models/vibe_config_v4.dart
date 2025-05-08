@@ -85,4 +85,66 @@ class VibeConfigV4 {
           "Required iTXt chunk with keyword '$_expectedITXtKeyword' not found in PNG image '$fileName'.");
     }
   }
+
+  // 新增的工厂构造函数，用于 .naiv4vibe 文件
+  factory VibeConfigV4.fromNaiV4VibeJson(
+    String originalFileName, // 从文件选择器获取的文件名
+    Map<String, dynamic> jsonData,
+    double defaultReferenceStrength, // 如果JSON中没有strength，则使用此默认值
+  ) {
+    // 1. 提取 'name'，如果不存在则使用原始文件名
+    String name = jsonData['name'] as String? ?? originalFileName;
+
+    // 2. 提取 'strength'
+    double strength = defaultReferenceStrength;
+    final importInfo = jsonData['importInfo'] as Map<String, dynamic>?;
+    if (importInfo != null && importInfo['strength'] != null) {
+      final dynamic strengthValue = importInfo['strength'];
+      if (strengthValue is double) {
+        strength = strengthValue;
+      } else if (strengthValue is int) {
+        strength = strengthValue.toDouble();
+      } else if (strengthValue is String) {
+        strength = double.tryParse(strengthValue) ?? defaultReferenceStrength;
+      }
+    }
+
+    // 3. 提取 'encoding' (Base64 vibe string)
+    //    直接从 encodings 中取出一个 encoding 即可
+    String? vibeB64String;
+    final encodingsMap = jsonData['encodings'] as Map<String, dynamic>?;
+    if (encodingsMap != null) {
+      // 遍历 encodingsMap 来找到第一个有效的 'encoding' 字符串
+      outerLoop:
+      for (var modelKey in encodingsMap.keys) {
+        final modelEncodings = encodingsMap[modelKey] as Map<String, dynamic>?;
+        if (modelEncodings != null) {
+          for (var typeKey in modelEncodings.keys) {
+            final typeEncodingInfo =
+                modelEncodings[typeKey] as Map<String, dynamic>?;
+            if (typeEncodingInfo != null &&
+                typeEncodingInfo.containsKey('encoding')) {
+              final dynamic encodingValue = typeEncodingInfo['encoding'];
+              if (encodingValue is String && encodingValue.isNotEmpty) {
+                vibeB64String = encodingValue;
+                break outerLoop; // 找到后即跳出所有循环
+              }
+            }
+          }
+        }
+      }
+    }
+
+    if (vibeB64String == null) {
+      throw ArgumentError(
+          "Could not find a valid 'encoding' field in the .naiv4vibe JSON data for file '$originalFileName'.");
+    }
+
+    return VibeConfigV4(
+      fileName: name, // 使用从JSON中提取的name，或原始文件名
+      vibeB64: vibeB64String,
+      referenceStrength: strength.clamp(0.0, 1.0), // 确保强度在有效范围内
+      imageBytes: null, // .naiv4vibe 文件不包含图片预览
+    );
+  }
 }
