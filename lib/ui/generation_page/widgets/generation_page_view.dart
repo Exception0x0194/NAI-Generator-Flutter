@@ -36,6 +36,7 @@ class GenerationPageView extends StatelessWidget {
                   title: tr('override_prompt'),
                   leading: const Icon(Icons.edit_note),
                   maxLines: 2,
+                  keyboardType: TextInputType.multiline,
                   currentValue: viewmodel.payloadConfig.overridePrompt,
                   onEditComplete: (value) => viewmodel.setOverridePrompt(value),
                   confirmOnSubmit: true,
@@ -45,6 +46,7 @@ class GenerationPageView extends StatelessWidget {
                   title: tr('uc'),
                   leading: const Icon(Icons.do_not_disturb),
                   maxLines: 1,
+                  keyboardType: TextInputType.multiline,
                   currentValue:
                       viewmodel.payloadConfig.paramConfig.negativePrompt,
                   onEditComplete: (value) => viewmodel.setUC(value),

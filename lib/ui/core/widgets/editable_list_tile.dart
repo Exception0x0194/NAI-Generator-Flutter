@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 
 class EditableListTile extends StatelessWidget {
@@ -48,6 +49,26 @@ class EditableListTile extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) {
+        submitText() {
+          Navigator.of(context).pop();
+          onEditComplete(controller.text);
+        }
+
+        final focusNode = FocusNode(onKeyEvent: (node, event) {
+          if (event.logicalKey.keyLabel == 'Enter' && event is KeyDownEvent) {
+            if (HardwareKeyboard.instance.isShiftPressed) {
+              // Shift + Enter
+              return KeyEventResult.ignored;
+            }
+            // Enter
+            if (confirmOnSubmit ?? false == true) {
+              submitText();
+            }
+            KeyEventResult.handled;
+          }
+          return KeyEventResult.ignored;
+        });
+
         return AlertDialog(
           title: Text('${context.tr('edit')}${context.tr('colon')}$title'),
           content: Column(
@@ -61,13 +82,8 @@ class EditableListTile extends StatelessWidget {
                 controller: controller,
                 keyboardType: keyboardType,
                 maxLines: null,
-                onSubmitted: (confirmOnSubmit != null && confirmOnSubmit!)
-                    ? (_) {
-                        Navigator.of(context).pop();
-                        onEditComplete(controller.text);
-                      }
-                    : null,
                 autofocus: true,
+                focusNode: focusNode,
               ),
             ],
           ),
