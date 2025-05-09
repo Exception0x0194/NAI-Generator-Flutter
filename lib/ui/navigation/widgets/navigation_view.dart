@@ -76,9 +76,7 @@ class NavigationViewState extends State<NavigationView> {
 
   Widget getBody() {
     final pages = [
-      GenerationPageView(
-        viewmodel: GenerationPageViewmodel(),
-      ),
+      GenerationPageView(viewmodel: GetIt.I()),
       ConfigPageView(
         viewmodel: ConfigPageViewmodel(),
       ),

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:nai_casrand/data/models/command_status.dart';
 import 'package:nai_casrand/data/models/payload_config.dart';
 import 'package:nai_casrand/data/services/config_service.dart';
+import 'package:nai_casrand/ui/generation_page/view_models/generation_page_viewmodel.dart';
 import 'package:nai_casrand/ui/navigation/widgets/navigation_view.dart';
 import 'package:nai_casrand/ui/navigation/view_models/navigation_view_model.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -18,9 +19,11 @@ void main() async {
   configService.packageInfo = await PackageInfo.fromPlatform();
   final savedConfig = await configService.loadSavedConfig();
 
-  GetIt.instance.registerLazySingleton<PayloadConfig>(
-      () => PayloadConfig.fromJson(savedConfig));
-  GetIt.instance.registerLazySingleton<CommandStatus>(() => CommandStatus());
+  GetIt.instance
+      .registerLazySingleton(() => PayloadConfig.fromJson(savedConfig));
+  GetIt.instance.registerLazySingleton(() => CommandStatus());
+
+  GetIt.instance.registerLazySingleton(() => GenerationPageViewmodel());
 
   final appWithLocales = EasyLocalization(
     supportedLocales: const [Locale('en'), Locale('zh', 'CN')],
