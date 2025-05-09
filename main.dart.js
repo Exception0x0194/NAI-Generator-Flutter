@@ -122928,8 +122928,7 @@ A.Y2.prototype={
 a3E(a){var s,r,q=null
 for(s=t.Kg;r=$.aM(),r.Cs(0,q,q,q,q,s).a.length>=200;)B.c.dO(r.Cs(0,q,q,q,q,s).a,0)
 r.$1$0(s).a.push(a)
-a.ts(q)
-this.R()},
+a.ts(q)},
 aDj(){this.a3E(A.b8Z(new A.atB(this),B.rK,t.zg))},
 RH(){var s,r=this,q=$.aM(),p=t.Kg
 if(!q.$1$0(p).e.a)return
@@ -123030,15 +123029,15 @@ case 2:return A.B(o,r)}})
 return A.D($async$$0,r)},
 $S:162}
 A.atC.prototype={
-$0(){var s,r,q,p
+$0(){var s,r,q,p=this.a
+p.R()
 if(this.b.cy.r)return
 s=$.aM()
 r=t.Kg;++s.$1$0(r).c
 q=t.E
 if(s.$1$0(r).d>=s.$1$0(q).e.at&&s.$1$0(q).e.at!==0){s.$1$0(r).e.sm(0,!1)
-return}else{p=this.a
-if(s.$1$0(r).c>=s.$1$0(q).e.Q){p.abq()
-return}else p.RH()}},
+return}else if(s.$1$0(r).c>=s.$1$0(q).e.Q){p.abq()
+return}else p.RH()},
 $S:0}
 A.atE.prototype={
 $0(){var s=$.aM(),r=t.Kg
