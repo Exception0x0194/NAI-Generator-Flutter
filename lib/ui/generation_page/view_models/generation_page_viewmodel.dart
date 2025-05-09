@@ -43,7 +43,6 @@ class GenerationPageViewmodel extends ChangeNotifier {
     // Push command into list and run command
     commandList.add(command);
     command();
-    notifyListeners();
   }
 
   void addLoremInfoCardContent() async {
@@ -182,6 +181,7 @@ class GenerationPageViewmodel extends ChangeNotifier {
       initialValue: InfoCardContent.fromEmpty(),
     );
     command.isExecuting.addListener(() {
+      notifyListeners();
       // Only update after execution
       if (command.isExecuting.value) return;
 
