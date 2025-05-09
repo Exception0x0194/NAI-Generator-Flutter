@@ -159,6 +159,8 @@ class GenerationPageViewmodel extends ChangeNotifier {
         );
         // Reset cache after successful generation
         _cachedPayloadResult = null;
+        // Only increment total count after successful generation
+        commandStatus.currentTotalCount++;
         return InfoCardContent(
           title: fileName,
           info: payloadResult.comment,
@@ -184,7 +186,6 @@ class GenerationPageViewmodel extends ChangeNotifier {
       if (command.isExecuting.value) return;
 
       commandStatus.currentBatchCount++;
-      commandStatus.currentTotalCount++;
       if (commandStatus.currentTotalCount >=
               payloadConfig.settings.numberOfRequests &&
           payloadConfig.settings.numberOfRequests != 0) {
