@@ -93,6 +93,10 @@ class GenerationPageViewmodel extends ChangeNotifier {
       commandFunc,
       initialValue: InfoCardContent.fromEmpty(),
     );
+    command.isExecuting.addListener(() {
+      if (command.isExecuting.value) return;
+      notifyListeners();
+    });
     addAndRunCommand(command);
   }
 
