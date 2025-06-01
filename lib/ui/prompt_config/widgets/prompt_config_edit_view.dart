@@ -11,29 +11,31 @@ class PromptConfigEditView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final title = InkWell(
-      child: Text(viewModel.config.comment),
-      onTap: () => _showEditCommentDialog(context),
-    );
     return ListenableBuilder(
       listenable: viewModel,
-      builder: (context, _) => AlertDialog(
-        title: title,
-        content: _buildBody(context),
-        actions: [
-          TextButton(
-            onPressed: () {
-              viewModel.copyToClipboard(context);
-              Navigator.of(context).pop();
-            },
-            child: Text(tr('copy_to_clipboard')),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(tr('confirm')),
-          ),
-        ],
-      ),
+      builder: (context, _) {
+        final title = InkWell(
+          child: Text(viewModel.config.comment),
+          onTap: () => _showEditCommentDialog(context),
+        );
+        return AlertDialog(
+          title: title,
+          content: _buildBody(context),
+          actions: [
+            TextButton(
+              onPressed: () {
+                viewModel.copyToClipboard(context);
+                Navigator.of(context).pop();
+              },
+              child: Text(tr('copy_to_clipboard')),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(tr('confirm')),
+            ),
+          ],
+        );
+      },
     );
   }
 
