@@ -142,6 +142,7 @@
     "add_character": "Add character",
     "generation_model": "Generation model",
     "column_number": "Number of columns",
+    "clear_list": "Clear screen",
     "auto_position": "Let AI decide characters' positions",
     "vibe_transfer": "Vibe Transfer",
     "vibe_v4_page_tip": "Supports .naiv4vibe and .naiv4vibebundle files; PNG images with embedded vibe information are also supported - try [online tool](https://nai-vibe-embedder.pages.dev/)",

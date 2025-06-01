@@ -128,6 +128,11 @@ class DisplaySettingsView extends StatelessWidget {
                 divisions: 4,
                 onChanged: (value) => viewmodel.setCardsPerCol(value.toInt()),
               ),
+              ListTile(
+                title: Text(tr('clear_list')),
+                leading: const Icon(Icons.clear_all),
+                onTap: viewmodel.clearCommandList,
+              ),
               CheckboxListTile(
                 title: Text(tr('override_random_prompts')),
                 secondary: const Icon(Icons.edit),

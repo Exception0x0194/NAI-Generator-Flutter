@@ -141,6 +141,7 @@
     "add_character": "添加角色",
     "generation_model": "图像生成模型",
     "column_number": "瀑布流列数",
+    "clear_list": "清除屏幕条目",
     "auto_position": "由 AI 选择角色位置",
     "vibe_transfer": "Vibe Transfer",
     "vibe_v4_page_tip": "支持 .naiv4vibe 和 .naiv4vibebundle 文件；也支持嵌入了 vibe 信息的 PNG 图片 - 可以在[在线工具](https://nai-vibe-embedder.pages.dev/)进行获取",

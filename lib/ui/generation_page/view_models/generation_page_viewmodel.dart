@@ -269,6 +269,12 @@ class GenerationPageViewmodel extends ChangeNotifier {
     return additionalInfo;
   }
 
+  void clearCommandList() {
+    // Remove finished commands in list
+    commandList.removeWhere((command) => !command.isExecuting.value);
+    notifyListeners();
+  }
+
   String _getSafeFileName(String fileName) {
     String safeName = fileName.replaceAll(RegExp(r'[<>"/\\|?*{}\[\]]'), '');
     safeName = safeName.replaceAll(RegExp(r'[:]'), '_');
