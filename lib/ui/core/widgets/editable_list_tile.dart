@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:gpt_markdown/gpt_markdown.dart';
 
 class EditableListTile extends StatelessWidget {
   final String title;
@@ -75,9 +75,7 @@ class EditableListTile extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              notice == null
-                  ? const SizedBox.shrink()
-                  : MarkdownBody(data: notice!),
+              notice == null ? const SizedBox.shrink() : GptMarkdown(notice!),
               TextField(
                 controller: controller,
                 keyboardType: keyboardType,

@@ -1,6 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:gpt_markdown/gpt_markdown.dart';
 import 'package:super_drag_and_drop/super_drag_and_drop.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -40,10 +40,10 @@ class VibeConfigV4ListView extends StatelessWidget {
 
     final pageTipCard = ListTile(
       leading: const Icon(Icons.info_outline),
-      title: MarkdownBody(
-        data: tr('vibe_v4_page_tip'),
-        onTapLink: (text, href, title) => launchUrl(
-          Uri.parse(href!),
+      title: GptMarkdown(
+        tr('vibe_v4_page_tip'),
+        onLinkTab: (url, title) => launchUrl(
+          Uri.parse(url),
         ),
       ),
       dense: true,
