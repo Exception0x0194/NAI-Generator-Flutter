@@ -43,9 +43,9 @@ class FileService {
       await _requestAlbumPermission();
       await SaverGallery.saveImage(
         bytes,
-        name: fileName,
+        fileName: fileName,
         androidRelativePath: "Pictures/nai-generated",
-        androidExistNotSave: false,
+        skipIfExists: false,
       );
     }
   }

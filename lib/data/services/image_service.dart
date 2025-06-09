@@ -1,8 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:image/image.dart' as img;
-import 'package:gzip/gzip.dart';
 import 'package:archive/archive.dart';
 
 class ImageService {
@@ -12,7 +12,7 @@ class ImageService {
       var archive = ZipDecoder().decodeBytes(zippedResponseBytes);
       for (final file in archive) {
         if (file.name != 'image_0.png') continue;
-        return file.content as Uint8List;
+        return file.content;
       }
       throw Exception('Image file image_0.png not found in archive.');
     } catch (e) {
@@ -30,9 +30,9 @@ class ImageService {
     if (image == null) {
       throw Exception('Image decode failed while embedding metadata.');
     }
-    final zipper = GZip();
+    final codec = GZipCodec();
     final magicBytes = utf8.encode("stealth_pngcomp");
-    final encodedData = await zipper.compress(utf8.encode(metadataString));
+    final encodedData = codec.encode(utf8.encode(metadataString));
     final bitLength = encodedData.length * 8;
     final bitLengthInBytes = ByteData(4);
     bitLengthInBytes.setInt32(0, bitLength);
@@ -90,9 +90,8 @@ class ImageService {
       // 读取实际数据并解压缩
       final compressedData = extractedBytes.sublist(
           magicByteLength + 4, magicByteLength + 4 + dataLength);
-      final decompressor = GZip();
-      final decodedData =
-          await decompressor.decompress(Uint8List.fromList(compressedData));
+      final codec = GZipCodec();
+      final decodedData = codec.decode(Uint8List.fromList(compressedData));
       return utf8.decode(decodedData);
     }
 
