@@ -60,3 +60,5 @@ app.*.map.json
 **/linux/flutter/generated_plugins.cmake 
 
 secrets.json
+
+android/build/reports/**

@@ -88,7 +88,8 @@ flutter:
     - assets/appicon.png
     - assets/qrcode1.jpg
     - assets/qrcode2.jpg
-    - assets/l10n/
+    - assets/l10n/en.json
+    - assets/l10n/zh-CN.json
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
