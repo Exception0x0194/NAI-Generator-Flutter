@@ -62,3 +62,4 @@ app.*.map.json
 secrets.json
 
 android/build/reports/**
+android/app/.cxx/**

@@ -1,6 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:gpt_markdown/gpt_markdown.dart';
+import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:nai_casrand/ui/prompt_config/view_models/prompt_config_viewmodel.dart';
 import 'package:nai_casrand/ui/prompt_config/widgets/prompt_config_view.dart';
 import 'package:nai_casrand/ui/saved_config_list/view_models/saved_config_list_viewmodel.dart';
@@ -24,7 +24,7 @@ class SavedConfigListView extends StatelessWidget {
   Widget buildBody(BuildContext context) {
     final pageTip = Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: GptMarkdown(tr('saved_config_list_usage_tip')),
+      child: MarkdownBody(data: tr('saved_config_list_usage_tip')),
     );
     return Scaffold(
       appBar: AppBar(

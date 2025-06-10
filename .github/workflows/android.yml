@@ -20,6 +20,15 @@ jobs:
       - name: 创建 secrets.json 文件
         run: |
           echo "${{ secrets.SECRETS_JSON_CONTENT }} | base64 -d" > secrets.json
+      - name: 解码并保存 keystore 文件
+        run: |
+          echo "${{ secrets.SECRETS_KEYSTORE_BASE64 }}" | base64 --decode > android/app/upload-keystore.jks
+      - name: 创建 key.properties
+        run: |
+          echo "storeFile=upload-keystore.jks" > android/key.properties
+          echo "keyAlias=${{ secrets.SECRETS_KEY_ALIAS }}" >> android/key.properties
+          echo "keyPassword=${{ secrets.SECRETS_KEYSTORE_PASSWORD }}" >> android/key.properties
+          echo "storePassword=${{ secrets.SECRETS_KEYSTORE_PASSWORD }}" >> android/key.properties
       - name: 获取 Flutter 依赖
         run: flutter pub get
       - name: 构建 APK

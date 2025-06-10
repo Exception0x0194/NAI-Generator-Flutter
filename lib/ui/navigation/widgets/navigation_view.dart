@@ -1,7 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:gpt_markdown/gpt_markdown.dart';
+import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:get_it/get_it.dart';
 import 'package:nai_casrand/ui/config_page/widgets/config_page_view.dart';
 import 'package:nai_casrand/ui/config_page/view_models/config_page_viewmodel.dart';
@@ -150,9 +150,10 @@ class NavigationViewState extends State<NavigationView> {
           return AlertDialog(
             title:
                 Text('${tr('welcome_message_title')} - $appName $appVersion'),
-            content: GptMarkdown(
-              tr('welcome_message_markdown'),
-              onLinkTab: (url, title) {
+            content: MarkdownBody(
+              data: tr('welcome_message_markdown'),
+              onTapLink: (text, url, title) {
+                if (url == null) return;
                 if (url == '#jump_to_settings') {
                   // Jump to settings page
                   _changeIndex(2);
