@@ -16,7 +16,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version: 3.24.3
+          flutter-version: 3.29.3
       - name: 创建 secrets.json 文件
         run: |
           echo "${{ secrets.SECRETS_JSON_CONTENT }} | base64 -d" > secrets.json
