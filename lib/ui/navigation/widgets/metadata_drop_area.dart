@@ -99,7 +99,7 @@ class _MetadataDropAreaState extends State<MetadataDropArea> {
         final commentData =
             json.decode(jsonData['Comment']) as Map<String, dynamic>;
         final source = jsonData['Source'] ?? '';
-        final String? model = sourceToModel[source];
+        final String? model = modelFromMetadata(source, commentData);
         final String? prompt = jsonData['Description'];
         final toolTip = Padding(
           padding: const EdgeInsets.only(left: 8.0),

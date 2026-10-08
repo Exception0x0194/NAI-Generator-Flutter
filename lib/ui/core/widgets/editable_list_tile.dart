@@ -14,6 +14,7 @@ class EditableListTile extends StatelessWidget {
   final String? editValue;
   final String? notice;
   final int? maxLines;
+  final String? Function(String)? validator;
 
   const EditableListTile({
     super.key,
@@ -27,6 +28,7 @@ class EditableListTile extends StatelessWidget {
     this.editValue,
     this.notice,
     this.maxLines,
+    this.validator,
   });
 
   @override
@@ -46,10 +48,12 @@ class EditableListTile extends StatelessWidget {
 
   void _showEditDialog(BuildContext context) {
     final controller = TextEditingController(text: editValue ?? currentValue);
+    final formKey = GlobalKey<FormState>();
     showDialog(
       context: context,
       builder: (context) {
         submitText() {
+          if (!(formKey.currentState?.validate() ?? true)) return;
           Navigator.of(context).pop();
           onEditComplete(controller.text);
         }
@@ -78,12 +82,16 @@ class EditableListTile extends StatelessWidget {
               notice == null
                   ? const SizedBox.shrink()
                   : MarkdownBody(data: notice!),
-              TextField(
-                controller: controller,
-                keyboardType: keyboardType,
-                maxLines: null,
-                autofocus: true,
-                focusNode: focusNode,
+              Form(
+                key: formKey,
+                child: TextFormField(
+                  validator: (value) => validator?.call(value ?? ''),
+                  controller: controller,
+                  keyboardType: keyboardType,
+                  maxLines: null,
+                  autofocus: true,
+                  focusNode: focusNode,
+                ),
               ),
             ],
           ),
@@ -93,10 +101,7 @@ class EditableListTile extends StatelessWidget {
               child: Text(context.tr('cancel')),
             ),
             TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                onEditComplete(controller.text);
-              },
+              onPressed: submitText,
               child: Text(context.tr('confirm')),
             ),
           ],

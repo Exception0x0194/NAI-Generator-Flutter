@@ -110,10 +110,6 @@ class GenerationPageViewmodel extends ChangeNotifier {
 
     // Generate, postprocess and save image
     commandFunc() async {
-      final endpoint = payloadConfig.settings.debugApiEnabled
-          ? payloadConfig.settings.debugApiPath
-          : 'https://image.novelai.net/ai/generate-image';
-
       // Check whether cached payload exists, use cache if exists
       PayloadGenerationResult payloadResult;
       if (_cachedPayloadResult != null && _cacheRetriesCount < 3) {
@@ -127,13 +123,13 @@ class GenerationPageViewmodel extends ChangeNotifier {
         _cacheRetriesCount = 0;
       }
 
-      final request = ApiRequest(
-        endpoint: endpoint,
-        proxy: payloadConfig.settings.proxy,
-        headers: payloadConfig.getHeaders(),
-        payload: payloadResult.payload,
-      );
       try {
+        final request = ApiRequest(
+          endpoint: payloadConfig.settings.generationEndpoint,
+          proxy: payloadConfig.settings.proxy,
+          headers: payloadConfig.getHeaders(),
+          payload: payloadResult.payload,
+        );
         final response = await ApiService().fetchData(request);
         // Even if response status is not 2xx, postprocess could throw correct exception.
         var imageBytes = ImageService().processResponse(response.data);

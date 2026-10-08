@@ -14,6 +14,32 @@ class Settings {
   // API key
   String apiKey;
 
+  static const defaultApiEndpoint =
+      'https://image.novelai.net/ai/generate-image';
+  String apiEndpoint;
+
+  static bool isValidApiEndpoint(String value) {
+    final endpoint = value.trim();
+    if (endpoint.isEmpty) return true;
+    final uri = Uri.tryParse(endpoint);
+    return uri != null &&
+        (uri.scheme == 'http' || uri.scheme == 'https') &&
+        uri.host.isNotEmpty &&
+        uri.userInfo.isEmpty &&
+        !uri.hasFragment &&
+        !RegExp(r'\s').hasMatch(endpoint);
+  }
+
+  String get generationEndpoint {
+    if (debugApiEnabled) return debugApiPath;
+    final endpoint = apiEndpoint.trim();
+    if (!isValidApiEndpoint(endpoint)) {
+      throw const FormatException(
+          'Invalid API endpoint: expected an HTTP(S) URL.');
+    }
+    return endpoint.isEmpty ? defaultApiEndpoint : endpoint;
+  }
+
   // Output dir, for windows only
   String outputFolderPath;
 
@@ -41,6 +67,7 @@ class Settings {
   Settings({
     required this.welcomeMessageVersion,
     required this.apiKey,
+    this.apiEndpoint = '',
     required this.outputFolderPath,
     required this.proxy,
     required this.debugApiEnabled,
@@ -60,6 +87,7 @@ class Settings {
     return Settings(
       welcomeMessageVersion: json['welcome_message_version'] ?? '',
       apiKey: json['api_key'] ?? 'pst-abcd',
+      apiEndpoint: (json['api_endpoint'] as String? ?? '').trim(),
       outputFolderPath: json['output_folder'] ?? '',
       proxy: json['proxy'] ?? '',
       debugApiEnabled: false,
@@ -81,6 +109,7 @@ class Settings {
     return {
       'welcome_message_version': welcomeMessageVersion,
       'api_key': apiKey,
+      'api_endpoint': apiEndpoint,
       'output_folder': outputFolderPath,
       'proxy': proxy,
       'metadata_erase_enabled': metadataEraseEnabled,

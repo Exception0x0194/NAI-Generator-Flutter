@@ -35,6 +35,11 @@ class ParamConfig {
   bool autoPosition;
   bool legacyUc;
 
+  // V5 retains the v4_prompt API structure and encoded Vibe format.
+  bool get usesV4Parameters =>
+      model.startsWith('nai-diffusion-4-') ||
+      model.startsWith('nai-diffusion-5-');
+
   ParamConfig({
     this.model = 'nai-diffusion-4-curated-preview',
     this.sizes = const [GenerationSize(height: 1216, width: 832)],
@@ -143,11 +148,14 @@ class ParamConfig {
     };
     payload['legacy_v3_extend'] = false;
     payload.removeWhere((k, v) => v == null);
-    if (model.contains('diffusion-4')) {
+    if (usesV4Parameters) {
       payload.remove('sm');
       payload.remove('sm_dyn');
       if (noiseSchedule.contains('native')) {
         payload['noise_schedule'] = 'karras';
+      }
+      if (sampler == 'ddim_v3') {
+        payload['sampler'] = 'k_euler_ancestral';
       }
     }
     return payload;

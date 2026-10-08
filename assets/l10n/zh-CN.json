@@ -1,4 +1,7 @@
 {
+    "api_endpoint": "图片生成 API 端点",
+    "api_endpoint_hint": "填写完整的 HTTP(S) 图片生成地址，包含路径（例如 https://example.com/ai/generate-image）。留空使用 NovelAI 官方端点。请求使用上方填写的 API 密钥，端点需兼容 NovelAI 请求格式及图片响应。",
+    "api_endpoint_invalid": "请输入有效的 HTTP(S) 地址，或留空使用 NovelAI 官方端点。",
     "generation": "图片生成",
     "prompt_config": "生成参数",
     "generation_prompt_config": "提示词设置",

@@ -4,6 +4,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:nai_casrand/core/constants/settings.dart';
+import 'package:nai_casrand/data/models/settings.dart';
 import 'package:nai_casrand/ui/settings_page/view_models/settings_page_viewmodel.dart';
 import 'package:nai_casrand/ui/core/widgets/editable_list_tile.dart';
 import 'package:nai_casrand/ui/settings_page/widgets/config_selection_page_view.dart';
@@ -24,6 +25,7 @@ class SettingsPageView extends StatelessWidget {
         builder: (context, viewmodel, child) => Column(
           children: [
             _buildApiKeyTile(),
+            _buildApiEndpointTile(),
             _buildBatchTile(),
             _buildEraseMetadataTile(context),
             if (!kIsWeb && Platform.isWindows) _buildOutputSelectionTile(),
@@ -73,6 +75,24 @@ class SettingsPageView extends StatelessWidget {
         currentValue: viewmodel.settings.apiKey,
         confirmOnSubmit: true,
         onEditComplete: (value) => viewmodel.setApiKey(value));
+  }
+
+  Widget _buildApiEndpointTile() {
+    return EditableListTile(
+      leading: const Icon(Icons.api),
+      title: tr('api_endpoint'),
+      notice: tr('api_endpoint_hint'),
+      currentValue: viewmodel.settings.apiEndpoint.isEmpty
+          ? Settings.defaultApiEndpoint
+          : viewmodel.settings.apiEndpoint,
+      editValue: viewmodel.settings.apiEndpoint,
+      keyboardType: TextInputType.url,
+      confirmOnSubmit: true,
+      validator: (value) => Settings.isValidApiEndpoint(value)
+          ? null
+          : tr('api_endpoint_invalid'),
+      onEditComplete: viewmodel.setApiEndpoint,
+    );
   }
 
   Widget _buildBatchTile() {

@@ -25,8 +25,8 @@ class ParametersConfigView extends StatelessWidget {
       builder: (context, _) => Column(
         children: [
           _buildModelSelector(context),
-          if (viewmodel.isV4) _buildAutoPositionTile(context),
-          if (viewmodel.isV4) _buildLegacyUcTile(context),
+          if (viewmodel.usesV4Parameters) _buildAutoPositionTile(context),
+          if (viewmodel.usesV4Parameters) _buildLegacyUcTile(context),
           _buildSizeSelector(context),
           // Steps
           SliderListTile(
@@ -67,23 +67,25 @@ class ParametersConfigView extends StatelessWidget {
               leading: const Icon(Icons.search),
               title: context.tr('sampler'),
               currentValue: viewmodel.config.sampler,
-              options: viewmodel.isV4 ? samplersV4 : samplers,
+              options: viewmodel.usesV4Parameters ? samplersV4 : samplers,
               onSelectComplete: (value) => viewmodel.setSampler(value)),
           SelectableListTile(
               leading: const Icon(Icons.search),
               title: context.tr('noise_scheduler'),
               currentValue: viewmodel.config.noiseSchedule,
-              options: viewmodel.isV4 ? noiseSchedulesV4 : noiseSchedules,
+              options: viewmodel.usesV4Parameters
+                  ? noiseSchedulesV4
+                  : noiseSchedules,
               onSelectComplete: (value) => viewmodel.setNoiseScheduler(value)),
           // SMEA
-          if (!viewmodel.isV4)
+          if (!viewmodel.usesV4Parameters)
             _buildSwitchTile(
               context.tr('sm'),
               viewmodel.config.sm,
               (newValue) => viewmodel.setSm(newValue),
               const Icon(Icons.keyboard_double_arrow_right),
             ),
-          if (!viewmodel.isV4)
+          if (!viewmodel.usesV4Parameters)
             _buildSwitchTile(
               context.tr('sm_dyn'),
               viewmodel.config.smDyn,
@@ -226,7 +228,7 @@ class ParametersConfigView extends StatelessWidget {
       final commentData =
           json.decode(jsonData['Comment']) as Map<String, dynamic>;
       final source = jsonData['Source'] ?? '';
-      final String? model = sourceToModel[source];
+      final String? model = modelFromMetadata(source, commentData);
       final String? prompt = jsonData['Description'];
       final toolTip = Padding(
         padding: const EdgeInsets.only(left: 8.0),

@@ -75,6 +75,10 @@ NAI Cascaded Random Generator（NAI CanRand）是一个按照指定模式生成�
 
 - **生成图片**
 
+    生成模型列表支持 NovelAI Diffusion V5 Full 和 V5 Curated，包括多角色提示词和编码后的 Vibe Transfer。
+
+    如需使用自定义服务，在 `设置 → 图片生成 API 端点` 中填写完整的图片生成 URL（例如 `https://example.com/ai/generate-image`），并填写该服务的 API Token。地址留空时使用 NovelAI 官方端点。自定义服务需兼容 NovelAI 的请求格式和图片响应；此设置会随配置保存、导出和导入。Web 端的自定义服务还需允许浏览器跨域请求（CORS）。
+
     在 `图像生成` 页面可以控制生成图片并浏览生成结果。点击开始按钮即可按照设置的模式生成随机 prompts，交由 API 生成图片；点击停止按钮即可停止生成。生成的图片将被下载（Web 端），或被保存到相册（安卓端）。
     
     在页面的设置菜单中，也可以对页面显示内容、每次生成的图片数量等参数进行设置。

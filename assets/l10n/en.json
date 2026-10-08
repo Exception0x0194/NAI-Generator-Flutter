@@ -1,4 +1,7 @@
 {
+    "api_endpoint": "Image generation API endpoint",
+    "api_endpoint_hint": "Enter the complete HTTP(S) image generation URL, including its path (for example, https://example.com/ai/generate-image). Leave blank to use the official NovelAI endpoint. Requests use the API key above; the endpoint must support the NovelAI request format and image response.",
+    "api_endpoint_invalid": "Enter a valid HTTP(S) URL, or leave blank to use NovelAI.",
     "generation": "Image Generation",
     "prompt_config": "Generation Config",
     "generation_prompt_config": "Prompt Config",

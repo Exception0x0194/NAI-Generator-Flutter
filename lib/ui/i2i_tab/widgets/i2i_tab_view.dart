@@ -12,7 +12,7 @@ class I2iTabView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final vibeWidget = viewmodel.isV4
+    final vibeWidget = viewmodel.usesV4Parameters
         ? VibeConfigV4ListView(viewmodel: VibeConfigV4ListViewmodel())
         : VibeConfigListView(viewmodel: VibeConfigListViewmodel());
 

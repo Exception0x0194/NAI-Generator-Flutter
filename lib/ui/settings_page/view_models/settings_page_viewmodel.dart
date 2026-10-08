@@ -27,6 +27,12 @@ class SettingsPageViewmodel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setApiEndpoint(String value) {
+    if (!Settings.isValidApiEndpoint(value)) return;
+    settings.apiEndpoint = value.trim();
+    notifyListeners();
+  }
+
   void setBatchCount(String value) {
     final parseResult = int.tryParse(value);
     if (parseResult == null) return;

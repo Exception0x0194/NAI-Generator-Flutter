@@ -162,8 +162,8 @@ class GeneratePayloadUseCase {
       paramPayload['reference_strength_multiple'] = referenceStrengthList;
       paramPayload['reference_information_extracted_multiple'] =
           imformationExtractedList;
-    } else if (paramConfig.model.contains('-4-')) {
-      // Vibe config for NAI4 models
+    } else if (paramConfig.usesV4Parameters) {
+      // Encoded Vibe config for NAI4 and later models.
       final imageB64List = [];
       final infoExtractedList = [];
       final referenceStrengthList = [];

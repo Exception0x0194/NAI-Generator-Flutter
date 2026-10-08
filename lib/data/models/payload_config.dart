@@ -64,6 +64,7 @@ class PayloadConfig {
 
   Map<String, String> getHeaders() {
     return {
+      'content-type': 'application/json',
       "authorization": "Bearer ${settings.apiKey}",
       "referer": "https://novelai.net",
       "user-agent":

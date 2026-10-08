@@ -1,4 +1,6 @@
 const models = [
+  'nai-diffusion-5-full',
+  'nai-diffusion-5-curated',
   'nai-diffusion-4-5-full',
   'nai-diffusion-4-5-curated',
   'nai-diffusion-4-full',
@@ -6,6 +8,13 @@ const models = [
   'nai-diffusion-3',
   'nai-diffusion-furry-3'
 ];
+
+String? modelFromMetadata(String source, Map<String, dynamic> comment) {
+  final model = comment['model_name'] ?? comment['model'];
+  if (model is String && models.contains(model)) return model;
+  return sourceToModel[source];
+}
+
 const samplers = [
   'k_euler',
   'k_euler_ancestral',
